@@ -1,0 +1,3 @@
+[submodule "dxvk-nvapi"]
+	path = dxvk-nvapi
+	url = https://github.com/SveSop/dxvk-nvapi.git
