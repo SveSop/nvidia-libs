@@ -1,6 +1,41 @@
+Wine Staging license
+====================
+
+**Note:** Some files in this repository are provided under a different license.
+Please check the list of exceptions below. Unless stated otherwise all files
+are part of **Wine Staging** and are licensed under the terms of the
+[LGPLv2.1](#gnu-lgpl-version-21), to stay compatible with Wine:
+
+```
+Copyright (C) 2014-2017 the Wine Staging project authors.
+Copyright (C) 2018 Alistair Leslie-Hughes
+
+Wine Staging is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+A copy of the GNU Lesser General Public License is included below.
+If you did not receive this copy, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
+```
+
+### Exceptions
+
+The following files are not part of Wine Staging and provided under a
+different license. These files are not linked to the rest of the project in
+any way and are simply installed for end-user convenience.
+
+* `dxvk-nvapi - Subproject`
+
 MIT License
 
-Copyright (c) 2021 Sveinar Søpler
+Copyright (c) 2020 Jens Peters
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +54,40 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+* `nvml - nVidia Management Library header - nvml.h`
+* `nvapi header - nvapi.h`
+
+Copyright 1993-2020 NVIDIA Corporation.  All rights reserved.
+
+NOTICE TO USER:   
+
+This source code is subject to NVIDIA ownership rights under U.S. and 
+international Copyright laws.  Users and possessors of this source code 
+are hereby granted a nonexclusive, royalty-free license to use this code 
+in individual and commercial software.
+
+NVIDIA MAKES NO REPRESENTATION ABOUT THE SUITABILITY OF THIS SOURCE 
+CODE FOR ANY PURPOSE.  IT IS PROVIDED "AS IS" WITHOUT EXPRESS OR 
+IMPLIED WARRANTY OF ANY KIND.  NVIDIA DISCLAIMS ALL WARRANTIES WITH 
+REGARD TO THIS SOURCE CODE, INCLUDING ALL IMPLIED WARRANTIES OF 
+MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE.
+IN NO EVENT SHALL NVIDIA BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL, 
+OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS 
+OF USE, DATA OR PROFITS,  WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE 
+OR OTHER TORTIOUS ACTION,  ARISING OUT OF OR IN CONNECTION WITH THE USE 
+OR PERFORMANCE OF THIS SOURCE CODE.  
+
+U.S. Government End Users.   This source code is a "commercial item" as 
+that term is defined at  48 C.F.R. 2.101 (OCT 1995), consisting  of 
+"commercial computer  software"  and "commercial computer software 
+documentation" as such terms are  used in 48 C.F.R. 12.212 (SEPT 1995) 
+and is provided to the U.S. Government only as a commercial end item.  
+Consistent with 48 C.F.R.12.212 and 48 C.F.R. 227.7202-1 through 
+227.7202-4 (JUNE 1995), all U.S. Government End Users acquire the 
+source code with only those rights set forth herein. 
+
+Any use of this source code in individual and commercial software must 
+include, in the user documentation and internal comments to the code,
+the above Disclaimer and U.S. Government End Users Notice.
+
