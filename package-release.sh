@@ -9,6 +9,8 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
+git submodule update --init --recursive
+
 NVLIBS_SRC_DIR=`dirname $(readlink -f $0)`
 NVLIBS_BUILD_DIR=$(realpath "$1")"/nvidia-libs"
 
