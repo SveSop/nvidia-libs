@@ -1,0 +1,5 @@
+MODULE    = nvencodeapi64.dll
+PARENTSRC = ../nvencodeapi
+
+C_SRCS = \
+	nvencodeapi.c

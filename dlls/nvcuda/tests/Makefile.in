@@ -1,0 +1,4 @@
+TESTDLL   = nvcuda.dll
+
+C_SRCS = \
+	nvcuda.c

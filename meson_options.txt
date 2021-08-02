@@ -1,0 +1,2 @@
+option('enable_d3d11', type : 'boolean', value : true,
+  description: 'Compile d3d11 specific code')

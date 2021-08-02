@@ -1,0 +1,4 @@
+MODULE    = nvencodeapi.dll
+
+C_SRCS = \
+	nvencodeapi.c

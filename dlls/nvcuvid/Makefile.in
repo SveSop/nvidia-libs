@@ -1,0 +1,4 @@
+MODULE    = nvcuvid.dll
+
+C_SRCS = \
+	nvcuvid.c
