@@ -12,13 +12,32 @@ Requires nVidia proprietary driver version 460.x or newer
 
 ## How to install  
 
+### Wineprefix  
 You can install symlinks and dll-overrides to the libraries in your wineprefix like this:  
-WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh install  
+`WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh install`  
 
 To uninstall:  
-WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh uninstall  
+`WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh uninstall`  
 
-WIP - More to come  
+### Proton  
+You can drop-in the libraries in Proton - Experimental or Proton-6.12-GE-1 or newer like this:
+  
+`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-6.12-GE-1' ./proton_setup.sh`  
+
+This will replace or add the libs to Proton for use with games.  
+OBS!  
+Remember to add:  
+   `"PROTON_ENABLE_NVAPI": "1",`  
+to your user_settings.py script in the proton folder eg:  
+`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-6.12-GE-1/user_settings.py'`  
+
+Or you can run the game with `PROTON_ENABLE_NVAPI=1 %command%`  
+
+You also need a working `dxvk.conf` file in the games binary folder with the setting:  
+`dxgi.nvapiHack = False`  
+
+Eg:  
+`$HOME/.steam/steam/steamapps/common/Batman Arkham Knight/Binaries/Win64/dxvk.conf`  
 
 ## Info  
 
