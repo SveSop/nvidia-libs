@@ -12,7 +12,13 @@ Requires nVidia proprietary driver version 460.x or newer
 
 ## How to install  
 
-WIP - More to come
+You can install symlinks and dll-overrides to the libraries in your wineprefix like this:  
+WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh install  
+
+To uninstall:  
+WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh uninstall  
+
+WIP - More to come  
 
 ## Info  
 
