@@ -86,6 +86,10 @@ prepare
 build_arch 64
 build_arch 32
 
+# Copy installscript
+cp "$NVLIBS_SRC_DIR/setup_nvlibs.sh" "$NVLIBS_BUILD_DIR/setup_nvlibs.sh"
+chmod +x "$NVLIBS_BUILD_DIR/setup_nvlibs.sh"
+
 # cleanup
 cd $NVLIBS_BUILD_DIR
 find . -name \*.a -type f -delete
