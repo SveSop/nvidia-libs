@@ -1,4 +1,4 @@
-if cpu_family == 'x86_64'
+if target_machine.cpu_family() == 'x86_64'
   subdir('nvencodeapi64')
 else
   subdir('nvencodeapi')

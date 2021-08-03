@@ -29,7 +29,7 @@ nvcuda_dll = shared_library('nvcuda.dll', nvcuda_src,
 nvcuda_dll_target = custom_target('nvcuda.dll',
   output  : 'nvcuda.dll',
   input   : [ 'nvcuda.spec', nvcuda_res_target ],
-  command : [ winebuild, target_arch, '--dll', '--fake-module', '-E', '@INPUT@', '-o', '@OUTPUT@', '-F', 'nvcuda.dll' ],
+  command : [ winebuild, target_arch, '--dll', '--fake-module', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
   install : true,
   install_dir : install_dir_windows)
 
@@ -37,6 +37,6 @@ nvcuda_dll_target = custom_target('nvcuda.dll',
 nvcuda_def_target = custom_target('nvcuda.def',
   output  : 'nvcuda.def',
   input   : 'nvcuda.spec',
-  command : [ winebuild, target_arch, '-w', '--def', '--export', '@INPUT@', '-o', '@OUTPUT@' ],
+  command : [ winebuild, target_arch, '-w', '--def', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
   install : false)
 

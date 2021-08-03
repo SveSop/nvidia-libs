@@ -27,7 +27,7 @@ nvcuvid_dll = shared_library('nvcuvid.dll', nvcuvid_src,
 nvcuvid_dll_target = custom_target('nvcuvid.dll',
   output  : 'nvcuvid.dll',
   input   : [ 'nvcuvid.spec', nvcuvid_res_target ],
-  command : [ winebuild, target_arch, '--dll', '--fake-module', '-E', '@INPUT@', '-o', '@OUTPUT@', '-F', 'nvcuvid.dll' ],
+  command : [ winebuild, target_arch, '--dll', '--fake-module', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
   install : true,
   install_dir : install_dir_windows)
 
@@ -35,5 +35,5 @@ nvcuvid_dll_target = custom_target('nvcuvid.dll',
 nvcuvid_def_target = custom_target('nvcuvid.def',
   output  : 'nvcuvid.def',
   input   : 'nvcuvid.spec',
-  command : [ winebuild, target_arch, '-w', '--def', '--export', '@INPUT@', '-o', '@OUTPUT@' ],
+  command : [ winebuild, target_arch, '-w', '--def', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
   install : false)

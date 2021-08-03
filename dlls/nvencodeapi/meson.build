@@ -27,7 +27,7 @@ nvencodeapi_dll = shared_library('nvencodeapi.dll', nvencodeapi_src,
 nvencodeapi_dll_target = custom_target('nvencodeapi.dll',
   output  : 'nvencodeapi.dll',
   input   : [ 'nvencodeapi.spec', nvencodeapi_res_target ],
-  command : [ winebuild, target_arch, '--dll', '--fake-module', '-E', '@INPUT@', '-o', '@OUTPUT@', '-F', 'nvencodeapi.dll' ],
+  command : [ winebuild, target_arch, '--dll', '--fake-module', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
   install : true,
   install_dir : install_dir_windows)
 
@@ -35,5 +35,5 @@ nvencodeapi_dll_target = custom_target('nvencodeapi.dll',
 nvencodeapi_def_target = custom_target('nvencodeapi.def',
   output  : 'nvencodeapi.def',
   input   : 'nvencodeapi.spec',
-  command : [ winebuild, target_arch, '-w', '--def', '--export', '@INPUT@', '-o', '@OUTPUT@' ],
+  command : [ winebuild, target_arch, '-w', '--def', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
   install : false)
