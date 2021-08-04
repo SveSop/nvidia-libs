@@ -1,10 +1,18 @@
-# NVAPI (dxvk-nvapi)
+# NVIDIA Libs
 
 Requires nVidia proprietary driver version 460.x or newer  
 
+Library contains:  
+nvapi (dxvk-nvapi)  
+nvcuda (staging)  
+nvcuvid (staging)  
+nvencodeapi (staging)  
+nvml (wine-nvml)  
+
 ## Build requirements:  
-- [WINE](https://www.winehq.org/)  
-- [Meson](http://mesonbuild.com/) (>= version 0.56)  
+- [WINE] (version >= 6.12) [https://www.winehq.org/](https://www.winehq.org/)  
+- [Meson] [http://mesonbuild.com/](http://mesonbuild.com/)  
+- [NINJA] [https://ninja-build.org/](https://ninja-build.org/)  
 
 ## How to build  
 
@@ -44,8 +52,8 @@ Eg:
 Loads of reference info here:  
 
 [https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/annotated.html](https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/annotated.html)  
-[https://github.com/jp7677/dxvk-nvapi](https://github.com/jp7677/dxvk-nvapi)
-[https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml)
+[https://github.com/jp7677/dxvk-nvapi](https://github.com/jp7677/dxvk-nvapi)  
+[https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml)  
 
 Tool to check various GPU options:  
 [http://www.ozone3d.net/gpu_caps_viewer/](http://www.ozone3d.net/gpu_caps_viewer/)  
