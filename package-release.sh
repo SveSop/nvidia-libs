@@ -34,6 +34,7 @@ function build_arch {
   cd "$NVLIBS_BUILD_DIR/build.$1"
   ninja install
 
+  cp "$NVLIBS_BUILD_DIR/build.$1/version" "$NVLIBS_BUILD_DIR/version"
   rm -R "$NVLIBS_BUILD_DIR/build.$1"
 }
 

@@ -12,4 +12,9 @@ target_arch = target_machine.cpu_family() == 'x86_64' ? '-m64' : '-m32'
 
 install_dir = get_option('libdir') / 'wine'
 
+nvlibs_version = vcs_tag(
+  command: ['git', 'describe', '--always', '--tags', '--long', '--dirty=+'],
+  input:  'version.in',
+  output: 'version')
+
 subdir('dlls')
