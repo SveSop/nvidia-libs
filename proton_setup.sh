@@ -57,9 +57,11 @@ function install {
 }
 
 function nvapi {
+     if [ -f "$PROTON_LIBS/files/$lib/nvapi/$1" ]; then
         chmod +w "$PROTON_LIBS/files/$lib/nvapi/$1"
-        cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/files/$lib/nvapi/"
-        chmod -w,+x "$PROTON_LIBS/files/$lib/nvapi/$1"
+     fi
+     cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/files/$lib/nvapi/"
+     chmod -w,+x "$PROTON_LIBS/files/$lib/nvapi/$1"
 }
 
 fun=fake_install
@@ -100,4 +102,5 @@ $fun nvml.dll.so
 fun=nvapi
 $fun nvapi64.dll
 
+echo -ne "All done - Files dropped in $PROTON_LIBS\n"
 exit $ret
