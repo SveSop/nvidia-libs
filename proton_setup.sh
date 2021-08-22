@@ -17,51 +17,119 @@ fi
 
 if [ -f "$PROTON_LIBS/files/$lib/$arch-unix/nvcuda.dll.so" ]; then
      GE=1
+elif [ -f "$PROTON_LIBS/files/$lib/fakedlls/dxgi.dll" ]; then
+     EXP=1
 else
-     if [ ! -f "$PROTON_LIBS/files/$lib/fakedlls/dxgi.dll" ]; then
+     if [ ! -f "$PROTON_LIBS/dist/$lib/fakedlls/dxgi.dll" ]; then
         echo -ne "Proton files not found in $PROTON_LIBS! Copy manually or check path.\n" >&2
         exit 1
      fi
 fi
 
 function fake_install {
-     if [[ ! -v GE ]]; then
+     if [[ -v EXP ]]; then
         if [ -f "$PROTON_LIBS/files/$lib/fakedlls/$1" ]; then
           chmod +w "$PROTON_LIBS/files/$lib/fakedlls/$1"
         fi
         cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/files/$lib/fakedlls/"
         chmod -w,+x "$PROTON_LIBS/files/$lib/fakedlls/$1"
-     else
+     elif [[ -v GE ]]; then
         if [ -f "$PROTON_LIBS/files/$lib/$arch-windows/$1" ]; then
           chmod +w "$PROTON_LIBS/files/$lib/$arch-windows/$1"
         fi
         cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/files/$lib/$arch-windows/"
         chmod -w,+x "$PROTON_LIBS/files/$lib/$arch-windows/$1"
-     fi
+     else
+        if [ -f "$PROTON_LIBS/dist/$lib/fakedlls/$1" ]; then
+          chmod +w "$PROTON_LIBS/dist/$lib/fakedlls/$1"
+        fi
+        cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/dist/$lib/fakedlls/"
+        chmod -w,+x "$PROTON_LIBS/dist/$lib/fakedlls/$1"
+    fi
 }
 
 function install {
-     if [[ ! -v GE ]]; then
+     if [[ -v EXP ]]; then
         if [ -f "$PROTON_LIBS/files/$lib/$1" ]; then
           chmod +w "$PROTON_LIBS/files/$lib/$1"
         fi
         cp "$nvlibs_dir/lib/wine/$arch-unix/$1" "$PROTON_LIBS/files/$lib/"
         chmod -w,+x "$PROTON_LIBS/files/$lib/$1"
-     else
+     elif [[ -v GE ]]; then
         if [ -f "$PROTON_LIBS/files/$lib/$arch-unix/$1" ]; then
           chmod +w "$PROTON_LIBS/files/$lib/$arch-unix/$1"
         fi
         cp "$nvlibs_dir/lib/wine/$arch-unix/$1" "$PROTON_LIBS/files/$lib/$arch-unix/"
         chmod -w,+x "$PROTON_LIBS/files/$lib/$arch-unix/$1"
+     else
+        if [ -f "$PROTON_LIBS/dist/$lib/$1" ]; then
+          chmod +w "$PROTON_LIBS/dist/$lib/$1"
+        fi
+        cp "$nvlibs_dir/lib/wine/$arch-unix/$1" "$PROTON_LIBS/dist/$lib/"
+        chmod -w,+x "$PROTON_LIBS/dist/$lib/$1"
      fi
 }
 
 function nvapi {
-     if [ -f "$PROTON_LIBS/files/$lib/nvapi/$1" ]; then
-        chmod +w "$PROTON_LIBS/files/$lib/nvapi/$1"
+     if [[ ! -v GE ]] && [[ ! -v EXP ]]; then
+        if [ -f "$PROTON_LIBS/dist/$lib/nvapi/$1" ]; then
+           chmod +w "$PROTON_LIBS/dist/$lib/nvapi/$1"
+        fi
+        cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/dist/$lib/nvapi/"
+        chmod -w,+x "$PROTON_LIBS/dist/$lib/nvapi/$1"
+     else
+        if [ -f "$PROTON_LIBS/files/$lib/nvapi/$1" ]; then
+           chmod +w "$PROTON_LIBS/files/$lib/nvapi/$1"
+        fi
+        cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/files/$lib/nvapi/"
+        chmod -w,+x "$PROTON_LIBS/files/$lib/nvapi/$1"
      fi
-     cp "$nvlibs_dir/lib/wine/$arch-windows/$1" "$PROTON_LIBS/files/$lib/nvapi/"
-     chmod -w,+x "$PROTON_LIBS/files/$lib/nvapi/$1"
+}
+
+function default_pfx {
+     if [[ -v GE ]]; then
+        if [ "$arch" == "i386" ]; then
+           cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64"
+           if [ -f "$1" ];
+              then rm "$1"
+           fi
+           ln -s "../../../../../lib/wine/i386-windows/$1" "$1"
+        else
+           cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32"
+           if [ -f "$1" ]; then
+              rm "$1"
+           fi
+           ln -s "../../../../../lib64/wine/x86_64-windows/$1" "$1"
+        fi
+     elif [[ -v EXP ]]; then
+        if [ "$arch" == "i386" ]; then
+           cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64"
+           if [ -f "$1" ]; then
+              rm "$1"
+           fi
+           ln -s "../../../../../lib/wine/fakedlls/$1" "$1"
+        else
+           cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32"
+           if [ -f "$1" ]; then
+              rm "$1"
+           fi
+           ln -s "../../../../../lib64/wine/fakedlls/$1" "$1"
+        fi
+     else
+        if [ "$arch" == "i386" ]; then
+           cd "$PROTON_LIBS/dist/share/default_pfx/drive_c/windows/syswow64"
+           if [ -f "$1" ]; then
+              rm "$1"
+           fi
+           ln -s "../../../../../lib/wine/fakedlls/$1" "$1"
+        else
+           cd "$PROTON_LIBS/dist/share/default_pfx/drive_c/windows/system32"
+           if [ -f "$1" ]; then
+              rm "$1"
+           fi
+           ln -s "../../../../../lib64/wine/fakedlls/$1" "$1"
+        fi
+     fi
 }
 
 fun=fake_install
@@ -82,6 +150,15 @@ $fun nvml.dll.so
 fun=nvapi
 $fun nvapi.dll
 
+fun=default_pfx
+$fun nvcuda.dll
+$fun nvcuvid.dll
+$fun nvencodeapi.dll
+$fun nvml.dll
+if [[ -v GE ]]; then
+   $fun nvapi.dll
+fi
+
 arch='x86_64'
 lib='lib64/wine'
 fun=fake_install
@@ -101,6 +178,15 @@ $fun nvml.dll.so
 
 fun=nvapi
 $fun nvapi64.dll
+
+fun=default_pfx
+$fun nvcuda.dll
+$fun nvcuvid.dll
+$fun nvencodeapi64.dll
+$fun nvml.dll
+if [[ -v GE ]]; then
+   $fun nvapi64.dll
+fi
 
 echo -ne "All done - Files dropped in $PROTON_LIBS\n"
 exit $ret
