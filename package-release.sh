@@ -48,7 +48,7 @@ crossfile="build-win"
 cd $NVAPI_SRC_DIR
 
 function prepare {
-  python validate-methods.py \
+  python3 validate-methods.py \
     src/nvapi.cpp \
     src/nvapi_sys.cpp \
     src/nvapi_disp.cpp \
