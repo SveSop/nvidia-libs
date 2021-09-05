@@ -27,6 +27,12 @@ You can install symlinks and dll-overrides to the libraries in your wineprefix l
 To uninstall:  
 `WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh uninstall`  
 
+### Tests  
+You can run tests of your adapter and functions by running the test case file:  
+`WINEPREFIX=/your/wine/prefix wine bin/nvapi64-tests.exe`  
+
+PS. You must install said libraryfile in your WINEPREFIX (see above)  
+
 ### Proton  
 You can drop-in the libraries in Proton - Experimental or Proton-6.12-GE-1 or newer like this:
   
