@@ -74,6 +74,7 @@ function build_arch {
         --prefix "$NVLIBS_BUILD_DIR"             \
         --strip                                  \
         --libdir lib                             \
+        -Denable_tests=true                      \
         "$NVLIBS_BUILD_DIR/build.$1"
 
   cd "$NVLIBS_BUILD_DIR/build.$1"
