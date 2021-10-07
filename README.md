@@ -13,6 +13,7 @@ nvml (wine-nvml)
 - [WINE] (version >= 6.12) [https://www.winehq.org/](https://www.winehq.org/)  
 - [Meson] [http://mesonbuild.com/](http://mesonbuild.com/)  
 - [NINJA] [https://ninja-build.org/](https://ninja-build.org/)  
+- [MINGW] (version >= 9.0) [https://www.mingw-w64.org/](https://www.mingw-w64.org/)  
 
 ## How to build  
 
