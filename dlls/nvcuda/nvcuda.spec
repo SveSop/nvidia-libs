@@ -93,12 +93,12 @@
 @ stdcall cuDeviceGetAttribute(ptr long long) wine_cuDeviceGetAttribute
 @ stdcall cuDeviceGetByPCIBusId(ptr str) wine_cuDeviceGetByPCIBusId
 @ stdcall cuDeviceGetCount(ptr) wine_cuDeviceGetCount
-@ stub cuDeviceGetLuid
+@ stdcall cuDeviceGetLuid(ptr ptr long) wine_cuDeviceGetLuid
 @ stdcall cuDeviceGetName(ptr long long) wine_cuDeviceGetName
 @ stub cuDeviceGetP2PAttribute
 @ stdcall cuDeviceGetPCIBusId(ptr long long) wine_cuDeviceGetPCIBusId
 @ stdcall cuDeviceGetProperties(ptr long) wine_cuDeviceGetProperties
-@ stub cuDeviceGetUuid
+@ stdcall cuDeviceGetUuid(ptr long) wine_cuDeviceGetUuid
 @ stdcall cuDevicePrimaryCtxGetState(long ptr ptr) wine_cuDevicePrimaryCtxGetState
 @ stdcall cuDevicePrimaryCtxRelease(long) wine_cuDevicePrimaryCtxRelease
 @ stdcall cuDevicePrimaryCtxReset(long) wine_cuDevicePrimaryCtxReset

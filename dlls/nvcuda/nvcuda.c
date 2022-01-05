@@ -408,6 +408,9 @@ static CUresult (*pcuStreamQuery_ptsz)(CUstream hStream);
 static CUresult (*pcuStreamSynchronize_ptsz)(CUstream hStream);
 static CUresult (*pcuStreamWaitEvent_ptsz)(CUstream hStream, CUevent hEvent, unsigned int Flags);
 
+/* Cuda 10.0 */
+static CUresult (*pcuDeviceGetUuid)(CUuuid *uuid, CUdevice dev);
+static CUresult (*pcuDeviceGetLuid)(char *luid, unsigned int *deviceNodeMask, CUdevice dev);
 
 static void *cuda_handle = NULL;
 
@@ -757,6 +760,10 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuStreamQuery_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamSynchronize_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamWaitEvent_ptsz);
+
+    /* CUDA 10 */
+    TRY_LOAD_FUNCPTR(cuDeviceGetUuid);
+    TRY_LOAD_FUNCPTR(cuDeviceGetLuid);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -2902,6 +2909,30 @@ CUresult WINAPI wine_cuStreamWaitEvent_ptsz(CUstream hStream, CUevent hEvent, un
     TRACE("(%p, %p, %u)\n", hStream, hEvent, Flags);
     CHECK_FUNCPTR(cuStreamWaitEvent_ptsz);
     return pcuStreamWaitEvent_ptsz(hStream, hEvent, Flags);
+}
+
+/*
+ * Additions in CUDA 10.0
+ */
+
+CUresult WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice dev)
+{
+    TRACE("(%p, %d)\n", uuid, dev);
+    CHECK_FUNCPTR(cuDeviceGetUuid);
+    return pcuDeviceGetUuid(uuid, dev);
+}
+
+CUresult WINAPI wine_cuDeviceGetLuid(char *luid, unsigned int *deviceNodeMask, CUdevice dev)
+{
+    TRACE("(%p, %p, %d)\n", luid, deviceNodeMask, dev);
+    CHECK_FUNCPTR(cuDeviceGetLuid);
+    // Linux native libcuda does not provide a LUID, so we need to fake something and return a success
+    int wine_luid[] = { 0x0000000e, 0x00000000 };
+    memcpy(luid, &wine_luid, sizeof(wine_luid));
+    FIXME("Fix this LUID: (0x%08x)\n", *luid);
+    *deviceNodeMask = 1;
+
+    return CUDA_SUCCESS;
 }
 
 #undef CHECK_FUNCPTR
