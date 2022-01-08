@@ -111,6 +111,10 @@ struct Unknown1_table
     void* (WINAPI *func2)(void *param0, void *param1);
     void* (WINAPI *func3)(void *param0, void *param1);
     void* (WINAPI *func4)(void *param0);
+    void* (WINAPI *func5)(void *param0, void *param1);
+    void* (WINAPI *func6)(void *param0, void *param1);
+    void* (WINAPI *func7)(void *param0, void *param1);
+    void* (WINAPI *func8)(void *param0, void *param1);
 };
 static const struct
 {
@@ -120,6 +124,10 @@ static const struct
     void* (*func2)(void *param0, void *param1);
     void* (*func3)(void *param0, void *param1);
     void* (*func4)(void *param0);
+    void* (*func5)(void *param0, void *param1);
+    void* (*func6)(void *param0, void *param1);
+    void* (*func7)(void *param0, void *param1);
+    void* (*func8)(void *param0, void *param1);
 } *Unknown1_orig = NULL;
 
 /*
@@ -233,6 +241,30 @@ static void* WINAPI Unknown1_func4_relay(void *param0)
     return Unknown1_orig->func4(param0);
 }
 
+static void* WINAPI Unknown1_func5_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown1_orig->func5(param0, param1);
+}
+
+static void* WINAPI Unknown1_func6_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown1_orig->func6(param0, param1);
+}
+
+static void* WINAPI Unknown1_func7_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown1_orig->func7(param0, param1);
+}
+
+static void* WINAPI Unknown1_func8_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown1_orig->func8(param0, param1);
+}
+
 struct Unknown1_table Unknown1_Impl =
 {
     sizeof(struct Unknown1_table),
@@ -241,6 +273,10 @@ struct Unknown1_table Unknown1_Impl =
     Unknown1_func2_relay,
     Unknown1_func3_relay,
     Unknown1_func4_relay,
+    Unknown1_func5_relay,
+    Unknown1_func6_relay,
+    Unknown1_func7_relay,
+    Unknown1_func8_relay,
 };
 
 static void* WINAPI Unknown2_func0_relay(void *param0, void *param1)
