@@ -1,3 +1,6 @@
 [submodule "dxvk-nvapi"]
 	path = dxvk-nvapi
 	url = https://github.com/SveSop/dxvk-nvapi.git
+[submodule "wine-nvoptix"]
+	path = wine-nvoptix
+	url = https://github.com/SveSop/wine-nvoptix.git
