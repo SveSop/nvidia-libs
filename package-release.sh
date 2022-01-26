@@ -19,6 +19,8 @@ if [ -e "$NVLIBS_BUILD_DIR" ]; then
   exit 1
 fi
 
+# build nvcuda
+
 function build_arch {
   export WINEARCH="win$1"
 
@@ -40,6 +42,25 @@ function build_arch {
 
 build_arch 64
 build_arch 32
+
+# Build wine-nvoptix
+
+NVOPTIX_SRC_DIR=$NVLIBS_SRC_DIR"/wine-nvoptix"
+
+cd $NVOPTIX_SRC_DIR
+
+meson --cross-file "$NVOPTIX_SRC_DIR/build-wine64.txt"    \
+        --buildtype "release"                             \
+        --prefix "$NVLIBS_BUILD_DIR"                      \
+        --libdir="lib64"                                  \
+        --strip                                           \
+        "$NVLIBS_BUILD_DIR/build"
+
+cd "$NVLIBS_BUILD_DIR/build"
+ninja install
+
+rm -R "$NVLIBS_BUILD_DIR/build"
+rm -R "$NVLIBS_BUILD_DIR/defs"
 
 NVAPI_SRC_DIR=$NVLIBS_SRC_DIR"/dxvk-nvapi"
 
