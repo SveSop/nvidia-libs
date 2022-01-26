@@ -424,6 +424,7 @@ static BOOL load_functions(void)
         "/usr/local/cuda/lib/libcuda.dylib",
         "/usr/local/cuda/lib/libcuda.6.0.dylib",
     #else
+        "libcuda.so",
         "libcuda.so.1"
     #endif
     };
