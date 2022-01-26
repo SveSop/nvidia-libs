@@ -27,7 +27,7 @@ function build_arch {
   meson --cross-file "$NVLIBS_SRC_DIR/build-wine$1.txt"  \
         --buildtype release                              \
         --prefix "$NVLIBS_BUILD_DIR"                     \
-        --libdir lib                                     \
+        --libdir lib$1                                   \
 	--strip                                          \
         "$NVLIBS_BUILD_DIR/build.$1"
 
@@ -71,11 +71,11 @@ function build_arch {
   cd "$NVAPI_SRC_DIR"
 
   meson --cross-file "$NVAPI_SRC_DIR/$crossfile$1.txt" \
-        --buildtype "release"                    \
-        --prefix "$NVLIBS_BUILD_DIR"             \
-        --strip                                  \
-        --libdir lib                             \
-        -Denable_tests=true                      \
+        --buildtype "release"                          \
+        --prefix "$NVLIBS_BUILD_DIR"                   \
+        --strip                                        \
+        --libdir lib$1                                 \
+        -Denable_tests=true                            \
         "$NVLIBS_BUILD_DIR/build.$1"
 
   cd "$NVLIBS_BUILD_DIR/build.$1"
@@ -99,3 +99,5 @@ chmod +x "$NVLIBS_BUILD_DIR/proton_setup.sh"
 # cleanup
 cd $NVLIBS_BUILD_DIR
 find . -name \*.a -type f -delete
+mv lib32 lib
+echo "Done building!"

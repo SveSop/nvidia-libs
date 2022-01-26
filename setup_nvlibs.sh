@@ -45,40 +45,42 @@ if [ -z "$unix_sys_path" ]; then
   exit 1
 fi
 
-ret=0
-
 function removeOverride {
-    echo "    [1/2] Removing override... "
-    $wine reg delete 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /f > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        echo "Override does not exist, trying next..."
-        ret=2
+    if [ "$wine" = wine64 ]; then
+        echo "    Removing override... "
+        $wine reg delete 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /f > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo "Override does not exist for $1, trying next..."
+            exit=2
+        fi
     fi
     local dll="$unix_sys_path/$1.dll"
-    echo "    [2/2] Removing link... "
+    echo "    Removing symlink... "
     if [ -h "$dll" ]; then
         out=$(rm "$dll" 2>&1)
         if [ $? -ne 0 ]; then
-            ret=2
             echo -e "$out"
+            exit=2
         fi
     else
         echo -e "'$dll' is not a link or doesn't exist."
-        ret=2
+        exit=2
     fi
 }
 
 function createOverride {
-    echo "    [1/2] Creating override... "
-    $wine reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /d native /f >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        echo -e "Failed"
-        exit 1
+    if [ "$wine" = wine64 ]; then
+        echo "    Creating DLL override... "
+        $wine reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /d native /f >/dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo -e "Failed to create override"
+            exit 1
+        fi
     fi
-    echo "    [2/2] Creating link to $1.$dll_ext... "
+    echo "    Creating symlink to $1.$dll_ext... "
     ln -sf "$nvlibs_dir/$lib/$1.$dll_ext" "$unix_sys_path/$1.dll"
     if [ $? -ne 0 ]; then
-        echo -e "Failed"
+        echo -e "Failed to create override"
         exit 1
     fi
 }
@@ -97,38 +99,32 @@ install)
     ;;
 esac
 
-echo '[1/5] nvcuda :'
+echo '[1/3] nvcuda :'
 $fun nvcuda
-echo '[2/5] nvcuvid :'
-$fun nvcuvid
-echo '[3/5] nvencodeapi :'
-$fun nvencodeapi
-echo '[4/5] nvml :'
+echo '[2/3] nvml :'
 $fun nvml
 dll_ext='dll'
 lib='lib/wine/i386-windows'
-echo '[5/5] nvapi :'
+echo '[3/3] nvapi :'
 $fun nvapi
+
 dll_ext='dll.so'
 wine="wine64"
-lib='lib/wine/x86_64-unix'
+lib='lib64/wine/x86_64-unix'
 unix_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
-echo '[1/5] 64 bit nvcuda :'
+echo '[1/3] 64 bit nvcuda :'
 $fun nvcuda
-echo '[2/5] 64 bit nvcuvid :'
-$fun nvcuvid
-echo '[3/5] 64 bit nvencodeapi64 :'
-$fun nvencodeapi64
-echo '[4/5] 64 bit nvml :'
+echo '[2/3] 64 bit nvml :'
 $fun nvml
 dll_ext='dll'
-lib='lib/wine/x86_64-windows'
-echo '[5/5] 64 bit nvapi64 :'
+lib='lib64/wine/x86_64-windows'
+echo '[3/3] 64 bit nvapi64 :'
 $fun nvapi64
-echo "Symlinks created in $WINEPREFIX. Do NOT remove this source folder!"
+
 if [ "$fun" = removeOverride ]; then
    echo "Rebooting prefix!"
    wineboot -u
    echo "All done!"
+else
+   echo "Symlinks created in $WINEPREFIX. Do NOT remove this source folder!"
 fi
-exit $ret
