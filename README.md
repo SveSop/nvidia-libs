@@ -1,16 +1,15 @@
 # NVIDIA Libs
 
-Requires nVidia proprietary driver version 460.x or newer  
+Requires nVidia proprietary driver branch 470+ (495+ for best compatibility with OptiX)  
 
 Library contains:  
 nvapi (dxvk-nvapi)  
 nvcuda (staging)  
-nvcuvid (staging)  
-nvencodeapi (staging)  
 nvml (wine-nvml)  
+nvoptix (wine-nvoptix)  
 
 ## Build requirements:  
-- [WINE] (version >= 6.12) [https://www.winehq.org/](https://www.winehq.org/)  
+- [WINE] (version >= 6.23) [https://www.winehq.org/](https://www.winehq.org/)  
 - [Meson] [http://mesonbuild.com/](http://mesonbuild.com/)  
 - [NINJA] [https://ninja-build.org/](https://ninja-build.org/)  
 - [MINGW] (version >= 9.0) [https://www.mingw-w64.org/](https://www.mingw-w64.org/)  
@@ -58,9 +57,11 @@ Eg:
 
 Loads of reference info here:  
 
-[https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/annotated.html](https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/annotated.html)  
-[https://github.com/jp7677/dxvk-nvapi](https://github.com/jp7677/dxvk-nvapi)  
-[https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml)  
+[NVIDIA NvAPI](https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/annotated.html)  
+[NVIDIA OPTIX](https://developer.nvidia.com/optix)  
+[DXVK-NVAPI](https://github.com/jp7677/dxvk-nvapi)  
+[WINE-NVML](https://github.com/Saancreed/wine-nvml)  
+[WINE-NVOPTIX](https://github.com/SveSop/wine-nvoptix)  
 
 Tool to check various GPU options:  
 [http://www.ozone3d.net/gpu_caps_viewer/](http://www.ozone3d.net/gpu_caps_viewer/)  
