@@ -112,13 +112,15 @@ dll_ext='dll.so'
 wine="wine64"
 lib='lib64/wine/x86_64-unix'
 unix_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
-echo '[1/3] 64 bit nvcuda :'
+echo '[1/4] 64 bit nvcuda :'
 $fun nvcuda
-echo '[2/3] 64 bit nvml :'
+echo '[2/4] 64 bit nvml :'
 $fun nvml
+echo '[3/4] 64 bit nvoptix :'
+$fun nvoptix
 dll_ext='dll'
 lib='lib64/wine/x86_64-windows'
-echo '[3/3] 64 bit nvapi64 :'
+echo '[4/4] 64 bit nvapi64 :'
 $fun nvapi64
 
 if [ "$fun" = removeOverride ]; then

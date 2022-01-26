@@ -98,44 +98,26 @@ function default_pfx {
      if [[ -v GE ]]; then
         if [ "$arch" == "i386" ]; then
            cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64"
-           if [ -f "$1" ];
-              then rm "$1"
-           fi
-           ln -s "../../../../../lib/wine/i386-windows/$1" "$1"
+           ln -sf "../../../../../lib/wine/i386-windows/$1" "$1"
         else
            cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32"
-           if [ -f "$1" ]; then
-              rm "$1"
-           fi
-           ln -s "../../../../../lib64/wine/x86_64-windows/$1" "$1"
+           ln -sf "../../../../../lib64/wine/x86_64-windows/$1" "$1"
         fi
      elif [[ -v EXP ]]; then
         if [ "$arch" == "i386" ]; then
            cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64"
-           if [ -f "$1" ]; then
-              rm "$1"
-           fi
-           ln -s "../../../../../lib/wine/fakedlls/$1" "$1"
+           ln -sf "../../../../../lib/wine/fakedlls/$1" "$1"
         else
            cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32"
-           if [ -f "$1" ]; then
-              rm "$1"
-           fi
-           ln -s "../../../../../lib64/wine/fakedlls/$1" "$1"
+           ln -sf "../../../../../lib64/wine/fakedlls/$1" "$1"
         fi
      else
         if [ "$arch" == "i386" ]; then
            cd "$PROTON_LIBS/dist/share/default_pfx/drive_c/windows/syswow64"
-           if [ -f "$1" ]; then
-              rm "$1"
-           fi
-           ln -s "../../../../../lib/wine/fakedlls/$1" "$1"
+           ln -sf "../../../../../lib/wine/fakedlls/$1" "$1"
         else
            cd "$PROTON_LIBS/dist/share/default_pfx/drive_c/windows/system32"
-           if [ -f "$1" ]; then
-              rm "$1"
-           fi
-           ln -s "../../../../../lib64/wine/fakedlls/$1" "$1"
+           ln -sf "../../../../../lib64/wine/fakedlls/$1" "$1"
         fi
      fi
 }
@@ -166,6 +148,7 @@ lib='lib64/wine'
 fun=fake_install
 $fun nvcuda.dll
 $fun nvml.dll
+$fun nvoptix.dll
 if [[ -v GE ]]; then
    $fun nvapi64.dll
 fi
@@ -173,6 +156,7 @@ fi
 fun=install
 $fun nvcuda.dll.so
 $fun nvml.dll.so
+$fun nvoptix.dll.so
 
 fun=nvapi
 $fun nvapi64.dll
@@ -180,6 +164,7 @@ $fun nvapi64.dll
 fun=default_pfx
 $fun nvcuda.dll
 $fun nvml.dll
+$fun nvoptix.dll
 if [[ -v GE ]]; then
    $fun nvapi64.dll
 fi
