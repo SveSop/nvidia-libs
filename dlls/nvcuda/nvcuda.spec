@@ -366,7 +366,7 @@
 @ stdcall cuPointerSetAttribute(ptr long long) wine_cuPointerSetAttribute
 @ stub cuProfilerInitialize
 @ stub cuProfilerStart
-@ stub cuProfilerStop
+@ stdcall cuProfilerStop(ptr) wine_cuProfilerStop
 @ stub cuSignalExternalSemaphoresAsync
 @ stub cuSignalExternalSemaphoresAsync_ptsz
 @ stdcall cuStreamAddCallback(ptr ptr ptr long) wine_cuStreamAddCallback

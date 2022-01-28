@@ -275,6 +275,7 @@ static CUresult (*pcuParamSeti)(CUfunction hfunc, int offset, unsigned int value
 static CUresult (*pcuParamSetv)(CUfunction hfunc, int offset, void *ptr, unsigned int numbytes);
 static CUresult (*pcuPointerGetAttribute)(void *data, CUpointer_attribute attribute, CUdeviceptr ptr);
 static CUresult (*pcuPointerSetAttribute)(const void *value, CUpointer_attribute attribute, CUdeviceptr ptr);
+static CUresult (*pcuProfilerStop)(void);
 static CUresult (*pcuStreamAddCallback)(CUstream hStream, void *callback, void *userData, unsigned int flags);
 static CUresult (*pcuStreamAttachMemAsync)(CUstream hStream, CUdeviceptr dptr, size_t length, unsigned int flags);
 static CUresult (*pcuStreamCreate)(CUstream *phStream, unsigned int Flags);
@@ -642,6 +643,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuParamSetv);
     LOAD_FUNCPTR(cuPointerGetAttribute);
     LOAD_FUNCPTR(cuPointerSetAttribute);
+    LOAD_FUNCPTR(cuProfilerStop);
     LOAD_FUNCPTR(cuStreamAddCallback);
     LOAD_FUNCPTR(cuStreamAttachMemAsync);
     LOAD_FUNCPTR(cuStreamCreate);
@@ -1996,6 +1998,12 @@ CUresult WINAPI wine_cuPointerSetAttribute(const void *value, CUpointer_attribut
 {
     TRACE("(%p, %d, " DEV_PTR ")\n", value, attribute, ptr);
     return pcuPointerSetAttribute(value, attribute, ptr);
+}
+
+CUresult WINAPI wine_cuProfilerStop(void)
+{
+    TRACE("()\n");
+    return pcuProfilerStop();
 }
 
 static DWORD WINAPI stream_callback_worker_thread(LPVOID parameter)
