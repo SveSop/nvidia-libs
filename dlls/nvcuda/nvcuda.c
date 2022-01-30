@@ -18,7 +18,7 @@
  */
 
 #include "config.h"
-#include "wine/port.h"
+#include <dlfcn.h>
 
 #include <stdarg.h>
 #include <assert.h>
@@ -2925,10 +2925,12 @@ CUresult WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice dev)
 
 CUresult WINAPI wine_cuDeviceGetLuid(char *luid, unsigned int *deviceNodeMask, CUdevice dev)
 {
+    int wine_luid[] = { 0x0000000e, 0x00000000 };
+
     TRACE("(%p, %p, %d)\n", luid, deviceNodeMask, dev);
     CHECK_FUNCPTR(cuDeviceGetLuid);
-    // Linux native libcuda does not provide a LUID, so we need to fake something and return a success
-    int wine_luid[] = { 0x0000000e, 0x00000000 };
+    /* Linux native libcuda does not provide a LUID, so we need to fake something and return a success */
+
     memcpy(luid, &wine_luid, sizeof(wine_luid));
     FIXME("Fix this LUID: (0x%08x)\n", *luid);
     *deviceNodeMask = 1;
