@@ -412,6 +412,7 @@ static CUresult (*pcuStreamWaitEvent_ptsz)(CUstream hStream, CUevent hEvent, uns
 /* Cuda 10.0 */
 static CUresult (*pcuDeviceGetUuid)(CUuuid *uuid, CUdevice dev);
 static CUresult (*pcuDeviceGetLuid)(char *luid, unsigned int *deviceNodeMask, CUdevice dev);
+static CUresult (*pcuStreamIsCapturing)(CUstream hStream, CUstreamCaptureStatus *captureStatus);
 
 static void *cuda_handle = NULL;
 
@@ -767,6 +768,7 @@ static BOOL load_functions(void)
     /* CUDA 10 */
     TRY_LOAD_FUNCPTR(cuDeviceGetUuid);
     TRY_LOAD_FUNCPTR(cuDeviceGetLuid);
+    TRY_LOAD_FUNCPTR(cuStreamIsCapturing);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -2944,6 +2946,13 @@ CUresult WINAPI wine_cuDeviceGetLuid(char *luid, unsigned int *deviceNodeMask, C
     *deviceNodeMask = 1;
 
     return CUDA_SUCCESS;
+}
+
+CUresult WINAPI wine_cuStreamIsCapturing(CUstream hStream, CUstreamCaptureStatus *captureStatus)
+{
+    TRACE("(%p, %p)\n", hStream, captureStatus);
+    CHECK_FUNCPTR(cuStreamIsCapturing);
+    return pcuStreamIsCapturing(hStream, captureStatus);
 }
 
 #undef CHECK_FUNCPTR

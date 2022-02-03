@@ -393,7 +393,7 @@
 @ stdcall cuStreamGetFlags_ptsz(ptr ptr) wine_cuStreamGetFlags_ptsz
 @ stdcall cuStreamGetPriority(ptr ptr) wine_cuStreamGetPriority
 @ stdcall cuStreamGetPriority_ptsz(ptr ptr) wine_cuStreamGetPriority_ptsz
-@ stub cuStreamIsCapturing
+@ stdcall cuStreamIsCapturing(ptr ptr) wine_cuStreamIsCapturing
 @ stub cuStreamIsCapturing_ptsz
 @ stdcall cuStreamQuery(ptr) wine_cuStreamQuery
 @ stdcall cuStreamQuery_ptsz(ptr) wine_cuStreamQuery_ptsz

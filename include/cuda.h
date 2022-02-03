@@ -79,6 +79,12 @@ typedef void *CUtexref;
 typedef unsigned long long CUsurfObject;
 typedef unsigned long long CUtexObject;
 
+typedef enum CUstreamCaptureStatus_enum {
+    CU_STREAM_CAPTURE_STATUS_NONE        = 0,
+    CU_STREAM_CAPTURE_STATUS_ACTIVE      = 1,
+    CU_STREAM_CAPTURE_STATUS_INVALIDATED = 2
+} CUstreamCaptureStatus;
+
 typedef struct CUipcEventHandle_st
 {
     char reserved[CU_IPC_HANDLE_SIZE];
