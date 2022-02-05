@@ -4,7 +4,7 @@ ar = 'ar'
 strip = 'strip'
 
 [built-in options]
-c_args = ['-m32', '--no-gnu-unique', '-D__WINESRC__', '-Wno-attributes', '-Wno-implicit-function-declaration']
+c_args = ['-m32', '--no-gnu-unique', '-D__WINESRC__', '-DWINE_NO_LONG_TYPES', '-Wno-attributes', '-Wno-implicit-function-declaration']
 c_link_args = ['-m32', '-mwindows']
 
 [properties]

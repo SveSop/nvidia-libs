@@ -467,7 +467,7 @@ typedef VOID           *PVOID64;
 typedef BYTE            BOOLEAN,    *PBOOLEAN;
 typedef char            CHAR,       *PCHAR;
 typedef short           SHORT,      *PSHORT;
-#ifdef WINE_USE_LONG
+#if !defined(__LP64__) && !defined(WINE_NO_LONG_TYPES)
 typedef long            LONG,       *PLONG;
 #else
 typedef int             LONG,       *PLONG;
@@ -840,14 +840,8 @@ typedef struct _WIN32_MEMORY_RANGE_ENTRY
 #define RTL_FIELD_SIZE(type, field) (sizeof(((type *)0)->field))
 #define RTL_SIZEOF_THROUGH_FIELD(type, field) (FIELD_OFFSET(type, field) + RTL_FIELD_SIZE(type, field))
 
-#ifdef __GNUC__
-# define CONTAINING_RECORD(address, type, field) ({     \
-   const typeof(((type *)0)->field) *__ptr = (address); \
-   (type *)((PCHAR)__ptr - offsetof(type, field)); })
-#else
-# define CONTAINING_RECORD(address, type, field) \
-   ((type *)((PCHAR)(address) - offsetof(type, field)))
-#endif
+#define CONTAINING_RECORD(address, type, field) \
+  ((type *)((PCHAR)(address) - offsetof(type, field)))
 
 #define ARRAYSIZE(x) (sizeof(x) / sizeof((x)[0]))
 #ifdef __WINESRC__
@@ -940,8 +934,7 @@ NTSYSAPI WORD         WINAPI RtlQueryDepthSList(PSLIST_HEADER);
 #define HEAP_SHARED                     0x04000000
 
 typedef enum _HEAP_INFORMATION_CLASS {
-    HeapCompatibilityInformation = 0,
-    HeapEnableTerminationOnCorruption = 1,
+    HeapCompatibilityInformation,
 } HEAP_INFORMATION_CLASS;
 
 /* Processor feature flags.  */
@@ -2246,7 +2239,6 @@ extern struct _TEB * WINAPI NtCurrentTeb(void);
 #define IO_REPARSE_TAG_CLOUD_MASK       __MSABI_LONG(0x0000F000)
 #define IO_REPARSE_TAG_APPEXECLINK      __MSABI_LONG(0x8000001B)
 #define IO_REPARSE_TAG_GVFS             __MSABI_LONG(0x9000001C)
-#define IO_REPARSE_TAG_LX_SYMLINK       __MSABI_LONG(0xA000001D)
 #define IO_REPARSE_TAG_STORAGE_SYNC     __MSABI_LONG(0x8000001E)
 #define IO_REPARSE_TAG_WCI_TOMBSTONE    __MSABI_LONG(0xA000001F)
 #define IO_REPARSE_TAG_UNHANDLED        __MSABI_LONG(0x80000020)
@@ -6284,6 +6276,7 @@ typedef enum _PROCESS_MITIGATION_POLICY
 #define InterlockedDecrement16 _InterlockedDecrement16
 #define InterlockedExchange _InterlockedExchange
 #define InterlockedExchangeAdd _InterlockedExchangeAdd
+#define InterlockedExchangeAdd64 _InterlockedExchangeAdd64
 #define InterlockedExchangePointer _InterlockedExchangePointer
 #define InterlockedIncrement _InterlockedIncrement
 #define InterlockedIncrement16 _InterlockedIncrement16
@@ -6299,6 +6292,7 @@ typedef enum _PROCESS_MITIGATION_POLICY
 #pragma intrinsic(_InterlockedCompareExchange64)
 #pragma intrinsic(_InterlockedExchange)
 #pragma intrinsic(_InterlockedExchangeAdd)
+#pragma intrinsic(_InterlockedExchangeAdd64)
 #pragma intrinsic(_InterlockedIncrement)
 #pragma intrinsic(_InterlockedIncrement16)
 #pragma intrinsic(_InterlockedDecrement)
@@ -6315,6 +6309,7 @@ long      _InterlockedDecrement(long volatile*);
 short     _InterlockedDecrement16(short volatile*);
 long      _InterlockedExchange(long volatile*,long);
 long      _InterlockedExchangeAdd(long volatile*,long);
+long long _InterlockedExchangeAdd64(long long volatile*,long long);
 long      _InterlockedIncrement(long volatile*);
 short     _InterlockedIncrement16(short volatile*);
 long      _InterlockedOr(long volatile *,long);
@@ -6440,6 +6435,11 @@ static FORCEINLINE LONG WINAPI InterlockedExchangeAdd( LONG volatile *dest, LONG
     return __sync_fetch_and_add( dest, incr );
 }
 
+static FORCEINLINE LONGLONG WINAPI InterlockedExchangeAdd64( LONGLONG volatile *dest, LONGLONG incr )
+{
+    return __sync_fetch_and_add( dest, incr );
+}
+
 static FORCEINLINE LONG WINAPI InterlockedIncrement( LONG volatile *dest )
 {
     return __sync_add_and_fetch( dest, 1 );
@@ -6523,7 +6523,14 @@ static FORCEINLINE unsigned char InterlockedCompareExchange128( volatile __int64
 }
 
 #endif
-#endif
+
+#define InterlockedExchangeAddSizeT(a, b) InterlockedExchangeAdd64((LONGLONG *)(a), (b))
+
+#else /* _WIN64 */
+
+#define InterlockedExchangeAddSizeT(a, b) InterlockedExchangeAdd((LONG *)(a), (b))
+
+#endif /* _WIN64 */
 
 static FORCEINLINE void YieldProcessor(void)
 {
