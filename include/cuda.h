@@ -22,6 +22,12 @@
 #ifndef __WINE_CUDA_H
 #define __WINE_CUDA_H
 
+#ifdef _WIN32
+#define CUDA_CB __stdcall
+#else
+#define CUDA_CB
+#endif
+
 #define CUDA_SUCCESS                0
 #define CUDA_ERROR_INVALID_VALUE    1
 #define CUDA_ERROR_OUT_OF_MEMORY    2
@@ -78,6 +84,7 @@ typedef void *CUmodule;
 typedef void *CUstream;
 typedef void *CUsurfref;
 typedef void *CUtexref;
+typedef void (CUDA_CB *CUhostFn)(void *userData);
 
 typedef unsigned long long CUsurfObject;
 typedef unsigned long long CUtexObject;
@@ -90,6 +97,67 @@ typedef enum CUstreamCaptureStatus_enum {
     CU_STREAM_CAPTURE_STATUS_ACTIVE      = 1,
     CU_STREAM_CAPTURE_STATUS_INVALIDATED = 2
 } CUstreamCaptureStatus;
+
+typedef struct CUgraph_st *CUgraph;
+typedef struct CUgraphNode_st *CUgraphNode;
+typedef struct CUgraphExec_st *CUgraphExec;
+
+typedef struct CUDA_MEMCPY3D_st {
+    size_t srcXInBytes;
+    size_t srcY;
+    size_t srcZ;
+    size_t srcLOD;
+    CUmemorytype srcMemoryType;
+    const void *srcHost;
+    CUdeviceptr srcDevice;
+    CUarray srcArray;
+    void *reserved0;
+    size_t srcPitch;
+    size_t srcHeight;
+
+    size_t dstXInBytes;
+    size_t dstY;
+    size_t dstZ;
+    size_t dstLOD;
+    CUmemorytype dstMemoryType;
+    void *dstHost;
+    CUdeviceptr dstDevice;
+    CUarray dstArray;
+    void *reserved1;
+    size_t dstPitch;
+    size_t dstHeight;
+
+    size_t WidthInBytes;
+    size_t Height;
+    size_t Depth;
+} CUDA_MEMCPY3D_v2;
+
+typedef struct CUDA_MEMSET_NODE_PARAMS_st {
+    CUdeviceptr dst;
+    size_t pitch;
+    unsigned int value;
+    unsigned int elementSize;
+    size_t width;
+    size_t height;
+} CUDA_MEMSET_NODE_PARAMS_v1;
+
+typedef struct CUDA_KERNEL_NODE_PARAMS_st {
+    CUfunction func;
+    unsigned int gridDimX;
+    unsigned int gridDimY;
+    unsigned int gridDimZ;
+    unsigned int blockDimX;
+    unsigned int blockDimY;
+    unsigned int blockDimZ;
+    unsigned int sharedMemBytes;
+    void **kernelParams;
+    void **extra;
+} CUDA_KERNEL_NODE_PARAMS_v1;
+
+typedef struct CUDA_HOST_NODE_PARAMS_st {
+    CUhostFn fn;
+    void* userData;
+} CUDA_HOST_NODE_PARAMS_v1;
 
 typedef struct CUipcEventHandle_st
 {

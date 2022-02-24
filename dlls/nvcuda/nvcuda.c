@@ -413,6 +413,16 @@ static CUresult (*pcuStreamWaitEvent_ptsz)(CUstream hStream, CUevent hEvent, uns
 static CUresult (*pcuDeviceGetUuid)(CUuuid *uuid, CUdevice dev);
 static CUresult (*pcuDeviceGetLuid)(char *luid, unsigned int *deviceNodeMask, CUdevice dev);
 static CUresult (*pcuStreamIsCapturing)(CUstream hStream, CUstreamCaptureStatus *captureStatus);
+static CUresult (*pcuGraphCreate)(CUgraph *phGraph, unsigned int flags);
+static CUresult (*pcuGraphAddMemcpyNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_MEMCPY3D_v2 *copyParams, CUcontext ctx);
+static CUresult (*pcuGraphAddMemsetNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_MEMSET_NODE_PARAMS_v1 *memsetParams, CUcontext ctx);
+static CUresult (*pcuGraphAddKernelNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_KERNEL_NODE_PARAMS_v1 *nodeParams);
+static CUresult (*pcuGraphAddHostNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_HOST_NODE_PARAMS_v1 *nodeParams);
+static CUresult (*pcuGraphGetNodes)(CUgraph hGraph, CUgraphNode *nodes, size_t *numNodes);
+static CUresult (*pcuGraphInstantiate_v2)(CUgraphExec *phGraphExec, CUgraph hGraph, CUgraphNode *phErrorNode, char *logBuffer, size_t bufferSize);
+static CUresult (*pcuGraphClone)(CUgraph *phGraphClone, CUgraph originalGraph);
+static CUresult (*pcuGraphLaunch)(CUgraphExec hGraphExec, CUstream hStream);
+static CUresult (*pcuGraphExecKernelNodeSetParams)(CUgraphExec hGraphExec, CUgraphNode hNode, const CUDA_KERNEL_NODE_PARAMS_v1 *nodeParams);
 
 /* Cuda 11.0 */
 static CUresult (*pcuGetProcAddress)(const char *symbol, void **pfn, int cudaVersion, cuuint64_t flags);
@@ -772,6 +782,16 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuDeviceGetUuid);
     TRY_LOAD_FUNCPTR(cuDeviceGetLuid);
     TRY_LOAD_FUNCPTR(cuStreamIsCapturing);
+    TRY_LOAD_FUNCPTR(cuGraphCreate);
+    TRY_LOAD_FUNCPTR(cuGraphAddMemcpyNode);
+    TRY_LOAD_FUNCPTR(cuGraphAddMemsetNode);
+    TRY_LOAD_FUNCPTR(cuGraphAddKernelNode);
+    TRY_LOAD_FUNCPTR(cuGraphAddHostNode);
+    TRY_LOAD_FUNCPTR(cuGraphGetNodes);
+    TRY_LOAD_FUNCPTR(cuGraphInstantiate_v2);
+    TRY_LOAD_FUNCPTR(cuGraphClone);
+    TRY_LOAD_FUNCPTR(cuGraphLaunch);
+    TRY_LOAD_FUNCPTR(cuGraphExecKernelNodeSetParams);
 
     /* CUDA 11 */
     TRY_LOAD_FUNCPTR(cuGetProcAddress);
@@ -2959,6 +2979,76 @@ CUresult WINAPI wine_cuStreamIsCapturing(CUstream hStream, CUstreamCaptureStatus
     TRACE("(%p, %p)\n", hStream, captureStatus);
     CHECK_FUNCPTR(cuStreamIsCapturing);
     return pcuStreamIsCapturing(hStream, captureStatus);
+}
+
+CUresult WINAPI wine_cuGraphCreate(CUgraph *phGraph, unsigned int flags)
+{
+    TRACE("(%p, %d)\n", phGraph, flags);
+    CHECK_FUNCPTR(cuGraphCreate);
+    return pcuGraphCreate(phGraph, flags);
+}
+
+CUresult WINAPI wine_cuGraphAddMemcpyNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_MEMCPY3D_v2 *copyParams, CUcontext ctx)
+{
+    TRACE("(%p, %p, %p, %zd, %p, %p)\n", phGraphNode, hGraph, dependencies, numDependencies, copyParams, ctx);
+    CHECK_FUNCPTR(cuGraphAddMemcpyNode);
+    return pcuGraphAddMemcpyNode(phGraphNode, hGraph, dependencies, numDependencies, copyParams, ctx);
+}
+
+CUresult WINAPI wine_cuGraphAddMemsetNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_MEMSET_NODE_PARAMS_v1 *memsetParams, CUcontext ctx)
+{
+    TRACE("(%p, %p, %p, %zd, %p, %p)\n", phGraphNode, hGraph, dependencies, numDependencies, memsetParams, ctx);
+    CHECK_FUNCPTR(cuGraphAddMemsetNode);
+    return pcuGraphAddMemsetNode(phGraphNode, hGraph, dependencies, numDependencies, memsetParams, ctx);
+}
+
+CUresult WINAPI wine_cuGraphAddKernelNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_KERNEL_NODE_PARAMS_v1 *nodeParams)
+{
+    TRACE("(%p, %p, %p, %zd, %p)\n", phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+    CHECK_FUNCPTR(cuGraphAddKernelNode);
+    return pcuGraphAddKernelNode(phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphAddHostNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_HOST_NODE_PARAMS_v1 *nodeParams)
+{
+    TRACE("(%p, %p, %p, %zd, %p)\n", phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+    CHECK_FUNCPTR(cuGraphAddHostNode);
+    return pcuGraphAddHostNode(phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphGetNodes(CUgraph hGraph, CUgraphNode *nodes, size_t *numNodes)
+{
+    TRACE("(%p, %p, %zn)\n", hGraph, nodes, numNodes);
+    CHECK_FUNCPTR(cuGraphGetNodes);
+    return pcuGraphGetNodes(hGraph, nodes, numNodes);
+}
+
+CUresult WINAPI wine_cuGraphInstantiate_v2(CUgraphExec *phGraphExec, CUgraph hGraph, CUgraphNode *phErrorNode, char *logBuffer, size_t bufferSize)
+{
+    TRACE("(%p, %p, %p, %p, %zd)\n", phGraphExec, hGraph, phErrorNode, logBuffer, bufferSize);
+    CHECK_FUNCPTR(cuGraphInstantiate_v2);
+    return pcuGraphInstantiate_v2(phGraphExec, hGraph, phErrorNode, logBuffer, bufferSize);
+}
+
+CUresult WINAPI wine_cuGraphClone(CUgraph *phGraphClone, CUgraph originalGraph)
+{
+    TRACE("(%p, %p)\n", phGraphClone, originalGraph);
+    CHECK_FUNCPTR(cuGraphClone);
+    return pcuGraphClone(phGraphClone, originalGraph);
+}
+
+CUresult WINAPI wine_cuGraphLaunch(CUgraphExec hGraphExec, CUstream hStream)
+{
+    TRACE("(%p, %p)\n", hGraphExec, hStream);
+    CHECK_FUNCPTR(cuGraphLaunch);
+    return pcuGraphLaunch(hGraphExec, hStream);
+}
+
+CUresult WINAPI wine_cuGraphExecKernelNodeSetParams(CUgraphExec hGraphExec, CUgraphNode hNode, const CUDA_KERNEL_NODE_PARAMS_v1 *nodeParams)
+{
+    TRACE("(%p, %p, %p)\n", hGraphExec, hNode, nodeParams);
+    CHECK_FUNCPTR(cuGraphExecKernelNodeSetParams);
+    return pcuGraphExecKernelNodeSetParams(hGraphExec, hNode, nodeParams);
 }
 
 /*

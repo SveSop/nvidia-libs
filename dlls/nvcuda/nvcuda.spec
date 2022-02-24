@@ -146,26 +146,27 @@
 @ stub cuGraphAddChildGraphNode
 @ stub cuGraphAddDependencies
 @ stub cuGraphAddEmptyNode
-@ stub cuGraphAddHostNode
-@ stub cuGraphAddKernelNode
-@ stub cuGraphAddMemcpyNode
-@ stub cuGraphAddMemsetNode
+@ stdcall cuGraphAddHostNode(ptr ptr ptr long ptr) wine_cuGraphAddHostNode
+@ stdcall cuGraphAddKernelNode(ptr ptr ptr long ptr) wine_cuGraphAddKernelNode
+@ stdcall cuGraphAddMemcpyNode(ptr ptr ptr long ptr ptr) wine_cuGraphAddMemcpyNode
+@ stdcall cuGraphAddMemsetNode(ptr ptr ptr long ptr ptr) wine_cuGraphAddMemsetNode
 @ stub cuGraphChildGraphNodeGetGraph
-@ stub cuGraphClone
-@ stub cuGraphCreate
+@ stdcall cuGraphClone(ptr ptr) wine_cuGraphClone
+@ stdcall cuGraphCreate(ptr long) wine_cuGraphCreate
 @ stub cuGraphDestroy
 @ stub cuGraphDestroyNode
 @ stub cuGraphExecDestroy
-@ stub cuGraphExecKernelNodeSetParams
+@ stdcall cuGraphExecKernelNodeSetParams(ptr ptr ptr) wine_cuGraphExecKernelNodeSetParams
 @ stub cuGraphGetEdges
-@ stub cuGraphGetNodes
+@ stdcall cuGraphGetNodes(ptr ptr long) wine_cuGraphGetNodes
 @ stub cuGraphGetRootNodes
 @ stub cuGraphHostNodeGetParams
 @ stub cuGraphHostNodeSetParams
-@ stub cuGraphInstantiate
+@ stdcall cuGraphInstantiate(ptr ptr ptr ptr long) wine_cuGraphInstantiate_v2
+@ stdcall cuGraphInstantiate_v2(ptr ptr ptr ptr long) wine_cuGraphInstantiate_v2
 @ stub cuGraphKernelNodeGetParams
 @ stub cuGraphKernelNodeSetParams
-@ stub cuGraphLaunch
+@ stdcall cuGraphLaunch(ptr ptr) wine_cuGraphLaunch
 @ stub cuGraphLaunch_ptsz
 @ stub cuGraphMemcpyNodeGetParams
 @ stub cuGraphMemcpyNodeSetParams
