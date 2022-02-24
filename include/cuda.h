@@ -16,6 +16,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <stdint.h>
+#include <inttypes.h>
+
 #ifndef __WINE_CUDA_H
 #define __WINE_CUDA_H
 
@@ -78,6 +81,9 @@ typedef void *CUtexref;
 
 typedef unsigned long long CUsurfObject;
 typedef unsigned long long CUtexObject;
+
+typedef uint32_t cuuint32_t;
+typedef uint64_t cuuint64_t;
 
 typedef enum CUstreamCaptureStatus_enum {
     CU_STREAM_CAPTURE_STATUS_NONE        = 0,

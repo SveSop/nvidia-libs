@@ -414,6 +414,9 @@ static CUresult (*pcuDeviceGetUuid)(CUuuid *uuid, CUdevice dev);
 static CUresult (*pcuDeviceGetLuid)(char *luid, unsigned int *deviceNodeMask, CUdevice dev);
 static CUresult (*pcuStreamIsCapturing)(CUstream hStream, CUstreamCaptureStatus *captureStatus);
 
+/* Cuda 11.0 */
+static CUresult (*pcuGetProcAddress)(const char *symbol, void **pfn, int cudaVersion, cuuint64_t flags);
+
 static void *cuda_handle = NULL;
 
 static BOOL load_functions(void)
@@ -769,6 +772,9 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuDeviceGetUuid);
     TRY_LOAD_FUNCPTR(cuDeviceGetLuid);
     TRY_LOAD_FUNCPTR(cuStreamIsCapturing);
+
+    /* CUDA 11 */
+    TRY_LOAD_FUNCPTR(cuGetProcAddress);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -2953,6 +2959,27 @@ CUresult WINAPI wine_cuStreamIsCapturing(CUstream hStream, CUstreamCaptureStatus
     TRACE("(%p, %p)\n", hStream, captureStatus);
     CHECK_FUNCPTR(cuStreamIsCapturing);
     return pcuStreamIsCapturing(hStream, captureStatus);
+}
+
+/*
+ * Additions in CUDA 11.0
+ */
+
+CUresult WINAPI wine_cuGetProcAddress(const char *symbol, void **pfn, int cudaVersion, cuuint64_t flags)
+{
+    CUresult ret;
+
+    TRACE("(%s, %p, %d, %"PRId64")\n", symbol, *pfn, cudaVersion, flags);
+    CHECK_FUNCPTR(cuGetProcAddress);
+
+    ret = pcuGetProcAddress(symbol, pfn, cudaVersion, flags);
+    if (ret == CUDA_SUCCESS){
+        FIXME("Fix this functionptr: %p\n", *pfn);
+        *pfn = NULL;
+        return ret;
+    }
+
+    return CUDA_ERROR_UNKNOWN;
 }
 
 #undef CHECK_FUNCPTR

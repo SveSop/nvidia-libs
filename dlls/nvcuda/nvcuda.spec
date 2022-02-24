@@ -142,6 +142,7 @@
 @ stdcall cuGetErrorName(long ptr) wine_cuGetErrorName
 @ stdcall cuGetErrorString(long ptr) wine_cuGetErrorString
 @ stdcall cuGetExportTable(ptr ptr) wine_cuGetExportTable
+@ stdcall cuGetProcAddress(long ptr long long) wine_cuGetProcAddress
 @ stub cuGraphAddChildGraphNode
 @ stub cuGraphAddDependencies
 @ stub cuGraphAddEmptyNode
