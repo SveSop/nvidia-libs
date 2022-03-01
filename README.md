@@ -35,11 +35,13 @@ You can run tests of your adapter and functions by running the test case file:
 PS. You must install said libraryfile in your WINEPREFIX (see above)  
 
 ### Proton  
-You can drop-in the libraries in Proton - Experimental or Proton-6.12-GE-1 or newer like this:
+You can drop-in the libraries in Proton7 - Experimental or GE-Proton-7 or newer like this:
   
 `PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-6.12-GE-1' ./proton_setup.sh`  
 
 This will replace or add the libs to Proton for use with games.  
+The installscript is no longer compatible with older Proton-6.3 or Proton-GE-6/7 versions.  
+
 OBS!  
 Remember to add:  
    `"PROTON_ENABLE_NVAPI": "1",`  
