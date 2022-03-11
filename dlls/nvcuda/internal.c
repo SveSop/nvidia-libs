@@ -219,13 +219,13 @@ static const struct
 struct Unknown7_table
 {
     int size;
-    void* (WINAPI *func0)(void *param0, void *param1, void *param2);
+    void* (WINAPI *func0)(int cudaVersion, void *param1, void *param2);
     void* (WINAPI *func1)(void *param0, void *param1);
 };
 static const struct
 {
     int size;
-    void* (*func0)(void *param0, void *param1, void *param2);
+    void* (*func0)(int cudaVersion, void *param1, void *param2);
     void* (*func1)(void *param0, void *param1);
 } *Unknown7_orig = NULL;
 
@@ -511,10 +511,10 @@ struct TlsNotifyInterface_table TlsNotifyInterface_Impl =
     TlsNotifyInterface_Remove,
 };
 
-static void* WINAPI Unknown7_func0_relay(void *param0, void *param1, void *param2)
+static void* WINAPI Unknown7_func0_relay(int cudaVersion, void *param1, void *param2)
 {
-    TRACE("(%p, %p, %p)\n", param0, param1, param2);
-    return Unknown7_orig->func0(param0, param1, param2);
+    TRACE("(%d, %p, %p)\n", cudaVersion, param1, param2);
+    return Unknown7_orig->func0(cudaVersion, param1, param2);
 }
 
 static void* WINAPI Unknown7_func1_relay(void *param0, void *param1)
