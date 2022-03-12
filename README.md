@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.7.1  
+Release: 0.7.2  
 Requires nVidia proprietary driver branch 470+ (495+ for best compatibility with OptiX)  
 
 Library contains:  
@@ -10,7 +10,7 @@ nvml (wine-nvml)
 nvoptix (wine-nvoptix)  
 
 ## Build requirements:  
-- [WINE] (version >= 6.23) [https://www.winehq.org/](https://www.winehq.org/)  
+- [WINE] (version >= 7.0) [https://www.winehq.org/](https://www.winehq.org/)  
 - [Meson] [http://mesonbuild.com/](http://mesonbuild.com/)  
 - [NINJA] [https://ninja-build.org/](https://ninja-build.org/)  
 - [MINGW] (version >= 9.0) [https://www.mingw-w64.org/](https://www.mingw-w64.org/)  
