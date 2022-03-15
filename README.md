@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.7.2  
+Release: 0.7.3  
 Requires nVidia proprietary driver branch 470+ (495+ for best compatibility with OptiX)  
 
 Library contains:  
