@@ -46,13 +46,11 @@ if [ -z "$unix_sys_path" ]; then
 fi
 
 function removeOverride {
-    if [ "$wine" = wine64 ]; then
-        echo "    Removing override... "
-        $wine reg delete 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /f > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo "Override does not exist for $1, trying next..."
-            exit=2
-        fi
+    echo "    Removing override... "
+    $wine reg delete 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /f > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "    Override does not exist for $1, trying next..."
+        exit=2
     fi
     local dll="$unix_sys_path/$1.dll"
     echo "    Removing symlink... "
@@ -69,18 +67,16 @@ function removeOverride {
 }
 
 function createOverride {
-    if [ "$wine" = wine64 ]; then
-        echo "    Creating DLL override... "
-        $wine reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /d native /f >/dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "Failed to create override"
-            exit 1
-        fi
+    echo "    Creating DLL override... "
+    $wine reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /d native /f >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "    Failed to create override"
+        exit 1
     fi
     echo "    Creating symlink to $1.$dll_ext... "
     ln -sf "$nvlibs_dir/$lib/$1.$dll_ext" "$unix_sys_path/$1.dll"
     if [ $? -ne 0 ]; then
-        echo -e "Failed to create override"
+        echo -e "    Failed to create override"
         exit 1
     fi
 }
