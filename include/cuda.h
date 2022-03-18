@@ -16,9 +16,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <stdint.h>
-#include <inttypes.h>
-
 #ifndef __WINE_CUDA_H
 #define __WINE_CUDA_H
 
@@ -89,20 +86,70 @@ typedef void (CUDA_CB *CUhostFn)(void *userData);
 typedef unsigned long long CUsurfObject;
 typedef unsigned long long CUtexObject;
 
-typedef uint32_t cuuint32_t;
-typedef uint64_t cuuint64_t;
-
 typedef enum CUstreamCaptureStatus_enum {
     CU_STREAM_CAPTURE_STATUS_NONE        = 0,
     CU_STREAM_CAPTURE_STATUS_ACTIVE      = 1,
     CU_STREAM_CAPTURE_STATUS_INVALIDATED = 2
 } CUstreamCaptureStatus;
 
+typedef enum CUstreamCaptureMode_enum {
+    CU_STREAM_CAPTURE_MODE_GLOBAL       = 0,
+    CU_STREAM_CAPTURE_MODE_THREAD_LOCAL = 1,
+    CU_STREAM_CAPTURE_MODE_RELAXED      = 2
+} CUstreamCaptureMode;
+
+typedef enum CUmemAllocationType_enum {
+    CU_MEM_ALLOCATION_TYPE_INVALID = 0x0,
+    CU_MEM_ALLOCATION_TYPE_PINNED  = 0x1,
+    CU_MEM_ALLOCATION_TYPE_MAX     = 0x7FFFFFFF
+} CUmemAllocationType;
+
+typedef enum CUmemAllocationHandleType_enum {
+    CU_MEM_HANDLE_TYPE_NONE                  = 0x0,
+    CU_MEM_HANDLE_TYPE_POSIX_FILE_DESCRIPTOR = 0x1,
+    CU_MEM_HANDLE_TYPE_WIN32                 = 0x2,
+    CU_MEM_HANDLE_TYPE_WIN32_KMT             = 0x4,
+    CU_MEM_HANDLE_TYPE_MAX                   = 0x7FFFFFFF
+} CUmemAllocationHandleType;
+
+typedef enum CUmemLocationType_enum {
+    CU_MEM_LOCATION_TYPE_INVALID = 0x0,
+    CU_MEM_LOCATION_TYPE_DEVICE  = 0x1,
+    CU_MEM_LOCATION_TYPE_MAX     = 0x7FFFFFFF
+} CUmemLocationType;
+
+typedef enum CUmemAccess_flags_enum {
+    CU_MEM_ACCESS_FLAGS_PROT_NONE        = 0x0,
+    CU_MEM_ACCESS_FLAGS_PROT_READ        = 0x1,
+    CU_MEM_ACCESS_FLAGS_PROT_READWRITE   = 0x3,
+    CU_MEM_ACCESS_FLAGS_PROT_MAX         = 0x7FFFFFFF
+} CUmemAccess_flags;
+
+typedef enum CUgraphMem_attribute_enum {
+    CU_GRAPH_MEM_ATTR_USED_MEM_CURRENT,
+    CU_GRAPH_MEM_ATTR_USED_MEM_HIGH,
+    CU_GRAPH_MEM_ATTR_RESERVED_MEM_CURRENT,
+    CU_GRAPH_MEM_ATTR_RESERVED_MEM_HIGH
+} CUgraphMem_attribute;
+
+typedef enum CUmemPool_attribute_enum {
+    CU_MEMPOOL_ATTR_REUSE_FOLLOW_EVENT_DEPENDENCIES = 1,
+    CU_MEMPOOL_ATTR_REUSE_ALLOW_OPPORTUNISTIC,
+    CU_MEMPOOL_ATTR_REUSE_ALLOW_INTERNAL_DEPENDENCIES,
+    CU_MEMPOOL_ATTR_RELEASE_THRESHOLD,
+    CU_MEMPOOL_ATTR_RESERVED_MEM_CURRENT,
+    CU_MEMPOOL_ATTR_RESERVED_MEM_HIGH,
+    CU_MEMPOOL_ATTR_USED_MEM_CURRENT,
+    CU_MEMPOOL_ATTR_USED_MEM_HIGH
+} CUmemPool_attribute;
+
 typedef struct CUgraph_st *CUgraph;
 typedef struct CUgraphNode_st *CUgraphNode;
 typedef struct CUgraphExec_st *CUgraphExec;
+typedef struct CUmemPoolHandle_st *CUmemoryPool;
 
-typedef struct CUDA_MEMCPY3D_st {
+typedef struct CUDA_MEMCPY3D_st
+{
     size_t srcXInBytes;
     size_t srcY;
     size_t srcZ;
@@ -132,7 +179,8 @@ typedef struct CUDA_MEMCPY3D_st {
     size_t Depth;
 } CUDA_MEMCPY3D_v2;
 
-typedef struct CUDA_MEMSET_NODE_PARAMS_st {
+typedef struct CUDA_MEMSET_NODE_PARAMS_st
+{
     CUdeviceptr dst;
     size_t pitch;
     unsigned int value;
@@ -141,7 +189,8 @@ typedef struct CUDA_MEMSET_NODE_PARAMS_st {
     size_t height;
 } CUDA_MEMSET_NODE_PARAMS_v1;
 
-typedef struct CUDA_KERNEL_NODE_PARAMS_st {
+typedef struct CUDA_KERNEL_NODE_PARAMS_st
+{
     CUfunction func;
     unsigned int gridDimX;
     unsigned int gridDimY;
@@ -154,10 +203,44 @@ typedef struct CUDA_KERNEL_NODE_PARAMS_st {
     void **extra;
 } CUDA_KERNEL_NODE_PARAMS_v1;
 
-typedef struct CUDA_HOST_NODE_PARAMS_st {
+typedef struct CUDA_HOST_NODE_PARAMS_st
+{
     CUhostFn fn;
     void* userData;
 } CUDA_HOST_NODE_PARAMS_v1;
+
+typedef struct CUmemLocation_st
+{
+    CUmemLocationType type;
+    int id;
+} CUmemLocation_v1;
+typedef CUmemLocation_v1 CUmemLocation;
+
+typedef struct CUmemPoolProps_st
+{
+    CUmemAllocationType allocType;
+    CUmemAllocationHandleType handleTypes;
+    CUmemLocation location;
+    void *win32SecurityAttributes;
+    unsigned char reserved[64];
+} CUmemPoolProps_v1;
+typedef CUmemPoolProps_v1 CUmemPoolProps;
+
+typedef struct CUmemAccessDesc_st
+{
+    CUmemLocation location;
+    CUmemAccess_flags flags;
+} CUmemAccessDesc_v1;
+typedef CUmemAccessDesc_v1 CUmemAccessDesc;
+
+typedef struct CUDA_MEM_ALLOC_NODE_PARAMS_st
+{
+    CUmemPoolProps poolProps;
+    const CUmemAccessDesc *accessDescs;
+    size_t accessDescCount;
+    size_t bytesize;
+    CUdeviceptr dptr;
+} CUDA_MEM_ALLOC_NODE_PARAMS;
 
 typedef struct CUipcEventHandle_st
 {
