@@ -93,12 +93,15 @@
 @ stdcall cuDeviceGetAttribute(ptr long long) wine_cuDeviceGetAttribute
 @ stdcall cuDeviceGetByPCIBusId(ptr str) wine_cuDeviceGetByPCIBusId
 @ stdcall cuDeviceGetCount(ptr) wine_cuDeviceGetCount
+@ stdcall cuDeviceGetDefaultMemPool(ptr long) wine_cuDeviceGetDefaultMemPool
+@ stdcall cuDeviceGetGraphMemAttribute(long long ptr) wine_cuDeviceGetGraphMemAttribute
 @ stdcall cuDeviceGetLuid(ptr ptr long) wine_cuDeviceGetLuid
 @ stdcall cuDeviceGetName(ptr long long) wine_cuDeviceGetName
 @ stub cuDeviceGetP2PAttribute
 @ stdcall cuDeviceGetPCIBusId(ptr long long) wine_cuDeviceGetPCIBusId
 @ stdcall cuDeviceGetProperties(ptr long) wine_cuDeviceGetProperties
 @ stdcall cuDeviceGetUuid(ptr long) wine_cuDeviceGetUuid
+@ stdcall cuDeviceGraphMemTrim(long) wine_cuDeviceGraphMemTrim
 @ stdcall cuDevicePrimaryCtxGetState(long ptr ptr) wine_cuDevicePrimaryCtxGetState
 @ stdcall cuDevicePrimaryCtxRelease(long) wine_cuDevicePrimaryCtxRelease
 @ stdcall cuDevicePrimaryCtxReset(long) wine_cuDevicePrimaryCtxReset
@@ -142,20 +145,21 @@
 @ stdcall cuGetErrorName(long ptr) wine_cuGetErrorName
 @ stdcall cuGetErrorString(long ptr) wine_cuGetErrorString
 @ stdcall cuGetExportTable(ptr ptr) wine_cuGetExportTable
-@ stdcall cuGetProcAddress(long ptr long long) wine_cuGetProcAddress
 @ stub cuGraphAddChildGraphNode
 @ stub cuGraphAddDependencies
 @ stub cuGraphAddEmptyNode
 @ stdcall cuGraphAddHostNode(ptr ptr ptr long ptr) wine_cuGraphAddHostNode
 @ stdcall cuGraphAddKernelNode(ptr ptr ptr long ptr) wine_cuGraphAddKernelNode
+@ stdcall cuGraphAddMemAllocNode(ptr ptr ptr long ptr) wine_cuGraphAddMemAllocNode
+@ stdcall cuGraphAddMemFreeNode(ptr ptr ptr long long) wine_cuGraphAddMemFreeNode
 @ stdcall cuGraphAddMemcpyNode(ptr ptr ptr long ptr ptr) wine_cuGraphAddMemcpyNode
 @ stdcall cuGraphAddMemsetNode(ptr ptr ptr long ptr ptr) wine_cuGraphAddMemsetNode
 @ stub cuGraphChildGraphNodeGetGraph
 @ stdcall cuGraphClone(ptr ptr) wine_cuGraphClone
 @ stdcall cuGraphCreate(ptr long) wine_cuGraphCreate
-@ stub cuGraphDestroy
-@ stub cuGraphDestroyNode
-@ stub cuGraphExecDestroy
+@ stdcall cuGraphDestroy(ptr) wine_cuGraphDestroy
+@ stdcall cuGraphDestroyNode(ptr) wine_cuGraphDestroyNode
+@ stdcall cuGraphExecDestroy(ptr) wine_cuGraphExecDestroy
 @ stdcall cuGraphExecKernelNodeSetParams(ptr ptr ptr) wine_cuGraphExecKernelNodeSetParams
 @ stub cuGraphGetEdges
 @ stdcall cuGraphGetNodes(ptr ptr long) wine_cuGraphGetNodes
@@ -221,6 +225,7 @@
 @ stdcall cuLinkDestroy(ptr) wine_cuLinkDestroy
 @ stub cuMemAdvise
 @ stdcall cuMemAlloc(ptr long) wine_cuMemAlloc
+@ stdcall cuMemAllocAsync(ptr long ptr) wine_cuMemAllocAsync
 @ stdcall cuMemAllocHost(ptr long) wine_cuMemAllocHost
 @ stdcall cuMemAllocHost_v2(ptr long) wine_cuMemAllocHost_v2
 @ stdcall cuMemAllocManaged(ptr long long) wine_cuMemAllocManaged
@@ -228,6 +233,7 @@
 @ stdcall cuMemAllocPitch_v2(ptr ptr long long long) wine_cuMemAllocPitch_v2
 @ stdcall cuMemAlloc_v2(ptr long) wine_cuMemAlloc_v2
 @ stdcall cuMemFree(long) wine_cuMemFree
+@ stdcall cuMemFreeAsync(ptr ptr) wine_cuMemFreeAsync
 @ stdcall cuMemFreeHost(ptr) wine_cuMemFreeHost
 @ stdcall cuMemFree_v2(long) wine_cuMemFree_v2
 @ stdcall cuMemGetAddressRange(ptr ptr long) wine_cuMemGetAddressRange
@@ -241,6 +247,7 @@
 @ stdcall cuMemHostRegister(ptr long long) wine_cuMemHostRegister
 @ stdcall cuMemHostRegister_v2(ptr long long) wine_cuMemHostRegister_v2
 @ stdcall cuMemHostUnregister(ptr) wine_cuMemHostUnregister
+@ stdcall cuMemPoolSetAttribute(ptr long ptr) wine_cuMemPoolSetAttribute
 @ stub cuMemPrefetchAsync
 @ stub cuMemPrefetchAsync_ptsz
 @ stub cuMemRangeGetAttribute
@@ -379,13 +386,13 @@
 @ stub cuStreamBatchMemOp_ptsz
 @ stub cuStreamBeginCapture
 @ stub cuStreamBeginCapture_ptsz
-@ stub cuStreamBeginCapture_v2
+@ stdcall cuStreamBeginCapture_v2(ptr long) wine_cuStreamBeginCapture_v2
 @ stub cuStreamBeginCapture_v2_ptsz
 @ stdcall cuStreamCreate(ptr long) wine_cuStreamCreate
 @ stdcall cuStreamCreateWithPriority(ptr long long) wine_cuStreamCreateWithPriority
 @ stdcall cuStreamDestroy(ptr) wine_cuStreamDestroy
 @ stdcall cuStreamDestroy_v2(ptr) wine_cuStreamDestroy
-@ stub cuStreamEndCapture
+@ stdcall cuStreamEndCapture(ptr ptr) wine_cuStreamEndCapture
 @ stub cuStreamEndCapture_ptsz
 @ stub cuStreamGetCaptureInfo
 @ stub cuStreamGetCaptureInfo_ptsz
