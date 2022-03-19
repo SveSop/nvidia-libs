@@ -1,7 +1,7 @@
 # NVIDIA Libs
 
-Release: 0.7.3  
-Requires nVidia proprietary driver branch 470+ (495+ for best compatibility with OptiX)  
+Release: 0.7.4  
+Requires nVidia proprietary driver branch 510+ for best compatibility with OptiX and CUDA.  
 
 Library contains:  
 nvapi (dxvk-nvapi)  
