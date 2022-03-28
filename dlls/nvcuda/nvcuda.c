@@ -428,6 +428,8 @@ static CUresult (*pcuStreamEndCapture)(CUstream hStream, CUgraph *phGraph);
 static CUresult (*pcuGraphDestroyNode)(CUgraphNode hNode);
 static CUresult (*pcuGraphDestroy)(CUgraph hGraph);
 static CUresult (*pcuGraphExecDestroy)(CUgraphExec hGraphExec);
+static CUresult (*pcuMemGetAllocationGranularity)(size_t *granularity, const CUmemAllocationProp *prop, CUmemAllocationGranularity_flags option);
+static CUresult (*pcuLaunchHostFunc)(CUstream hStream, CUhostFn fn, void *userData);
 
 /* Cuda 11 */
 static CUresult (*pcuMemAllocAsync)(CUdeviceptr *dptr, size_t bytesize, CUstream hStream);
@@ -809,6 +811,8 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphDestroyNode);
     TRY_LOAD_FUNCPTR(cuGraphDestroy);
     TRY_LOAD_FUNCPTR(cuGraphExecDestroy);
+    TRY_LOAD_FUNCPTR(cuMemGetAllocationGranularity);
+    TRY_LOAD_FUNCPTR(cuLaunchHostFunc);
 
     /* CUDA 11 */
     TRY_LOAD_FUNCPTR(cuMemAllocAsync);
@@ -3108,6 +3112,20 @@ CUresult WINAPI wine_cuGraphExecDestroy(CUgraphExec hGraphExec)
     TRACE("(%p)\n", hGraphExec);
     CHECK_FUNCPTR(cuGraphExecDestroy);
     return pcuGraphExecDestroy(hGraphExec);
+}
+
+CUresult WINAPI wine_cuMemGetAllocationGranularity(size_t *granularity, const CUmemAllocationProp *prop, CUmemAllocationGranularity_flags option)
+{
+    TRACE("(%p, %p, %d)\n", granularity, prop, option);
+    CHECK_FUNCPTR(cuMemGetAllocationGranularity);
+    return pcuMemGetAllocationGranularity(granularity, prop, option);
+}
+
+CUresult WINAPI wine_cuLaunchHostFunc(CUstream hStream, CUhostFn fn, void *userData)
+{
+    TRACE("(%p, %p, %p)\n", hStream, fn, userData);
+    CHECK_FUNCPTR(cuLaunchHostFunc);
+    return pcuLaunchHostFunc(hStream, fn, userData);
 }
 
 /*

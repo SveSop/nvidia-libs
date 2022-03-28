@@ -211,7 +211,7 @@
 @ stub cuLaunchCooperativeKernel_ptsz
 @ stdcall cuLaunchGrid(ptr long long) wine_cuLaunchGrid
 @ stdcall cuLaunchGridAsync(ptr long long ptr) wine_cuLaunchGridAsync
-@ stub cuLaunchHostFunc
+@ stdcall cuLaunchHostFunc(ptr ptr ptr) wine_cuLaunchHostFunc
 @ stub cuLaunchHostFunc_ptsz
 @ stdcall cuLaunchKernel(ptr long long long long long long long ptr ptr ptr) wine_cuLaunchKernel
 @ stdcall cuLaunchKernel_ptsz(ptr long long long long long long long ptr ptr ptr) wine_cuLaunchKernel_ptsz
@@ -233,6 +233,7 @@
 @ stdcall cuMemAllocPitch_v2(ptr ptr long long long) wine_cuMemAllocPitch_v2
 @ stdcall cuMemAlloc_v2(ptr long) wine_cuMemAlloc_v2
 @ stdcall cuMemFree(long) wine_cuMemFree
+@ stdcall cuMemGetAllocationGranularity(ptr ptr long) wine_cuMemGetAllocationGranularity
 @ stdcall cuMemFreeAsync(ptr ptr) wine_cuMemFreeAsync
 @ stdcall cuMemFreeHost(ptr) wine_cuMemFreeHost
 @ stdcall cuMemFree_v2(long) wine_cuMemFree_v2

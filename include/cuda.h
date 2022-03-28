@@ -143,6 +143,11 @@ typedef enum CUmemPool_attribute_enum {
     CU_MEMPOOL_ATTR_USED_MEM_HIGH
 } CUmemPool_attribute;
 
+typedef enum CUmemAllocationGranularity_flags_enum {
+    CU_MEM_ALLOC_GRANULARITY_MINIMUM     = 0x0,
+    CU_MEM_ALLOC_GRANULARITY_RECOMMENDED = 0x1
+} CUmemAllocationGranularity_flags;
+
 typedef struct CUgraph_st *CUgraph;
 typedef struct CUgraphNode_st *CUgraphNode;
 typedef struct CUgraphExec_st *CUgraphExec;
@@ -241,6 +246,20 @@ typedef struct CUDA_MEM_ALLOC_NODE_PARAMS_st
     size_t bytesize;
     CUdeviceptr dptr;
 } CUDA_MEM_ALLOC_NODE_PARAMS;
+
+typedef struct CUmemAllocationProp_st {
+    CUmemAllocationType type;
+    CUmemAllocationHandleType requestedHandleTypes;
+    CUmemLocation location;
+    void *win32HandleMetaData;
+    struct {
+         unsigned char compressionType;
+         unsigned char gpuDirectRDMACapable;
+         unsigned short usage;
+         unsigned char reserved[4];
+    } allocFlags;
+} CUmemAllocationProp_v1;
+typedef CUmemAllocationProp_v1 CUmemAllocationProp;
 
 typedef struct CUipcEventHandle_st
 {
