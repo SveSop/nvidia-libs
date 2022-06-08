@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.7.5  
+Release: 0.7.6  
 Requires nVidia proprietary driver branch 510+ for best compatibility with OptiX and CUDA.  
 
 Library contains:  
