@@ -22,8 +22,6 @@ fi
 # build nvcuda
 
 function build_arch {
-  export WINEARCH="win$1"
-
   cd "$NVLIBS_SRC_DIR"
 
   meson --cross-file "$NVLIBS_SRC_DIR/build-wine$1.txt"  \
@@ -46,21 +44,58 @@ build_arch 32
 # Build wine-nvoptix
 
 NVOPTIX_SRC_DIR=$NVLIBS_SRC_DIR"/wine-nvoptix"
-
 cd $NVOPTIX_SRC_DIR
 
-meson --cross-file "$NVOPTIX_SRC_DIR/build-wine64.txt"    \
-        --buildtype "release"                             \
-        --prefix "$NVLIBS_BUILD_DIR"                      \
-        --libdir="lib64"                                  \
-        --strip                                           \
-        "$NVLIBS_BUILD_DIR/build"
+meson --cross-file "$NVOPTIX_SRC_DIR/build-wine64.txt"  \
+      --buildtype release                               \
+      --prefix "$NVLIBS_BUILD_DIR"                      \
+      --libdir lib64                                    \
+      --strip                                           \
+      "$NVLIBS_BUILD_DIR/build"
 
 cd "$NVLIBS_BUILD_DIR/build"
 ninja install
 
 rm -R "$NVLIBS_BUILD_DIR/build"
 rm -R "$NVLIBS_BUILD_DIR/defs"
+
+# Build wine-nvml
+
+NVML_SRC_DIR=$NVLIBS_SRC_DIR"/wine-nvml"
+cd $NVML_SRC_DIR"/src"
+./make_nvml
+
+function build_arch {
+  cd $NVML_SRC_DIR
+  meson --cross-file "$NVML_SRC_DIR/cross-mingw$1.txt"  \
+        --buildtype release                             \
+        --prefix "$NVLIBS_BUILD_DIR"                    \
+        --libdir lib$1                                  \
+        --strip                                         \
+        "$NVLIBS_BUILD_DIR/build.mingw$1"
+
+  cd "$NVLIBS_BUILD_DIR/build.mingw$1"
+  ninja install
+
+  cd $NVML_SRC_DIR
+  meson --cross-file "$NVML_SRC_DIR/cross-wine$1.txt"  \
+        --buildtype release                            \
+        --prefix "$NVLIBS_BUILD_DIR"                   \
+        --libdir lib$1                                 \
+        --strip                                        \
+        "$NVLIBS_BUILD_DIR/build.wine$1"
+
+  cd "$NVLIBS_BUILD_DIR/build.wine$1"
+  ninja install
+
+  rm -R "$NVLIBS_BUILD_DIR/build.mingw$1"
+  rm -R "$NVLIBS_BUILD_DIR/build.wine$1"
+}
+
+build_arch 64
+build_arch 32
+
+# Build dxvk-nvapi
 
 NVAPI_SRC_DIR=$NVLIBS_SRC_DIR"/dxvk-nvapi"
 
@@ -92,7 +127,7 @@ function build_arch {
   cd "$NVAPI_SRC_DIR"
 
   meson --cross-file "$NVAPI_SRC_DIR/$crossfile$1.txt" \
-        --buildtype "release"                          \
+        --buildtype release                            \
         --prefix "$NVLIBS_BUILD_DIR"                   \
         --strip                                        \
         --libdir lib$1                                 \
@@ -116,6 +151,9 @@ cp "$NVLIBS_SRC_DIR/setup_nvlibs.sh" "$NVLIBS_BUILD_DIR/setup_nvlibs.sh"
 chmod +x "$NVLIBS_BUILD_DIR/setup_nvlibs.sh"
 cp "$NVLIBS_SRC_DIR/proton_setup.sh" "$NVLIBS_BUILD_DIR/proton_setup.sh"
 chmod +x "$NVLIBS_BUILD_DIR/proton_setup.sh"
+cp "$NVLIBS_SRC_DIR/nvml_setup.sh" "$NVLIBS_BUILD_DIR/nvml_setup.sh"
+chmod +x "$NVLIBS_BUILD_DIR/nvml_setup.sh"
+cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
 
 # cleanup
 cd $NVLIBS_BUILD_DIR

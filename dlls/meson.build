@@ -1,2 +1,1 @@
 subdir('nvcuda')
-subdir('nvml')

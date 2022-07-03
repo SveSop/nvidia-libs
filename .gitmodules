@@ -4,3 +4,6 @@
 [submodule "wine-nvoptix"]
 	path = wine-nvoptix
 	url = https://github.com/SveSop/wine-nvoptix.git
+[submodule "wine-nvml"]
+	path = wine-nvml
+	url = https://github.com/SveSop/wine-nvml.git
