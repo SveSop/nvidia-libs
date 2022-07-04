@@ -122,7 +122,7 @@ if [ "$fun" = removeOverride ]; then
    if [ -h "$unix_sys_path/nvml.dll" ]; then
       rm "$unix_sys_path/nvml.dll" 2>&1
    fi
-      unix_sys_path=$(wine64 winepath -u 'C:\windows\system32' 2> /dev/null)
+   unix_sys_path=$(wine64 winepath -u 'C:\windows\system32' 2> /dev/null)
    if [ -h "$unix_sys_path/nvml.dll" ]; then
       rm "$unix_sys_path/nvml.dll" 2>&1
    fi

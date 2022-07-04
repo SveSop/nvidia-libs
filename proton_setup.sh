@@ -51,7 +51,7 @@ $fun nvml.dll
 
 fun=install
 $fun nvcuda.dll.so
-$fun nvml.dll.so
+$fun nvml.so
 
 fun=nvapi
 $fun nvapi.dll
@@ -69,7 +69,7 @@ $fun nvoptix.dll
 
 fun=install
 $fun nvcuda.dll.so
-$fun nvml.dll.so
+$fun nvml.so
 $fun nvoptix.dll.so
 
 fun=nvapi
