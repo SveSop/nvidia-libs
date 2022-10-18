@@ -441,6 +441,15 @@ static CUresult (*pcuDeviceGraphMemTrim)(CUdevice device);
 static CUresult (*pcuDeviceGetDefaultMemPool)(CUmemoryPool *pool_out, CUdevice dev);
 static CUresult (*pcuMemPoolSetAttribute)(CUmemoryPool pool, CUmemPool_attribute attr, void *value);
 
+/* Cuda 11.7 */
+static CUresult (*pcuModuleGetLoadingMode)(CUmoduleLoadingMode *mode);
+
+/* Cuda 11.8 */
+static CUresult (*pcuMemGetHandleForAddressRange)(void *handle, CUdeviceptr dptr, size_t size, CUmemRangeHandleType handleType, unsigned long long flags);
+static CUresult (*pcuLaunchKernelEx)(const CUlaunchConfig *config, CUfunction f, void **kernelParams, void **extra);
+static CUresult (*pcuLaunchKernelEx_ptsz)(const CUlaunchConfig *config, CUfunction f, void **kernelParams, void **extra);
+static CUresult (*pcuOccupancyMaxActiveClusters)(int *numClusters, CUfunction func, const CUlaunchConfig *config);
+
 static void *cuda_handle = NULL;
 
 static BOOL load_functions(void)
@@ -823,6 +832,15 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuDeviceGraphMemTrim);
     TRY_LOAD_FUNCPTR(cuDeviceGetDefaultMemPool);
     TRY_LOAD_FUNCPTR(cuMemPoolSetAttribute);
+
+    /* CUDA 11.7 */
+    TRY_LOAD_FUNCPTR(cuModuleGetLoadingMode);
+
+    /* CUDA 11.8 */
+    TRY_LOAD_FUNCPTR(cuMemGetHandleForAddressRange);
+    TRY_LOAD_FUNCPTR(cuLaunchKernelEx);
+    TRY_LOAD_FUNCPTR(cuLaunchKernelEx_ptsz);
+    TRY_LOAD_FUNCPTR(cuOccupancyMaxActiveClusters);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -3186,6 +3204,49 @@ CUresult WINAPI wine_cuMemPoolSetAttribute(CUmemoryPool pool, CUmemPool_attribut
     TRACE("(%p, %d, %p)\n", pool, attr, value);
     CHECK_FUNCPTR(cuMemPoolSetAttribute);
     return pcuMemPoolSetAttribute(pool, attr, value);
+}
+
+/*
+ * Additions in CUDA 11.7
+ */
+
+CUresult WINAPI wine_cuModuleGetLoadingMode(CUmoduleLoadingMode *mode)
+{
+    TRACE("(%p)\n", mode);
+    CHECK_FUNCPTR(cuModuleGetLoadingMode);
+    return pcuModuleGetLoadingMode(mode);
+}
+
+/*
+ * Additions in CUDA 11.8
+ */
+
+CUresult WINAPI wine_cuMemGetHandleForAddressRange(void *handle, CUdeviceptr dptr, size_t size, CUmemRangeHandleType handleType, unsigned long long flags)
+{
+    TRACE("(%p, %llu, %ld, %d, %llu)\n", handle, (unsigned long long int)dptr, (long int)size, handleType, flags);
+    CHECK_FUNCPTR(cuMemGetHandleForAddressRange);
+    return pcuMemGetHandleForAddressRange(handle, dptr, size, handleType, flags);
+}
+
+CUresult WINAPI wine_cuLaunchKernelEx(const CUlaunchConfig *config, CUfunction f, void **kernelParams, void **extra)
+{
+    TRACE("(%p, %p, %p, %p)\n", config, f, kernelParams, extra);
+    CHECK_FUNCPTR(cuLaunchKernelEx);
+    return pcuLaunchKernelEx(config, f, kernelParams, extra);
+}
+
+CUresult WINAPI wine_cuLaunchKernelEx_ptsz(const CUlaunchConfig *config, CUfunction f, void **kernelParams, void **extra)
+{
+    TRACE("(%p, %p, %p, %p)\n", config, f, kernelParams, extra);
+    CHECK_FUNCPTR(cuLaunchKernelEx_ptsz);
+    return pcuLaunchKernelEx_ptsz(config, f, kernelParams, extra);
+}
+
+CUresult WINAPI wine_cuOccupancyMaxActiveClusters(int *numClusters, CUfunction func, const CUlaunchConfig *config)
+{
+    TRACE("(%n, %p, %p)\n", numClusters, func, config);
+    CHECK_FUNCPTR(cuOccupancyMaxActiveClusters);
+    return pcuOccupancyMaxActiveClusters(numClusters, func, config);
 }
 
 #undef CHECK_FUNCPTR

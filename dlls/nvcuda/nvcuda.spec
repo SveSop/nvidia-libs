@@ -215,6 +215,8 @@
 @ stub cuLaunchHostFunc_ptsz
 @ stdcall cuLaunchKernel(ptr long long long long long long long ptr ptr ptr) wine_cuLaunchKernel
 @ stdcall cuLaunchKernel_ptsz(ptr long long long long long long long ptr ptr ptr) wine_cuLaunchKernel_ptsz
+@ stdcall cuLaunchKernelEx(ptr ptr ptr ptr) wine_cuLaunchKernelEx
+@ stdcall cuLaunchKernelEx_ptsz(ptr ptr ptr ptr) wine_cuLaunchKernelEx_ptsz
 @ stdcall cuLinkAddData(ptr long ptr long str long ptr ptr) wine_cuLinkAddData
 @ stdcall cuLinkAddData_v2(ptr long ptr long str long ptr ptr) wine_cuLinkAddData_v2
 @ stub cuLinkAddFile
@@ -239,6 +241,7 @@
 @ stdcall cuMemFree_v2(long) wine_cuMemFree_v2
 @ stdcall cuMemGetAddressRange(ptr ptr long) wine_cuMemGetAddressRange
 @ stdcall cuMemGetAddressRange_v2(ptr ptr long) wine_cuMemGetAddressRange_v2
+@ stdcall cuMemGetHandleForAddressRange(ptr long long long long) wine_cuMemGetHandleForAddressRange
 @ stdcall cuMemGetInfo(ptr ptr) wine_cuMemGetInfo
 @ stdcall cuMemGetInfo_v2(ptr ptr) wine_cuMemGetInfo_v2
 @ stdcall cuMemHostAlloc(ptr long long) wine_cuMemHostAlloc
@@ -355,6 +358,7 @@
 @ stdcall cuModuleGetFunction(ptr ptr str) wine_cuModuleGetFunction
 @ stdcall cuModuleGetGlobal(ptr ptr ptr str) wine_cuModuleGetGlobal
 @ stdcall cuModuleGetGlobal_v2(ptr ptr ptr str) wine_cuModuleGetGlobal_v2
+@ stdcall cuModuleGetLoadingMode(ptr) wine_cuModuleGetLoadingMode
 @ stdcall cuModuleGetSurfRef(ptr ptr str) wine_cuModuleGetSurfRef
 @ stdcall cuModuleGetTexRef(ptr ptr str) wine_cuModuleGetTexRef
 @ stdcall cuModuleLoad(ptr str) wine_cuModuleLoad
@@ -364,6 +368,7 @@
 @ stdcall cuModuleUnload(ptr) wine_cuModuleUnload
 @ stdcall cuOccupancyMaxActiveBlocksPerMultiprocessor(ptr ptr long long) wine_cuOccupancyMaxActiveBlocksPerMultiprocessor
 @ stdcall cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags(ptr ptr long long long) wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
+@ stdcall cuOccupancyMaxActiveClusters(long ptr ptr) wine_cuOccupancyMaxActiveClusters
 #@ stdcall cuOccupancyMaxPotentialBlockSize(ptr ptr ptr ptr long long) wine_cuOccupancyMaxPotentialBlockSize
 #@ stdcall cuOccupancyMaxPotentialBlockSizeWithFlags(ptr ptr ptr ptr long long long) wine_cuOccupancyMaxPotentialBlockSizeWithFlags
 @ stdcall cuParamSetSize(ptr long) wine_cuParamSetSize

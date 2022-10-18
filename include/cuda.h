@@ -65,6 +65,7 @@ typedef int CUstreamCaptureMode;
 typedef int CUgraphMem_attribute;
 typedef int CUmemPool_attribute;
 typedef int CUmemAllocationGranularity_flags;
+typedef int CUmemRangeHandleType;
 
 typedef void *CUDA_ARRAY3D_DESCRIPTOR;
 typedef void *CUDA_ARRAY_DESCRIPTOR;
@@ -92,7 +93,9 @@ typedef void *CUgraphExec;
 typedef void *CUgraphNode;
 typedef void *CUmemoryPool;
 typedef void *CUmemAllocationProp;
+typedef void *CUmoduleLoadingMode;
 typedef void (CUDA_CB *CUhostFn)(void *userData);
+typedef void *CUlaunchConfig;
 
 typedef unsigned long long CUsurfObject;
 typedef unsigned long long CUtexObject;
