@@ -124,6 +124,7 @@ static CUresult (*pcuEventQuery)(CUevent hEvent);
 static CUresult (*pcuEventRecord)(CUevent hEvent, CUstream hStream);
 static CUresult (*pcuEventSynchronize)(CUevent hEvent);
 static CUresult (*pcuFuncGetAttribute)(int *pi, CUfunction_attribute attrib, CUfunction hfunc);
+static CUresult (*pcuFuncSetAttribute)(CUfunction hfunc, CUfunction_attribute attrib, int value);
 static CUresult (*pcuFuncSetBlockShape)(CUfunction hfunc, int x, int y, int z);
 static CUresult (*pcuFuncSetCacheConfig)(CUfunction hfunc, CUfunc_cache config);
 static CUresult (*pcuFuncSetSharedMemConfig)(CUfunction hfunc, CUsharedconfig config);
@@ -536,6 +537,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuEventRecord);
     LOAD_FUNCPTR(cuEventSynchronize);
     LOAD_FUNCPTR(cuFuncGetAttribute);
+    LOAD_FUNCPTR(cuFuncSetAttribute);
     LOAD_FUNCPTR(cuFuncSetBlockShape);
     LOAD_FUNCPTR(cuFuncSetCacheConfig);
     LOAD_FUNCPTR(cuFuncSetSharedMemConfig);
@@ -1164,6 +1166,12 @@ CUresult WINAPI wine_cuFuncGetAttribute(int *pi, CUfunction_attribute attrib, CU
 {
     TRACE("(%p, %d, %p)\n", pi, attrib, hfunc);
     return pcuFuncGetAttribute(pi, attrib, hfunc);
+}
+
+CUresult WINAPI wine_cuFuncSetAttribute(CUfunction hfunc, CUfunction_attribute attrib, int value)
+{
+    TRACE("(%p, %d, %d)\n", hfunc, attrib, value);
+    return pcuFuncSetAttribute(hfunc, attrib, value);
 }
 
 CUresult WINAPI wine_cuFuncSetBlockShape(CUfunction hfunc, int x, int y, int z)
