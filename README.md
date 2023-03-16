@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.7.6  
+Release: 0.7.7  
 Requires nVidia proprietary driver branch 510+ for best compatibility with OptiX and CUDA.  
 
 Library contains:  
@@ -10,7 +10,7 @@ nvml (wine-nvml)
 nvoptix (wine-nvoptix)  
 
 ## Build requirements:  
-- [WINE] (version >= 7.0) [https://www.winehq.org/](https://www.winehq.org/)  
+- [WINE] (version >= 8.0) [https://www.winehq.org/](https://www.winehq.org/)  
 - [Meson] [http://mesonbuild.com/](http://mesonbuild.com/)  
 - [NINJA] [https://ninja-build.org/](https://ninja-build.org/)  
 - [MINGW] (version >= 9.0) [https://www.mingw-w64.org/](https://www.mingw-w64.org/)  
