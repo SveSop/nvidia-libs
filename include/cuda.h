@@ -19,6 +19,10 @@
 #ifndef __WINE_CUDA_H
 #define __WINE_CUDA_H
 
+#include <stdint.h>
+typedef uint32_t cuuint32_t;
+typedef uint64_t cuuint64_t;
+
 #ifdef _WIN32
 #define CUDA_CB __stdcall
 #else
@@ -37,15 +41,17 @@
 #define CU_IPC_HANDLE_SIZE          64
 
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64) || defined(__aarch64__)
-typedef unsigned long long CUdeviceptr;
+typedef unsigned long long CUdeviceptr_v2;
 #else
-typedef unsigned int CUdeviceptr;
+typedef unsigned int CUdeviceptr_v2;
 #endif
+typedef CUdeviceptr_v2 CUdeviceptr;
 
 typedef int CUGLDeviceList;
 typedef int CUaddress_mode;
 typedef int CUarray_format;
-typedef int CUdevice;
+typedef int CUdevice_v1;
+typedef CUdevice_v1 CUdevice;
 typedef int CUdevice_attribute;
 typedef int CUfilter_mode;
 typedef int CUfunc_cache;
