@@ -390,7 +390,7 @@
 @ stdcall cuStreamAttachMemAsync_ptsz(ptr long long long) wine_cuStreamAttachMemAsync_ptsz
 @ stdcall cuStreamBatchMemOp(ptr long ptr long) wine_cuStreamBatchMemOp
 @ stub cuStreamBatchMemOp_ptsz
-@ stub cuStreamBeginCapture
+@ stdcall cuStreamBeginCapture(ptr long) wine_cuStreamBeginCapture
 @ stub cuStreamBeginCapture_ptsz
 @ stdcall cuStreamBeginCapture_v2(ptr long) wine_cuStreamBeginCapture_v2
 @ stub cuStreamBeginCapture_v2_ptsz
@@ -546,7 +546,7 @@
 @ stdcall cuMemPoolTrimTo(ptr long) wine_cuMemPoolTrimTo
 @ stub cuMemRelease
 @ stub cuMemRetainAllocationHandle
-@ stub cuMemSetAccess
+@ stdcall cuMemSetAccess(ptr long ptr long) wine_cuMemSetAccess
 @ stub cuMemUnmap
 @ stdcall cuMipmappedArrayGetSparseProperties(ptr ptr) wine_cuMipmappedArrayGetSparseProperties
 @ stdcall cuOccupancyAvailableDynamicSMemPerBlock(long ptr long long) wine_cuOccupancyAvailableDynamicSMemPerBlock

@@ -486,6 +486,8 @@ static CUresult (*pcuGraphExecMemsetNodeSetParams)(CUgraphExec hGraphExec, CUgra
 static CUresult (*pcuGraphExecHostNodeSetParams)(CUgraphExec hGraphExec, CUgraphNode hNode, const void *nodeParams);
 static CUresult (*pcuThreadExchangeStreamCaptureMode)(CUstreamCaptureMode *mode);
 static CUresult (*pcuGraphExecUpdate)(CUgraphExec hGraphExec, CUgraph hGraph, CUgraphNode *hErrorNode_out, void *updateResult_out);
+static CUresult (*pcuMemSetAccess)(CUdeviceptr_v2 ptr, size_t size, const void *desc, size_t count);
+static CUresult (*pcuStreamBeginCapture)(CUstream hStream, CUstreamCaptureMode mode);
 
 /* Cuda 11 */
 static CUresult (*pcuMemAllocAsync)(CUdeviceptr *dptr, size_t bytesize, CUstream hStream);
@@ -1000,6 +1002,8 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphExecHostNodeSetParams);
     TRY_LOAD_FUNCPTR(cuThreadExchangeStreamCaptureMode);
     TRY_LOAD_FUNCPTR(cuGraphExecUpdate);
+    TRY_LOAD_FUNCPTR(cuMemSetAccess);
+    TRY_LOAD_FUNCPTR(cuStreamBeginCapture);
 
     /* CUDA 11 */
     TRY_LOAD_FUNCPTR(cuMemAllocAsync);
@@ -3766,6 +3770,20 @@ CUresult WINAPI wine_cuGraphExecUpdate(CUgraphExec hGraphExec, CUgraph hGraph, C
     TRACE("(%p, %p, %p, %p)\n", hGraphExec, hGraph, hErrorNode_out, updateResult_out);
     CHECK_FUNCPTR(cuGraphExecUpdate);
     return pcuGraphExecUpdate(hGraphExec, hGraph, hErrorNode_out, updateResult_out);
+}
+
+CUresult WINAPI wine_cuMemSetAccess(CUdeviceptr_v2 ptr, size_t size, const void *desc, size_t count)
+{
+    TRACE("(%lld, %zu, %p, %zu)\n", (long long)ptr, size, desc, count);
+    CHECK_FUNCPTR(cuMemSetAccess);
+    return pcuMemSetAccess(ptr, size, desc, count);
+}
+
+CUresult WINAPI wine_cuStreamBeginCapture(CUstream hStream, CUstreamCaptureMode mode)
+{
+    TRACE("(%p, %d)\n", hStream, mode);
+    CHECK_FUNCPTR(cuStreamBeginCapture);
+    return pcuStreamBeginCapture(hStream, mode);
 }
 
 /*
