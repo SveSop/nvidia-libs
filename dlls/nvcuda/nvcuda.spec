@@ -584,8 +584,8 @@
 @ stub cuVDPAUGetDevice
 @ stub cuArrayGetMemoryRequirements
 @ stub cuMipmappedArrayGetMemoryRequirements
-@ stub cuGraphNodeSetEnabled
-@ stub cuGraphNodeGetEnabled
+@ stdcall cuGraphNodeSetEnabled(ptr ptr long) wine_cuGraphNodeSetEnabled
+@ stdcall cuGraphNodeGetEnabled(ptr ptr long) wine_cuGraphNodeGetEnabled
 @ stub cudbgApiAttach
 @ stub cudbgApiDetach
 @ stub cudbgApiInit
@@ -608,7 +608,7 @@
 @ stub cuCtxGetId
 @ stub cuStreamGetId
 @ stub cuGraphAddKernelnNode
-@ stub cuGraphExecGetFlags
+@ stdcall cuGraphExecGetFlags(ptr ptr) wine_cuGraphExecGetFlags
 @ stub cuTensorMapEncodeTiled
 @ stub cuTensorMapEncodeIm2col
 @ stub cuTensorMapReplaceAddress
@@ -624,3 +624,5 @@
 @ stdcall cuKernelSetAttribute(long long ptr long) wine_cuKernelSetAttribute
 @ stdcall cuKernelSetCacheConfig(ptr ptr long) wine_cuKernelSetCacheConfig
 @ stdcall cuLibraryGetUnifiedFunction(ptr ptr str) wine_cuLibraryGetUnifiedFunction
+@ stdcall cuGraphInstantiateWithParams(ptr ptr ptr) wine_cuGraphInstantiateWithParams
+@ stdcall cuGraphInstantiateWithParams_ptsz(ptr ptr ptr) wine_cuGraphInstantiateWithParams_ptsz

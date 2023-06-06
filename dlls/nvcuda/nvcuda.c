@@ -559,6 +559,8 @@ static CUresult (*pcuUserObjectRetain)(void *object, unsigned int count);
 static CUresult (*pcuUserObjectRelease)(void *object, unsigned int count);
 static CUresult (*pcuGraphRetainUserObject)(CUgraph graph, void *object, unsigned int count, unsigned int flags);
 static CUresult (*pcuGraphReleaseUserObject)(CUgraph graph, void *object, unsigned int count);
+static CUresult (*pcuGraphNodeSetEnabled)(CUgraphExec hGraphExec, CUgraphNode hNode, unsigned int isEnabled);
+static CUresult (*pcuGraphNodeGetEnabled)(CUgraphExec hGraphExec, CUgraphNode hNode, unsigned int *isEnabled);
 
 /* Cuda 12 */
 static CUresult (*pcuLibraryLoadData)(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
@@ -575,6 +577,9 @@ static CUresult (*pcuKernelGetAttribute)(int *pi, CUfunction_attribute attrib, v
 static CUresult (*pcuKernelSetAttribute)(CUfunction_attribute attrib, int val, void *kernel, CUdevice dev);
 static CUresult (*pcuKernelSetCacheConfig)(void *kernel, void *config, CUdevice dev);
 static CUresult (*pcuLibraryGetUnifiedFunction)(void **fptr, void *library, const char *symbol);
+static CUresult (*pcuGraphInstantiateWithParams)(CUgraphExec *phGraphExec, CUgraph hGraph, void *instantiateParams);
+static CUresult (*pcuGraphInstantiateWithParams_ptsz)(CUgraphExec *phGraphExec, CUgraph hGraph, void *instantiateParams);
+static CUresult (*pcuGraphExecGetFlags)(CUgraphExec hGraphExec, cuuint64_t *flags);
 
 static void *cuda_handle = NULL;
 
@@ -1074,6 +1079,8 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuUserObjectRelease);
     TRY_LOAD_FUNCPTR(cuGraphRetainUserObject);
     TRY_LOAD_FUNCPTR(cuGraphReleaseUserObject);
+    TRY_LOAD_FUNCPTR(cuGraphNodeSetEnabled);
+    TRY_LOAD_FUNCPTR(cuGraphNodeGetEnabled);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -1088,6 +1095,9 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuKernelSetAttribute);
     TRY_LOAD_FUNCPTR(cuKernelSetCacheConfig);
     TRY_LOAD_FUNCPTR(cuLibraryGetUnifiedFunction);
+    TRY_LOAD_FUNCPTR(cuGraphInstantiateWithParams);
+    TRY_LOAD_FUNCPTR(cuGraphInstantiateWithParams_ptsz);
+    TRY_LOAD_FUNCPTR(cuGraphExecGetFlags);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -4132,6 +4142,20 @@ CUresult WINAPI wine_cuFlushGPUDirectRDMAWrites(void *target, void *scope)
     return pcuFlushGPUDirectRDMAWrites(target, scope);
 }
 
+CUresult WINAPI wine_cuGraphNodeSetEnabled(CUgraphExec hGraphExec, CUgraphNode hNode, unsigned int isEnabled)
+{
+    TRACE("(%p, %p, %u)\n", hGraphExec, hNode, isEnabled);
+    CHECK_FUNCPTR(cuGraphNodeSetEnabled);
+    return pcuGraphNodeSetEnabled(hGraphExec, hNode, isEnabled);
+}
+
+CUresult WINAPI wine_cuGraphNodeGetEnabled(CUgraphExec hGraphExec, CUgraphNode hNode, unsigned int *isEnabled)
+{
+    TRACE("(%p, %p, %u)\n", hGraphExec, hNode, *isEnabled);
+    CHECK_FUNCPTR(cuGraphNodeGetEnabled);
+    return pcuGraphNodeGetEnabled(hGraphExec, hNode, isEnabled);
+}
+
 /*
  * Additions in CUDA 12
  */
@@ -4220,6 +4244,27 @@ CUresult WINAPI wine_cuLibraryGetUnifiedFunction(void **fptr, void *library, con
     TRACE("(%p, %p, %s)\n", fptr, library, symbol);
     CHECK_FUNCPTR(cuLibraryGetUnifiedFunction);
     return pcuLibraryGetUnifiedFunction(fptr, library, symbol);
+}
+
+CUresult WINAPI wine_cuGraphInstantiateWithParams(CUgraphExec *phGraphExec, CUgraph hGraph, void *instantiateParams)
+{
+    TRACE("(%p, %p, %p)\n", phGraphExec, hGraph, instantiateParams);
+    CHECK_FUNCPTR(cuGraphInstantiateWithParams);
+    return pcuGraphInstantiateWithParams(phGraphExec, hGraph, instantiateParams);
+}
+
+CUresult WINAPI wine_cuGraphInstantiateWithParams_ptsz(CUgraphExec *phGraphExec, CUgraph hGraph, void *instantiateParams)
+{
+    TRACE("(%p, %p, %p)\n", phGraphExec, hGraph, instantiateParams);
+    CHECK_FUNCPTR(cuGraphInstantiateWithParams_ptsz);
+    return pcuGraphInstantiateWithParams_ptsz(phGraphExec, hGraph, instantiateParams);
+}
+
+CUresult WINAPI wine_cuGraphExecGetFlags(CUgraphExec hGraphExec, cuuint64_t *flags)
+{
+    TRACE("(%p, %p)\n", hGraphExec, flags);
+    CHECK_FUNCPTR(cuGraphExecGetFlags);
+    return pcuGraphExecGetFlags(hGraphExec, flags);
 }
 
 #undef CHECK_FUNCPTR
