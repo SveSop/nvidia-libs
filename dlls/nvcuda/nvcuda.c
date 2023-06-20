@@ -180,7 +180,7 @@ static CUresult (*pcuMemAllocHost_v2)(void **pp, size_t bytesize);
 static CUresult (*pcuMemAllocManaged)(CUdeviceptr *dptr, size_t bytesize, unsigned int flags);
 static CUresult (*pcuMemAllocPitch)(CUdeviceptr *dptr, size_t *pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes);
 static CUresult (*pcuMemAllocPitch_v2)(CUdeviceptr *dptr, size_t *pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes);
-static CUresult (*pcuMemAlloc_v2)(CUdeviceptr *dptr, unsigned int bytesize);
+static CUresult (*pcuMemAlloc_v2)(CUdeviceptr *dptr, size_t bytesize);
 static CUresult (*pcuMemFree)(CUdeviceptr dptr);
 static CUresult (*pcuMemFreeHost)(void *p);
 static CUresult (*pcuMemFree_v2)(CUdeviceptr dptr);
@@ -1745,9 +1745,9 @@ CUresult WINAPI wine_cuMemAllocPitch_v2(CUdeviceptr *dptr, size_t *pPitch, size_
     return pcuMemAllocPitch_v2(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes);
 }
 
-CUresult WINAPI wine_cuMemAlloc_v2(CUdeviceptr *dptr, unsigned int bytesize)
+CUresult WINAPI wine_cuMemAlloc_v2(CUdeviceptr *dptr, size_t bytesize)
 {
-    TRACE("(%p, %u)\n", dptr, bytesize);
+    TRACE("(%p, %lu)\n", dptr, (long)bytesize);
     return pcuMemAlloc_v2(dptr, bytesize);
 }
 
