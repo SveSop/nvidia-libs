@@ -561,6 +561,8 @@ static CUresult (*pcuGraphRetainUserObject)(CUgraph graph, void *object, unsigne
 static CUresult (*pcuGraphReleaseUserObject)(CUgraph graph, void *object, unsigned int count);
 static CUresult (*pcuGraphNodeSetEnabled)(CUgraphExec hGraphExec, CUgraphNode hNode, unsigned int isEnabled);
 static CUresult (*pcuGraphNodeGetEnabled)(CUgraphExec hGraphExec, CUgraphNode hNode, unsigned int *isEnabled);
+static CUresult (*pcuCtxCreate_v3)(CUcontext *pctx, void *paramsArray, int numParams, unsigned int flags, CUdevice dev);
+static CUresult (*pcuCtxGetExecAffinity)(void *pExecAffinity, void *type);
 
 /* Cuda 12 */
 static CUresult (*pcuLibraryLoadData)(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
@@ -580,6 +582,8 @@ static CUresult (*pcuLibraryGetUnifiedFunction)(void **fptr, void *library, cons
 static CUresult (*pcuGraphInstantiateWithParams)(CUgraphExec *phGraphExec, CUgraph hGraph, void *instantiateParams);
 static CUresult (*pcuGraphInstantiateWithParams_ptsz)(CUgraphExec *phGraphExec, CUgraph hGraph, void *instantiateParams);
 static CUresult (*pcuGraphExecGetFlags)(CUgraphExec hGraphExec, cuuint64_t *flags);
+static CUresult (*pcuCtxGetId)(CUcontext ctx, unsigned long long *ctxId);
+static CUresult (*pcuCtxSetFlags)(unsigned int flags);
 
 static void *cuda_handle = NULL;
 
@@ -1081,6 +1085,8 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphReleaseUserObject);
     TRY_LOAD_FUNCPTR(cuGraphNodeSetEnabled);
     TRY_LOAD_FUNCPTR(cuGraphNodeGetEnabled);
+    TRY_LOAD_FUNCPTR(cuCtxCreate_v3);
+    TRY_LOAD_FUNCPTR(cuCtxGetExecAffinity);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -1098,6 +1104,8 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphInstantiateWithParams);
     TRY_LOAD_FUNCPTR(cuGraphInstantiateWithParams_ptsz);
     TRY_LOAD_FUNCPTR(cuGraphExecGetFlags);
+    TRY_LOAD_FUNCPTR(cuCtxGetId);
+    TRY_LOAD_FUNCPTR(cuCtxSetFlags);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -4156,6 +4164,20 @@ CUresult WINAPI wine_cuGraphNodeGetEnabled(CUgraphExec hGraphExec, CUgraphNode h
     return pcuGraphNodeGetEnabled(hGraphExec, hNode, isEnabled);
 }
 
+CUresult WINAPI wine_cuCtxCreate_v3(CUcontext *pctx, void *paramsArray, int numParams, unsigned int flags, CUdevice dev)
+{
+    TRACE("(%p, %p, %d, %u, %u)\n", pctx, paramsArray, numParams, flags, dev);
+    CHECK_FUNCPTR(cuCtxCreate_v3);
+    return pcuCtxCreate_v3(pctx, paramsArray, numParams, flags, dev);
+}
+
+CUresult WINAPI wine_cuCtxGetExecAffinity(void *pExecAffinity, void *type)
+{
+    TRACE("(%p, %p)\n", pExecAffinity, type);
+    CHECK_FUNCPTR(cuCtxGetExecAffinity);
+    return pcuCtxGetExecAffinity(pExecAffinity, type);
+}
+
 /*
  * Additions in CUDA 12
  */
@@ -4265,6 +4287,20 @@ CUresult WINAPI wine_cuGraphExecGetFlags(CUgraphExec hGraphExec, cuuint64_t *fla
     TRACE("(%p, %p)\n", hGraphExec, flags);
     CHECK_FUNCPTR(cuGraphExecGetFlags);
     return pcuGraphExecGetFlags(hGraphExec, flags);
+}
+
+CUresult WINAPI wine_cuCtxGetId(CUcontext ctx, unsigned long long *ctxId)
+{
+    TRACE("(%p, %lln)\n", ctx, ctxId);
+    CHECK_FUNCPTR(cuCtxGetId);
+    return pcuCtxGetId(ctx, ctxId);
+}
+
+CUresult WINAPI wine_cuCtxSetFlags(unsigned int flags)
+{
+    TRACE("(%d)\n", flags);
+    CHECK_FUNCPTR(cuCtxSetFlags);
+    return pcuCtxSetFlags(flags);
 }
 
 #undef CHECK_FUNCPTR

@@ -10,6 +10,7 @@
 @ stdcall cuCtxAttach(ptr long) wine_cuCtxAttach
 @ stdcall cuCtxCreate(ptr long long) wine_cuCtxCreate
 @ stdcall cuCtxCreate_v2(ptr long long) wine_cuCtxCreate_v2
+@ stdcall cuCtxCreate_v3(ptr ptr long long long) wine_cuCtxCreate_v3
 @ stdcall cuCtxDestroy(ptr) wine_cuCtxDestroy
 @ stdcall cuCtxDestroy_v2(ptr) wine_cuCtxDestroy_v2
 @ stdcall cuCtxDetach(ptr) wine_cuCtxDetach
@@ -471,8 +472,7 @@
 @ stub cuWaitExternalSemaphoresAsync_ptsz
 @ stdcall cuArrayGetPlane(ptr ptr long) wine_cuArrayGetPlane
 @ stdcall cuArrayGetSparseProperties(ptr ptr) wine_cuArrayGetSparseProperties
-@ stub cuCtxCreate_v3
-@ stub cuCtxGetExecAffinity
+@ stdcall cuCtxGetExecAffinity(ptr ptr) wine_cuCtxGetExecAffinity
 @ stdcall cuCtxResetPersistingL2Cache() wine_cuCtxResetPersistingL2Cache
 @ stub cuDeviceGetExecAffinitySupport
 @ stdcall cuDeviceGetMemPool(ptr long) wine_cuDeviceGetMemPool
@@ -605,7 +605,7 @@
 @ stub cuStreamWriteValue32_v2_ptsz
 @ stub cuStreamWriteValue64_v2
 @ stub cuStreamWriteValue64_v2_ptsz
-@ stub cuCtxGetId
+@ stdcall cuCtxGetId(ptr long) wine_cuCtxGetId
 @ stub cuStreamGetId
 @ stub cuGraphAddKernelnNode
 @ stdcall cuGraphExecGetFlags(ptr ptr) wine_cuGraphExecGetFlags
@@ -626,3 +626,4 @@
 @ stdcall cuLibraryGetUnifiedFunction(ptr ptr str) wine_cuLibraryGetUnifiedFunction
 @ stdcall cuGraphInstantiateWithParams(ptr ptr ptr) wine_cuGraphInstantiateWithParams
 @ stdcall cuGraphInstantiateWithParams_ptsz(ptr ptr ptr) wine_cuGraphInstantiateWithParams_ptsz
+@ stdcall cuCtxSetFlags(long) wine_cuCtxSetFlags
