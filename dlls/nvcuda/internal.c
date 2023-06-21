@@ -83,18 +83,25 @@ void cuda_process_tls_callbacks(DWORD reason)
 
 static const CUuuid UUID_Unknown1                   = {{0x6B, 0xD5, 0xFB, 0x6C, 0x5B, 0xF4, 0xE7, 0x4A,
                                                         0x89, 0x87, 0xD9, 0x39, 0x12, 0xFD, 0x9D, 0xF9}};
+                                                    // {6Bd5fB6c-5Bf4-e74A-8987-d93912fd9df9}
 static const CUuuid UUID_Unknown2                   = {{0xA0, 0x94, 0x79, 0x8C, 0x2E, 0x74, 0x2E, 0x74,
                                                         0x93, 0xF2, 0x08, 0x00, 0x20, 0x0C, 0x0A, 0x66}};
+                                                    // {a094798c-2e74-2e74-93f2-0800200c0a66}
 static const CUuuid UUID_Unknown3                   = {{0x42, 0xD8, 0x5A, 0x81, 0x23, 0xF6, 0xCB, 0x47,
                                                         0x82, 0x98, 0xF6, 0xE7, 0x8A, 0x3A, 0xEC, 0xDC}};
+                                                    // {42d85a81-23f6-cb47-8298-f6e78a3aecdc}
 static const CUuuid UUID_ContextStorage             = {{0xC6, 0x93, 0x33, 0x6E, 0x11, 0x21, 0xDF, 0x11,
                                                         0xA8, 0xC3, 0x68, 0xF3, 0x55, 0xD8, 0x95, 0x93}};
+                                                    // {v693336e-1121-df11-a8c3-68f355d89593}
 static const CUuuid UUID_Unknown5                   = {{0x0C, 0xA5, 0x0B, 0x8C, 0x10, 0x04, 0x92, 0x9A,
                                                         0x89, 0xA7, 0xD0, 0xDF, 0x10, 0xE7, 0x72, 0x86}};
+                                                    // {0ca50b8c-1004-929a-89a7-f0ff10e77286}
 static const CUuuid UUID_TlsNotifyInterface         = {{0x19, 0x5B, 0xCB, 0xF4, 0xD6, 0x7D, 0x02, 0x4A,
                                                         0xAC, 0xC5, 0x1D, 0x29, 0xCE, 0xA6, 0x31, 0xAE}};
+                                                    // {195bcbf4-d67d-024a-acc5-1d29cea631ae}
 static const CUuuid UUID_Unknown7                   = {{0xD4, 0x08, 0x20, 0x55, 0xBD, 0xE6, 0x70, 0x4B,
                                                         0x8D, 0x34, 0xBA, 0x12, 0x3C, 0x66, 0xE1, 0xF2}};
+                                                    // {d4082055-bde6-704b-8d34-ba123c66e1f2}
 
 struct cuda_table
 {
@@ -221,13 +228,13 @@ static const struct
 struct Unknown7_table
 {
     int size;
-    void* (WINAPI *func0)(int cudaVersion, void *param1, void *param2);
+    void* (WINAPI *func0)(unsigned int cudaVersion, void *param1, void *param2);
     void* (WINAPI *func1)(void *param0, void *param1);
 };
 static const struct
 {
     int size;
-    void* (*func0)(int cudaVersion, void *param1, void *param2);
+    void* (*func0)(unsigned int cudaVersion, void *param1, void *param2);
     void* (*func1)(void *param0, void *param1);
 } *Unknown7_orig = NULL;
 
@@ -520,9 +527,9 @@ struct TlsNotifyInterface_table TlsNotifyInterface_Impl =
     TlsNotifyInterface_Remove,
 };
 
-static void* WINAPI Unknown7_func0_relay(int cudaVersion, void *param1, void *param2)
+static void* WINAPI Unknown7_func0_relay(unsigned int cudaVersion, void *param1, void *param2)
 {
-    TRACE("(%d, %p, %p)\n", cudaVersion, param1, param2);
+    TRACE("(%u, %p, %p)\n", cudaVersion, param1, param2);
     return Unknown7_orig->func0(cudaVersion, param1, param2);
 }
 
@@ -534,7 +541,7 @@ static void* WINAPI Unknown7_func1_relay(void *param0, void *param1)
 
 struct Unknown7_table Unknown7_Impl =
 {
-   sizeof(struct Unknown7_table),
+    sizeof(struct Unknown7_table),
     Unknown7_func0_relay,
     Unknown7_func1_relay,
 };
@@ -566,8 +573,8 @@ static inline BOOL cuda_equal_uuid(const CUuuid *id1, const CUuuid *id2)
 
 static char* cuda_print_uuid(const CUuuid *id, char *buffer, int size)
 {
-    snprintf(buffer, size, "{0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X, " \
-                            "0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X, 0x%02X}",
+    snprintf(buffer, size, "{%02x%02x%02x%02x-%02x%02x-%02x%02x-"\
+                            "%02x%02x-%02x%02x%02x%02x%02x%02x}",
              id->bytes[0] & 0xFF, id->bytes[1] & 0xFF, id->bytes[2] & 0xFF, id->bytes[3] & 0xFF,
              id->bytes[4] & 0xFF, id->bytes[5] & 0xFF, id->bytes[6] & 0xFF, id->bytes[7] & 0xFF,
              id->bytes[8] & 0xFF, id->bytes[9] & 0xFF, id->bytes[10] & 0xFF, id->bytes[11] & 0xFF,

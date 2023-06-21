@@ -370,10 +370,8 @@
 @ stdcall cuOccupancyMaxActiveBlocksPerMultiprocessor(ptr ptr long long) wine_cuOccupancyMaxActiveBlocksPerMultiprocessor
 @ stdcall cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags(ptr ptr long long long) wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
 @ stdcall cuOccupancyMaxActiveClusters(long ptr ptr) wine_cuOccupancyMaxActiveClusters
-#@ stdcall cuOccupancyMaxPotentialBlockSize(ptr ptr ptr ptr long long) wine_cuOccupancyMaxPotentialBlockSize
-@ stub cuOccupancyMaxPotentialBlockSize
-#@ stdcall cuOccupancyMaxPotentialBlockSizeWithFlags(ptr ptr ptr ptr long long long) wine_cuOccupancyMaxPotentialBlockSizeWithFlags
-@ stub cuOccupancyMaxPotentialBlockSizeWithFlags
+@ stdcall cuOccupancyMaxPotentialBlockSize(ptr ptr ptr ptr long long) wine_cuOccupancyMaxPotentialBlockSize
+@ stdcall cuOccupancyMaxPotentialBlockSizeWithFlags(ptr ptr ptr ptr long long long) wine_cuOccupancyMaxPotentialBlockSizeWithFlags
 @ stub cuOccupancyMaxPotentialClusterSize
 @ stdcall cuParamSetSize(ptr long) wine_cuParamSetSize
 @ stdcall cuParamSetTexRef(ptr long ptr) wine_cuParamSetTexRef
