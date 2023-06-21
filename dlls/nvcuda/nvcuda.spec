@@ -371,7 +371,10 @@
 @ stdcall cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags(ptr ptr long long long) wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
 @ stdcall cuOccupancyMaxActiveClusters(long ptr ptr) wine_cuOccupancyMaxActiveClusters
 #@ stdcall cuOccupancyMaxPotentialBlockSize(ptr ptr ptr ptr long long) wine_cuOccupancyMaxPotentialBlockSize
+@ stub cuOccupancyMaxPotentialBlockSize
 #@ stdcall cuOccupancyMaxPotentialBlockSizeWithFlags(ptr ptr ptr ptr long long long) wine_cuOccupancyMaxPotentialBlockSizeWithFlags
+@ stub cuOccupancyMaxPotentialBlockSizeWithFlags
+@ stub cuOccupancyMaxPotentialClusterSize
 @ stdcall cuParamSetSize(ptr long) wine_cuParamSetSize
 @ stdcall cuParamSetTexRef(ptr long ptr) wine_cuParamSetTexRef
 @ stdcall cuParamSetf(ptr long float) wine_cuParamSetf
@@ -550,8 +553,6 @@
 @ stub cuMemUnmap
 @ stdcall cuMipmappedArrayGetSparseProperties(ptr ptr) wine_cuMipmappedArrayGetSparseProperties
 @ stdcall cuOccupancyAvailableDynamicSMemPerBlock(long ptr long long) wine_cuOccupancyAvailableDynamicSMemPerBlock
-@ stub cuOccupancyMaxPotentialBlockSize
-@ stub cuOccupancyMaxPotentialBlockSizeWithFlags
 @ stdcall cuStreamCopyAttributes(ptr ptr) wine_cuStreamCopyAttributes
 @ stub cuStreamCopyAttributes_ptsz
 @ stdcall cuStreamGetAttribute(ptr ptr ptr) wine_cuStreamGetAttribute
@@ -581,16 +582,40 @@
 @ stub cuGraphicsVDPAURegisterOutputSurface
 @ stub cuGraphicsVDPAURegisterVideoSurface
 @ stub cuVDPAUCtxCreate
+@ stub cuVDPAUCtxCreate_v2
 @ stub cuVDPAUGetDevice
 @ stub cuArrayGetMemoryRequirements
 @ stub cuMipmappedArrayGetMemoryRequirements
 @ stdcall cuGraphNodeSetEnabled(ptr ptr long) wine_cuGraphNodeSetEnabled
 @ stdcall cuGraphNodeGetEnabled(ptr ptr long) wine_cuGraphNodeGetEnabled
 @ stub cudbgApiAttach
+@ stub cudbgApiClientPid
+@ stub cudbgApiClientRevision
 @ stub cudbgApiDetach
 @ stub cudbgApiInit
+@ stub cudbgAttachHandlerAvailable
+@ stub cudbgDebuggerCapabilities
+@ stub cudbgDebuggerInitialized
+@ stub cudbgDetachSuspendedDevicesMask
+@ stub cudbgEnableIntegratedMemcheck
+@ stub cudbgEnableLaunchBlocking
+@ stub cudbgEnablePreemptionDebugging
 @ stub cudbgGetAPI
 @ stub cudbgGetAPIVersion
+@ stub cudbgInjectionPath
+@ stub cudbgIpcFlag
+@ stub cudbgMain
+@ stub cudbgReportDriverApiError
+@ stub cudbgReportDriverApiErrorFlags
+@ stub cudbgReportDriverInternalError
+@ stub cudbgReportedDriverApiErrorCode
+@ stub cudbgReportedDriverApiErrorFuncNameAddr
+@ stub cudbgReportedDriverApiErrorFuncNameSize
+@ stub cudbgReportedDriverInternalErrorCode
+@ stub cudbgResumeForAttachDetach
+@ stub cudbgRpcEnabled
+@ stub cudbgSessionId
+@ stub cudbgUseExternalDebugger
 @ stub cuGraphAddBatchMemOpNode
 @ stub cuGraphBatchMemOpNodeGetParams
 @ stub cuGraphBatchMemOpNodeSetParams
@@ -607,6 +632,7 @@
 @ stub cuStreamWriteValue64_v2_ptsz
 @ stdcall cuCtxGetId(ptr long) wine_cuCtxGetId
 @ stub cuStreamGetId
+@ stub cuStreamGetId_ptsz
 @ stub cuGraphAddKernelnNode
 @ stdcall cuGraphExecGetFlags(ptr ptr) wine_cuGraphExecGetFlags
 @ stub cuTensorMapEncodeTiled
@@ -627,3 +653,27 @@
 @ stdcall cuGraphInstantiateWithParams(ptr ptr ptr) wine_cuGraphInstantiateWithParams
 @ stdcall cuGraphInstantiateWithParams_ptsz(ptr ptr ptr) wine_cuGraphInstantiateWithParams_ptsz
 @ stdcall cuCtxSetFlags(long) wine_cuCtxSetFlags
+@ stub cuCoredumpGetAttribute
+@ stub cuCoredumpGetAttributeGlobal
+@ stub cuCoredumpSetAttribute
+@ stub cuCoredumpSetAttributeGlobal
+@ stub cuEGLApiInit
+@ stub cuGraphAddKernelNode_v2
+@ stub cuGraphAddNode
+@ stub cuGraphExecKernelNodeSetParams_v2
+@ stub cuGraphExecNodeSetParams
+@ stub cuGraphExecUpdate_v2
+@ stub cuGraphKernelNodeGetParams_v2
+@ stub cuGraphKernelNodeSetParams_v2
+@ stub cuGraphNodeSetParams
+@ stub cuMemAdvise_v2
+@ stub cuMemGetAttribute
+@ stub cuMemGetAttribute_v2
+@ stub cuMemPrefetchAsync_v2
+@ stub cuMemPrefetchAsync_v2_ptsz
+@ stub cuMulticastAddDevice
+@ stub cuMulticastBindAddr
+@ stub cuMulticastBindMem
+@ stub cuMulticastCreate
+@ stub cuMulticastGetGranularity
+@ stub cuMulticastUnbind
