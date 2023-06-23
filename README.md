@@ -1,8 +1,16 @@
 # NVIDIA Libs
 
-Release: 0.7.10  
+Release: 0.7.11  
 Recommended nVidia proprietary driver branch 525+ for best compatibility with OptiX and CUDA.  
-OBS: Some CUDA functions are not 100% supported, and MAY fail on older drivers!  
+
+CUDA SDK >11.5 is not supported when samples/apps are using the CUDA RUNTIME API  
+This is typically used by NVIDIA IRAY and OptiX, and this will eventually fail if used on OptiX  
+sources that requires this.  
+Older drivers that does not support SDK 10 and older may also fail/crash. Report any crashes with  
+logs on the issue page. However these are highly outdated drivers in general and will probably not  
+see too much attention in that regard.  
+
+Create logs typically with: `WINEDEBUG=-all,+nvcuda wine ./yourapp.exe > yourapp.log 2>&1`  
 
 Library contains:  
 nvapi (dxvk-nvapi)  
@@ -56,6 +64,8 @@ You also need a working `dxvk.conf` file in the games binary folder with the set
 
 Eg:  
 `$HOME/.steam/steam/steamapps/common/Batman Arkham Knight/Binaries/Win64/dxvk.conf`  
+or use DXVK setting:  
+`DXVK_CONFIG_FILE=$HOME/winesuff/dxvk.conf`  
 
 ## Info  
 
