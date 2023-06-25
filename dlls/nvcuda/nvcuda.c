@@ -185,18 +185,18 @@ static CUresult (*pcuLinkAddData)(CUlinkState state, CUjitInputType type, void *
 static CUresult (*pcuLinkComplete)(CUlinkState state, void **cubinOut, size_t *sizeOut);
 static CUresult (*pcuLinkCreate)(unsigned int numOptions, CUjit_option *options, void **optionValues, CUlinkState *stateOut);
 static CUresult (*pcuLinkDestroy)(CUlinkState state);
-static CUresult (*pcuMemAlloc)(CUdeviceptr_v2 *dptr, unsigned int bytesize);
-static CUresult (*pcuMemAllocHost)(void **pp, size_t bytesize);
+static CUresult (*pcuMemAlloc)(CUdeviceptr *dptr, unsigned int bytesize);
+static CUresult (*pcuMemAllocHost)(void **pp, unsigned int bytesize);
 static CUresult (*pcuMemAllocHost_v2)(void **pp, size_t bytesize);
 static CUresult (*pcuMemAllocManaged)(CUdeviceptr_v2 *dptr, size_t bytesize, unsigned int flags);
-static CUresult (*pcuMemAllocPitch)(CUdeviceptr *dptr, size_t *pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes);
+static CUresult (*pcuMemAllocPitch)(CUdeviceptr *dptr, unsigned int *pPitch, unsigned int WidthInBytes, unsigned int Height, unsigned int ElementSizeBytes);
 static CUresult (*pcuMemAllocPitch_v2)(CUdeviceptr_v2 *dptr, size_t *pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes);
 static CUresult (*pcuMemAlloc_v2)(CUdeviceptr_v2 *dptr, size_t bytesize);
 static CUresult (*pcuMemFree)(CUdeviceptr dptr);
 static CUresult (*pcuMemFreeHost)(void *p);
 static CUresult (*pcuMemFree_v2)(CUdeviceptr_v2 dptr);
 static CUresult (*pcuMemGetAddressRange)(CUdeviceptr *pbase, unsigned int *psize, CUdeviceptr dptr);
-static CUresult (*pcuMemGetAddressRange_v2)(CUdeviceptr_v2 *pbase, unsigned int *psize, CUdeviceptr_v2 dptr);
+static CUresult (*pcuMemGetAddressRange_v2)(CUdeviceptr_v2 *pbase, size_t *psize, CUdeviceptr_v2 dptr);
 static CUresult (*pcuMemGetInfo)(unsigned int *free, unsigned int *total);
 static CUresult (*pcuMemGetInfo_v2)(size_t *free, size_t *total);
 static CUresult (*pcuMemHostAlloc)(void **pp, size_t bytesize, unsigned int Flags);
@@ -219,59 +219,59 @@ static CUresult (*pcuMemcpy3DPeer)(const CUDA_MEMCPY3D_PEER *pCopy);
 static CUresult (*pcuMemcpy3DPeerAsync)(const CUDA_MEMCPY3D_PEER *pCopy, CUstream hStream);
 static CUresult (*pcuMemcpy3D_v2)(const CUDA_MEMCPY3D *pCopy);
 static CUresult (*pcuMemcpyAsync)(CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream);
-static CUresult (*pcuMemcpyAtoA)(CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount);
+static CUresult (*pcuMemcpyAtoA)(CUarray dstArray, unsigned int dstOffset, CUarray srcArray, unsigned int srcOffset, unsigned int ByteCount);
 static CUresult (*pcuMemcpyAtoA_v2)(CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount);
-static CUresult (*pcuMemcpyAtoD)(CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount);
+static CUresult (*pcuMemcpyAtoD)(CUdeviceptr dstDevice, CUarray srcArray, unsigned int srcOffset, unsigned int ByteCount);
 static CUresult (*pcuMemcpyAtoD_v2)(CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount);
-static CUresult (*pcuMemcpyAtoH)(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount);
-static CUresult (*pcuMemcpyAtoHAsync)(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream);
+static CUresult (*pcuMemcpyAtoH)(void *dstHost, CUarray srcArray, unsigned int srcOffset, unsigned int ByteCount);
+static CUresult (*pcuMemcpyAtoHAsync)(void *dstHost, CUarray srcArray, unsigned int srcOffset, unsigned int ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyAtoHAsync_v2)(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyAtoH_v2)(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount);
-static CUresult (*pcuMemcpyDtoA)(CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount);
+static CUresult (*pcuMemcpyDtoA)(CUarray dstArray, unsigned int dstOffset, CUdeviceptr srcDevice, unsigned int ByteCount);
 static CUresult (*pcuMemcpyDtoA_v2)(CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount);
 static CUresult (*pcuMemcpyDtoD)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount);
 static CUresult (*pcuMemcpyDtoDAsync)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream);
-static CUresult (*pcuMemcpyDtoDAsync_v2)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream);
-static CUresult (*pcuMemcpyDtoD_v2)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount);
+static CUresult (*pcuMemcpyDtoDAsync_v2)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream);
+static CUresult (*pcuMemcpyDtoD_v2)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount);
 static CUresult (*pcuMemcpyDtoH)(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount);
 static CUresult (*pcuMemcpyDtoHAsync)(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream);
-static CUresult (*pcuMemcpyDtoHAsync_v2)(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream);
-static CUresult (*pcuMemcpyDtoH_v2)(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount);
+static CUresult (*pcuMemcpyDtoHAsync_v2)(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream);
+static CUresult (*pcuMemcpyDtoH_v2)(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount);
 static CUresult (*pcuMemcpyHtoA)(CUarray dstArray, size_t dstOffset, const void *srcHost, size_t ByteCount);
-static CUresult (*pcuMemcpyHtoAAsync)(CUarray dstArray, size_t dstOffset, const void *srcHost, size_t ByteCount, CUstream hStream);
+static CUresult (*pcuMemcpyHtoAAsync)(CUarray dstArray, unsigned int dstOffset, const void *srcHost, unsigned int ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyHtoAAsync_v2)(CUarray dstArray, size_t dstOffset, const void *srcHost, size_t ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyHtoA_v2)(CUarray dstArray, size_t dstOffset, const void *srcHost, size_t ByteCount);
-static CUresult (*pcuMemcpyHtoD)(CUdeviceptr dstDevice, const void *srcHost, size_t ByteCount);
+static CUresult (*pcuMemcpyHtoD)(CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount);
 static CUresult (*pcuMemcpyHtoDAsync)(CUdeviceptr dstDevice, const void *srcHost, size_t ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyHtoDAsync_v2)(CUdeviceptr dstDevice, const void *srcHost, size_t ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyHtoD_v2)(CUdeviceptr_v2 dstDevice, const void *srcHost, size_t ByteCount);
 static CUresult (*pcuMemcpyPeer)(CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice, CUcontext srcContext, size_t ByteCount);
 static CUresult (*pcuMemcpyPeerAsync)(CUdeviceptr dstDevice, CUcontext dstContext, CUdeviceptr srcDevice,
                                       CUcontext srcContext, size_t ByteCount, CUstream hStream);
-static CUresult (*pcuMemsetD16)(CUdeviceptr dstDevice, unsigned short us, size_t N);
+static CUresult (*pcuMemsetD16)(CUdeviceptr dstDevice, unsigned short us, unsigned int N);
 static CUresult (*pcuMemsetD16Async)(CUdeviceptr dstDevice, unsigned short us, size_t N, CUstream hStream);
 static CUresult (*pcuMemsetD16_v2)(CUdeviceptr dstDevice, unsigned short us, size_t N);
-static CUresult (*pcuMemsetD2D16)(CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height);
+static CUresult (*pcuMemsetD2D16)(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned short us, unsigned int Width, unsigned int Height);
 static CUresult (*pcuMemsetD2D16Async)(CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height, CUstream hStream);
 static CUresult (*pcuMemsetD2D16_v2)(CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height);
-static CUresult (*pcuMemsetD2D32)(CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height);
+static CUresult (*pcuMemsetD2D32)(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned int ui, unsigned int Width, unsigned int Height);
 static CUresult (*pcuMemsetD2D32Async)(CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream);
 static CUresult (*pcuMemsetD2D32_v2)(CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height);
 static CUresult (*pcuMemsetD2D8)(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc, unsigned int Width, unsigned int Height);
 static CUresult (*pcuMemsetD2D8Async)(CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream);
-static CUresult (*pcuMemsetD2D8_v2)(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc, unsigned int Width, unsigned int Height);
-static CUresult (*pcuMemsetD32)(CUdeviceptr dstDevice, unsigned int ui, size_t N);
+static CUresult (*pcuMemsetD2D8_v2)(CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height);
+static CUresult (*pcuMemsetD32)(CUdeviceptr dstDevice, unsigned int ui, unsigned int N);
 static CUresult (*pcuMemsetD32Async)(CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream);
 static CUresult (*pcuMemsetD32_v2)(CUdeviceptr dstDevice, unsigned int ui, size_t N);
 static CUresult (*pcuMemsetD8)(CUdeviceptr dstDevice, unsigned char uc, unsigned int N);
 static CUresult (*pcuMemsetD8Async)(CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream);
-static CUresult (*pcuMemsetD8_v2)(CUdeviceptr dstDevice, unsigned char uc, unsigned int N);
+static CUresult (*pcuMemsetD8_v2)(CUdeviceptr dstDevice, unsigned char uc, size_t N);
 static CUresult (*pcuMipmappedArrayCreate)(CUmipmappedArray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pMipmappedArrayDesc,
                                            unsigned int numMipmapLevels);
 static CUresult (*pcuMipmappedArrayDestroy)(CUmipmappedArray hMipmappedArray);
 static CUresult (*pcuMipmappedArrayGetLevel)(CUarray *pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level);
 static CUresult (*pcuModuleGetFunction)(CUfunction *hfunc, CUmodule hmod, const char *name);
-static CUresult (*pcuModuleGetGlobal)(CUdeviceptr *dptr, size_t *bytes, CUmodule hmod, const char *name);
+static CUresult (*pcuModuleGetGlobal)(CUdeviceptr *dptr, unsigned int *bytes, CUmodule hmod, const char *name);
 static CUresult (*pcuModuleGetGlobal_v2)(CUdeviceptr_v2 *dptr, size_t *bytes, CUmodule hmod, const char *name);
 static CUresult (*pcuModuleGetSurfRef)(CUsurfref *pSurfRef, CUmodule hmod, const char *name);
 static CUresult (*pcuModuleGetTexRef)(CUtexref *pTexRef, CUmodule hmod, const char *name);
@@ -327,8 +327,8 @@ static CUresult (*pcuTexRefGetMipmapLevelClamp)(float *pminMipmapLevelClamp, flo
 static CUresult (*pcuTexRefGetMipmappedArray)(CUmipmappedArray *phMipmappedArray, CUtexref hTexRef);
 static CUresult (*pcuTexRefSetAddress)(size_t *ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes);
 static CUresult (*pcuTexRefSetAddress2D)(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, unsigned int Pitch);
-static CUresult (*pcuTexRefSetAddress2D_v2)(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, unsigned int Pitch);
-static CUresult (*pcuTexRefSetAddress2D_v3)(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, unsigned int Pitch);
+static CUresult (*pcuTexRefSetAddress2D_v2)(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, size_t Pitch);
+static CUresult (*pcuTexRefSetAddress2D_v3)(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, size_t Pitch);
 static CUresult (*pcuTexRefSetAddressMode)(CUtexref hTexRef, int dim, CUaddress_mode am);
 static CUresult (*pcuTexRefSetAddress_v2)(size_t *ByteOffset, CUtexref hTexRef, CUdeviceptr dptr, size_t bytes);
 static CUresult (*pcuTexRefSetArray)(CUtexref hTexRef, CUarray hArray, unsigned int Flags);
@@ -383,10 +383,10 @@ static CUresult (*pcuMemcpyAtoD_v2_ptds)(CUdeviceptr dstDevice, CUarray srcArray
 static CUresult (*pcuMemcpyAtoHAsync_v2_ptsz)(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyAtoH_v2_ptds)(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount);
 static CUresult (*pcuMemcpyDtoA_v2_ptds)(CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount);
-static CUresult (*pcuMemcpyDtoDAsync_v2_ptsz)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream);
-static CUresult (*pcuMemcpyDtoD_v2_ptds)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount);
-static CUresult (*pcuMemcpyDtoHAsync_v2_ptsz)(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream);
-static CUresult (*pcuMemcpyDtoH_v2_ptds)(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount);
+static CUresult (*pcuMemcpyDtoDAsync_v2_ptsz)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream);
+static CUresult (*pcuMemcpyDtoD_v2_ptds)(CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount);
+static CUresult (*pcuMemcpyDtoHAsync_v2_ptsz)(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream);
+static CUresult (*pcuMemcpyDtoH_v2_ptds)(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount);
 static CUresult (*pcuMemcpyHtoAAsync_v2_ptsz)(CUarray dstArray, size_t dstOffset, const void *srcHost, size_t ByteCount, CUstream hStream);
 static CUresult (*pcuMemcpyHtoA_v2_ptds)(CUarray dstArray, size_t dstOffset, const void *srcHost, size_t ByteCount);
 static CUresult (*pcuMemcpyHtoDAsync_v2_ptsz)(CUdeviceptr dstDevice, const void *srcHost, size_t ByteCount, CUstream hStream);
@@ -402,11 +402,11 @@ static CUresult (*pcuMemsetD2D16_v2_ptds)(CUdeviceptr dstDevice, size_t dstPitch
 static CUresult (*pcuMemsetD2D32Async_ptsz)(CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height, CUstream hStream);
 static CUresult (*pcuMemsetD2D32_v2_ptds)(CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height);
 static CUresult (*pcuMemsetD2D8Async_ptsz)(CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height, CUstream hStream);
-static CUresult (*pcuMemsetD2D8_v2_ptds)(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc, unsigned int Width, unsigned int Height);
+static CUresult (*pcuMemsetD2D8_v2_ptds)(CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc, size_t Width, size_t Height);
 static CUresult (*pcuMemsetD32Async_ptsz)(CUdeviceptr dstDevice, unsigned int ui, size_t N, CUstream hStream);
 static CUresult (*pcuMemsetD32_v2_ptds)(CUdeviceptr dstDevice, unsigned int ui, size_t N);
 static CUresult (*pcuMemsetD8Async_ptsz)(CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream);
-static CUresult (*pcuMemsetD8_v2_ptds)(CUdeviceptr dstDevice, unsigned char uc, unsigned int N);
+static CUresult (*pcuMemsetD8_v2_ptds)(CUdeviceptr dstDevice, unsigned char uc, size_t N);
 static CUresult (*pcuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags)(int *numBlocks, CUfunction func, int blockSize,
                                                                          size_t dynamicSMemSize, unsigned int flags);
 static CUresult (*pcuOccupancyMaxPotentialBlockSizeWithFlags)(int *minGridSize, int *blockSize, CUfunction func, void *blockSizeToDynamicSMemSize,
@@ -1737,9 +1737,9 @@ CUresult WINAPI wine_cuMemAlloc(CUdeviceptr *dptr, unsigned int bytesize)
     return pcuMemAlloc(dptr, bytesize);
 }
 
-CUresult WINAPI wine_cuMemAllocHost(void **pp, size_t bytesize)
+CUresult WINAPI wine_cuMemAllocHost(void **pp, unsigned int bytesize)
 {
-    TRACE("(%p, %lu)\n", pp, (SIZE_T)bytesize);
+    TRACE("(%p, %u)\n", pp, bytesize);
     return pcuMemAllocHost(pp, bytesize);
 }
 
@@ -1755,10 +1755,10 @@ CUresult WINAPI wine_cuMemAllocManaged(CUdeviceptr_v2 *dptr, size_t bytesize, un
     return pcuMemAllocManaged(dptr, bytesize, flags);
 }
 
-CUresult WINAPI wine_cuMemAllocPitch(CUdeviceptr *dptr, size_t *pPitch, size_t WidthInBytes,
-                                     size_t Height, unsigned int ElementSizeBytes)
+CUresult WINAPI wine_cuMemAllocPitch(CUdeviceptr *dptr, unsigned int *pPitch, unsigned int WidthInBytes,
+                                     unsigned int Height, unsigned int ElementSizeBytes)
 {
-    TRACE("(%p, %p, %lu, %lu, %u)\n", dptr, pPitch, (SIZE_T)WidthInBytes, (SIZE_T)Height, ElementSizeBytes);
+    TRACE("(%p, %p, %u, %u, %u)\n", dptr, pPitch, WidthInBytes, Height, ElementSizeBytes);
     return pcuMemAllocPitch(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes);
 }
 
@@ -1799,9 +1799,9 @@ CUresult WINAPI wine_cuMemGetAddressRange(CUdeviceptr *pbase, unsigned int *psiz
     return pcuMemGetAddressRange(pbase, psize, dptr);
 }
 
-CUresult WINAPI wine_cuMemGetAddressRange_v2(CUdeviceptr_v2 *pbase, unsigned int *psize, CUdeviceptr_v2 dptr)
+CUresult WINAPI wine_cuMemGetAddressRange_v2(CUdeviceptr_v2 *pbase, size_t *psize, CUdeviceptr_v2 dptr)
 {
-    TRACE("(%p, %p, " DEV_PTR ")\n", pbase, psize, dptr);
+    TRACE("(%p, %lu, " DEV_PTR ")\n", pbase, (SIZE_T)psize, dptr);
     return pcuMemGetAddressRange_v2(pbase, psize, dptr);
 }
 
@@ -1937,10 +1937,10 @@ CUresult WINAPI wine_cuMemcpyAsync(CUdeviceptr dst, CUdeviceptr src, size_t Byte
     return pcuMemcpyAsync(dst, src, ByteCount, hStream);
 }
 
-CUresult WINAPI wine_cuMemcpyAtoA(CUarray dstArray, size_t dstOffset, CUarray srcArray,
-                                  size_t srcOffset, size_t ByteCount)
+CUresult WINAPI wine_cuMemcpyAtoA(CUarray dstArray, unsigned int dstOffset, CUarray srcArray,
+                                  unsigned int srcOffset, unsigned int ByteCount)
 {
-    TRACE("(%p, %lu, %p, %lu, %lu)\n", dstArray, (SIZE_T)dstOffset, srcArray, (SIZE_T)srcOffset, (SIZE_T)ByteCount);
+    TRACE("(%p, %u, %p, %u, %u)\n", dstArray, dstOffset, srcArray, srcOffset, ByteCount);
     return pcuMemcpyAtoA(dstArray, dstOffset, srcArray, srcOffset, ByteCount);
 }
 
@@ -1951,9 +1951,9 @@ CUresult WINAPI wine_cuMemcpyAtoA_v2(CUarray dstArray, size_t dstOffset, CUarray
     return pcuMemcpyAtoA_v2(dstArray, dstOffset, srcArray, srcOffset, ByteCount);
 }
 
-CUresult WINAPI wine_cuMemcpyAtoD(CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount)
+CUresult WINAPI wine_cuMemcpyAtoD(CUdeviceptr dstDevice, CUarray srcArray, unsigned int srcOffset, unsigned int ByteCount)
 {
-    TRACE("(" DEV_PTR ", %p, %lu, %lu)\n", dstDevice, srcArray, (SIZE_T)srcOffset, (SIZE_T)ByteCount);
+    TRACE("(" DEV_PTR ", %p, %u, %u)\n", dstDevice, srcArray, srcOffset, ByteCount);
     return pcuMemcpyAtoD(dstDevice, srcArray, srcOffset, ByteCount);
 }
 
@@ -1963,15 +1963,15 @@ CUresult WINAPI wine_cuMemcpyAtoD_v2(CUdeviceptr dstDevice, CUarray srcArray, si
     return pcuMemcpyAtoD_v2(dstDevice, srcArray, srcOffset, ByteCount);
 }
 
-CUresult WINAPI wine_cuMemcpyAtoH(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount)
+CUresult WINAPI wine_cuMemcpyAtoH(void *dstHost, CUarray srcArray, unsigned int srcOffset, unsigned int ByteCount)
 {
-    TRACE("(%p, %p, %lu, %lu)\n", dstHost, srcArray, (SIZE_T)srcOffset, (SIZE_T)ByteCount);
+    TRACE("(%p, %p, %u, %u)\n", dstHost, srcArray, srcOffset, ByteCount);
     return pcuMemcpyAtoH(dstHost, srcArray, srcOffset, ByteCount);
 }
 
-CUresult WINAPI wine_cuMemcpyAtoHAsync(void *dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount, CUstream hStream)
+CUresult WINAPI wine_cuMemcpyAtoHAsync(void *dstHost, CUarray srcArray, unsigned int srcOffset, unsigned int ByteCount, CUstream hStream)
 {
-    TRACE("(%p, %p, %lu, %lu, %p)\n", dstHost, srcArray, (SIZE_T)srcOffset, (SIZE_T)ByteCount, hStream);
+    TRACE("(%p, %p, %u, %u, %p)\n", dstHost, srcArray, srcOffset, ByteCount, hStream);
     return pcuMemcpyAtoHAsync(dstHost, srcArray, srcOffset, ByteCount, hStream);
 }
 
@@ -1987,9 +1987,9 @@ CUresult WINAPI wine_cuMemcpyAtoH_v2(void *dstHost, CUarray srcArray, size_t src
     return pcuMemcpyAtoH_v2(dstHost, srcArray, srcOffset, ByteCount);
 }
 
-CUresult WINAPI wine_cuMemcpyDtoA(CUarray dstArray, size_t dstOffset, CUdeviceptr srcDevice, size_t ByteCount)
+CUresult WINAPI wine_cuMemcpyDtoA(CUarray dstArray, unsigned int dstOffset, CUdeviceptr srcDevice, unsigned int ByteCount)
 {
-    TRACE("(%p, %lu, " DEV_PTR ", %lu)\n", dstArray, (SIZE_T)dstOffset, srcDevice, (SIZE_T)ByteCount);
+    TRACE("(%p, %u, " DEV_PTR ", %u)\n", dstArray, dstOffset, srcDevice, ByteCount);
     return pcuMemcpyDtoA(dstArray, dstOffset, srcDevice, ByteCount);
 }
 
@@ -2013,15 +2013,15 @@ CUresult WINAPI wine_cuMemcpyDtoDAsync(CUdeviceptr dstDevice, CUdeviceptr srcDev
 }
 
 CUresult WINAPI wine_cuMemcpyDtoDAsync_v2(CUdeviceptr dstDevice, CUdeviceptr srcDevice,
-                                          unsigned int ByteCount, CUstream hStream)
+                                          size_t ByteCount, CUstream hStream)
 {
-    TRACE("(" DEV_PTR ", " DEV_PTR ", %u, %p)\n", dstDevice, srcDevice, ByteCount, hStream);
+    TRACE("(" DEV_PTR ", " DEV_PTR ", %lu, %p)\n", dstDevice, srcDevice, (SIZE_T)ByteCount, hStream);
     return pcuMemcpyDtoDAsync_v2(dstDevice, srcDevice, ByteCount, hStream);
 }
 
-CUresult WINAPI wine_cuMemcpyDtoD_v2(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount)
+CUresult WINAPI wine_cuMemcpyDtoD_v2(CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount)
 {
-    TRACE("(" DEV_PTR ", " DEV_PTR ", %u)\n", dstDevice, srcDevice, ByteCount);
+    TRACE("(" DEV_PTR ", " DEV_PTR ", %lu)\n", dstDevice, srcDevice, (SIZE_T)ByteCount);
     return pcuMemcpyDtoD_v2(dstDevice, srcDevice, ByteCount);
 }
 
@@ -2037,15 +2037,15 @@ CUresult WINAPI wine_cuMemcpyDtoHAsync(void *dstHost, CUdeviceptr srcDevice, uns
     return pcuMemcpyDtoHAsync(dstHost, srcDevice, ByteCount, hStream);
 }
 
-CUresult WINAPI wine_cuMemcpyDtoHAsync_v2(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream)
+CUresult WINAPI wine_cuMemcpyDtoHAsync_v2(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream)
 {
-    TRACE("(%p, " DEV_PTR ", %u, %p)\n", dstHost, srcDevice, ByteCount, hStream);
+    TRACE("(%p, " DEV_PTR ", %lu, %p)\n", dstHost, srcDevice, (SIZE_T)ByteCount, hStream);
     return pcuMemcpyDtoHAsync_v2(dstHost, srcDevice, ByteCount, hStream);
 }
 
-CUresult WINAPI wine_cuMemcpyDtoH_v2(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount)
+CUresult WINAPI wine_cuMemcpyDtoH_v2(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount)
 {
-    TRACE("(%p, " DEV_PTR ", %u)\n", dstHost, srcDevice, ByteCount);
+    TRACE("(%p, " DEV_PTR ", %lu)\n", dstHost, srcDevice, (SIZE_T)ByteCount);
     return pcuMemcpyDtoH_v2(dstHost, srcDevice, ByteCount);
 }
 
@@ -2055,10 +2055,10 @@ CUresult WINAPI wine_cuMemcpyHtoA(CUarray dstArray, size_t dstOffset, const void
     return pcuMemcpyHtoA(dstArray, dstOffset, srcHost, ByteCount);
 }
 
-CUresult WINAPI wine_cuMemcpyHtoAAsync(CUarray dstArray, size_t dstOffset, const void *srcHost,
-                                       size_t ByteCount, CUstream hStream)
+CUresult WINAPI wine_cuMemcpyHtoAAsync(CUarray dstArray, unsigned int dstOffset, const void *srcHost,
+                                       unsigned int ByteCount, CUstream hStream)
 {
-    TRACE("(%p, %lu, %p, %lu, %p)\n", dstArray, (SIZE_T)dstOffset, srcHost, (SIZE_T)ByteCount, hStream);
+    TRACE("(%p, %u, %p, %u, %p)\n", dstArray, dstOffset, srcHost, ByteCount, hStream);
     return pcuMemcpyHtoAAsync(dstArray, dstOffset, srcHost, ByteCount, hStream);
 }
 
@@ -2075,9 +2075,9 @@ CUresult WINAPI wine_cuMemcpyHtoA_v2(CUarray dstArray, size_t dstOffset, const v
     return pcuMemcpyHtoA_v2(dstArray, dstOffset, srcHost, ByteCount);
 }
 
-CUresult WINAPI wine_cuMemcpyHtoD(CUdeviceptr dstDevice, const void *srcHost, size_t ByteCount)
+CUresult WINAPI wine_cuMemcpyHtoD(CUdeviceptr dstDevice, const void *srcHost, unsigned int ByteCount)
 {
-    TRACE("(" DEV_PTR ", %p, %lu)\n", dstDevice, srcHost, (SIZE_T)ByteCount);
+    TRACE("(" DEV_PTR ", %p, %u)\n", dstDevice, srcHost, ByteCount);
     return pcuMemcpyHtoD(dstDevice, srcHost, ByteCount);
 }
 
@@ -2113,9 +2113,9 @@ CUresult WINAPI wine_cuMemcpyPeerAsync(CUdeviceptr dstDevice, CUcontext dstConte
     return pcuMemcpyPeerAsync(dstDevice, dstContext, srcDevice, srcContext, ByteCount, hStream);
 }
 
-CUresult WINAPI wine_cuMemsetD16(CUdeviceptr dstDevice, unsigned short us, size_t N)
+CUresult WINAPI wine_cuMemsetD16(CUdeviceptr dstDevice, unsigned short us, unsigned int N)
 {
-    TRACE("(" DEV_PTR ", %u, %lu)\n", dstDevice, us, (SIZE_T)N);
+    TRACE("(" DEV_PTR ", %u, %u)\n", dstDevice, us, N);
     return pcuMemsetD16(dstDevice, us, N);
 }
 
@@ -2131,9 +2131,9 @@ CUresult WINAPI wine_cuMemsetD16_v2(CUdeviceptr dstDevice, unsigned short us, si
     return pcuMemsetD16_v2(dstDevice, us, N);
 }
 
-CUresult WINAPI wine_cuMemsetD2D16(CUdeviceptr dstDevice, size_t dstPitch, unsigned short us, size_t Width, size_t Height)
+CUresult WINAPI wine_cuMemsetD2D16(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned short us, unsigned int Width, unsigned int Height)
 {
-    TRACE("(" DEV_PTR ", %lu, %u, %lu, %lu)\n", dstDevice, (SIZE_T)dstPitch, us, (SIZE_T)Width, (SIZE_T)Height);
+    TRACE("(" DEV_PTR ", %u, %u, %u, %u)\n", dstDevice, dstPitch, us, Width, Height);
     return pcuMemsetD2D16(dstDevice, dstPitch, us, Width, Height);
 }
 
@@ -2150,9 +2150,9 @@ CUresult WINAPI wine_cuMemsetD2D16_v2(CUdeviceptr dstDevice, size_t dstPitch, un
     return pcuMemsetD2D16_v2(dstDevice, dstPitch, us, Width, Height);
 }
 
-CUresult WINAPI wine_cuMemsetD2D32(CUdeviceptr dstDevice, size_t dstPitch, unsigned int ui, size_t Width, size_t Height)
+CUresult WINAPI wine_cuMemsetD2D32(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned int ui, unsigned int Width, unsigned int Height)
 {
-    TRACE("(" DEV_PTR ", %lu, %u, %lu, %lu)\n", dstDevice, (SIZE_T)dstPitch, ui, (SIZE_T)Width, (SIZE_T)Height);
+    TRACE("(" DEV_PTR ", %u, %u, %u, %u)\n", dstDevice, dstPitch, ui, Width, Height);
     return pcuMemsetD2D32(dstDevice, dstPitch, ui, Width, Height);
 }
 
@@ -2183,16 +2183,16 @@ CUresult WINAPI wine_cuMemsetD2D8Async(CUdeviceptr dstDevice, size_t dstPitch, u
     return pcuMemsetD2D8Async(dstDevice, dstPitch, uc, Width, Height, hStream);
 }
 
-CUresult WINAPI wine_cuMemsetD2D8_v2(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc,
-                                     unsigned int Width, unsigned int Height)
+CUresult WINAPI wine_cuMemsetD2D8_v2(CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc,
+                                     size_t Width, size_t Height)
 {
-    TRACE("(" DEV_PTR ", %u, %x, %u, %u)\n", dstDevice, dstPitch, uc, Width, Height);
+    TRACE("(" DEV_PTR ", %lu, %x, %lu, %lu)\n", dstDevice, (SIZE_T)dstPitch, uc, (SIZE_T)Width, (SIZE_T)Height);
     return pcuMemsetD2D8_v2(dstDevice, dstPitch, uc, Width, Height);
 }
 
-CUresult WINAPI wine_cuMemsetD32(CUdeviceptr dstDevice, unsigned int ui, size_t N)
+CUresult WINAPI wine_cuMemsetD32(CUdeviceptr dstDevice, unsigned int ui, unsigned int N)
 {
-    TRACE("(" DEV_PTR ", %u, %lu)\n", dstDevice, ui, (SIZE_T)N);
+    TRACE("(" DEV_PTR ", %u, %u)\n", dstDevice, ui, N);
     return pcuMemsetD32(dstDevice, ui, N);
 }
 
@@ -2220,9 +2220,9 @@ CUresult WINAPI wine_cuMemsetD8Async(CUdeviceptr dstDevice, unsigned char uc, si
     return pcuMemsetD8Async(dstDevice, uc, N, hStream);
 }
 
-CUresult WINAPI wine_cuMemsetD8_v2(CUdeviceptr dstDevice, unsigned char uc, unsigned int N)
+CUresult WINAPI wine_cuMemsetD8_v2(CUdeviceptr dstDevice, unsigned char uc, size_t N)
 {
-    TRACE("(" DEV_PTR ", %x, %u)\n", dstDevice, uc, N);
+    TRACE("(" DEV_PTR ", %x, %lu)\n", dstDevice, uc, (SIZE_T)N);
     return pcuMemsetD8_v2(dstDevice, uc, N);
 }
 
@@ -2251,7 +2251,7 @@ CUresult WINAPI wine_cuModuleGetFunction(CUfunction *hfunc, CUmodule hmod, const
     return pcuModuleGetFunction(hfunc, hmod, name);
 }
 
-CUresult WINAPI wine_cuModuleGetGlobal(CUdeviceptr *dptr, size_t *bytes, CUmodule hmod, const char *name)
+CUresult WINAPI wine_cuModuleGetGlobal(CUdeviceptr *dptr, unsigned int *bytes, CUmodule hmod, const char *name)
 {
     TRACE("(%p, %p, %p, %s)\n", dptr, bytes, hmod, name);
     return pcuModuleGetGlobal(dptr, bytes, hmod, name);
@@ -2710,16 +2710,16 @@ CUresult WINAPI wine_cuTexRefSetAddress2D(CUtexref hTexRef, const CUDA_ARRAY_DES
 }
 
 CUresult WINAPI wine_cuTexRefSetAddress2D_v2(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc,
-                                             CUdeviceptr dptr, unsigned int Pitch)
+                                             CUdeviceptr dptr, size_t Pitch)
 {
-    TRACE("(%p, %p, " DEV_PTR ", %u)\n", hTexRef, desc, dptr, Pitch);
+    TRACE("(%p, %p, " DEV_PTR ", %lu)\n", hTexRef, desc, dptr, (SIZE_T)Pitch);
     return pcuTexRefSetAddress2D_v2(hTexRef, desc, dptr, Pitch);
 }
 
 CUresult WINAPI wine_cuTexRefSetAddress2D_v3(CUtexref hTexRef, const CUDA_ARRAY_DESCRIPTOR *desc,
-                                             CUdeviceptr dptr, unsigned int Pitch)
+                                             CUdeviceptr dptr, size_t Pitch)
 {
-    TRACE("(%p, %p, " DEV_PTR ", %u)\n", hTexRef, desc, dptr, Pitch);
+    TRACE("(%p, %p, " DEV_PTR ", %lu)\n", hTexRef, desc, dptr, (SIZE_T)Pitch);
     return pcuTexRefSetAddress2D_v3(hTexRef, desc, dptr, Pitch);
 }
 
@@ -3027,27 +3027,27 @@ CUresult WINAPI wine_cuMemcpyDtoA_v2_ptds(CUarray dstArray, size_t dstOffset, CU
 }
 
 CUresult WINAPI wine_cuMemcpyDtoDAsync_v2_ptsz(CUdeviceptr dstDevice, CUdeviceptr srcDevice,
-                                               unsigned int ByteCount, CUstream hStream)
+                                               size_t ByteCount, CUstream hStream)
 {
-    TRACE("(" DEV_PTR ", " DEV_PTR ", %u, %p)\n", dstDevice, srcDevice, ByteCount, hStream);
+    TRACE("(" DEV_PTR ", " DEV_PTR ", %lu, %p)\n", dstDevice, srcDevice, (SIZE_T)ByteCount, hStream);
     return pcuMemcpyDtoDAsync_v2_ptsz(dstDevice, srcDevice, ByteCount, hStream);
 }
 
-CUresult WINAPI wine_cuMemcpyDtoD_v2_ptds(CUdeviceptr dstDevice, CUdeviceptr srcDevice, unsigned int ByteCount)
+CUresult WINAPI wine_cuMemcpyDtoD_v2_ptds(CUdeviceptr dstDevice, CUdeviceptr srcDevice, size_t ByteCount)
 {
-    TRACE("(" DEV_PTR ", " DEV_PTR ", %u)\n", dstDevice, srcDevice, ByteCount);
+    TRACE("(" DEV_PTR ", " DEV_PTR ", %lu)\n", dstDevice, srcDevice, (SIZE_T)ByteCount);
     return pcuMemcpyDtoD_v2_ptds(dstDevice, srcDevice, ByteCount);
 }
 
-CUresult WINAPI wine_cuMemcpyDtoHAsync_v2_ptsz(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream)
+CUresult WINAPI wine_cuMemcpyDtoHAsync_v2_ptsz(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount, CUstream hStream)
 {
-    TRACE("(%p, " DEV_PTR ", %u, %p)\n", dstHost, srcDevice, ByteCount, hStream);
+    TRACE("(%p, " DEV_PTR ", %lu, %p)\n", dstHost, srcDevice, (SIZE_T)ByteCount, hStream);
     return pcuMemcpyDtoHAsync_v2_ptsz(dstHost, srcDevice, ByteCount, hStream);
 }
 
-CUresult WINAPI wine_cuMemcpyDtoH_v2_ptds(void *dstHost, CUdeviceptr srcDevice, unsigned int ByteCount)
+CUresult WINAPI wine_cuMemcpyDtoH_v2_ptds(void *dstHost, CUdeviceptr srcDevice, size_t ByteCount)
 {
-    TRACE("(%p, " DEV_PTR ", %u)\n", dstHost, srcDevice, ByteCount);
+    TRACE("(%p, " DEV_PTR ", %lu)\n", dstHost, srcDevice, (SIZE_T)ByteCount);
     return pcuMemcpyDtoH_v2_ptds(dstHost, srcDevice, ByteCount);
 }
 
@@ -3141,10 +3141,10 @@ CUresult WINAPI wine_cuMemsetD2D8Async_ptsz(CUdeviceptr dstDevice, size_t dstPit
     return pcuMemsetD2D8Async_ptsz(dstDevice, dstPitch, uc, Width, Height, hStream);
 }
 
-CUresult WINAPI wine_cuMemsetD2D8_v2_ptds(CUdeviceptr dstDevice, unsigned int dstPitch, unsigned char uc,
-                                     unsigned int Width, unsigned int Height)
+CUresult WINAPI wine_cuMemsetD2D8_v2_ptds(CUdeviceptr dstDevice, size_t dstPitch, unsigned char uc,
+                                     size_t Width, size_t Height)
 {
-    TRACE("(" DEV_PTR ", %u, %x, %u, %u)\n", dstDevice, dstPitch, uc, Width, Height);
+    TRACE("(" DEV_PTR ", %lu, %x, %lu, %lu)\n", dstDevice, (SIZE_T)dstPitch, uc, (SIZE_T)Width, (SIZE_T)Height);
     return pcuMemsetD2D8_v2_ptds(dstDevice, dstPitch, uc, Width, Height);
 }
 
@@ -3166,9 +3166,9 @@ CUresult WINAPI wine_cuMemsetD8Async_ptsz(CUdeviceptr dstDevice, unsigned char u
     return pcuMemsetD8Async_ptsz(dstDevice, uc, N, hStream);
 }
 
-CUresult WINAPI wine_cuMemsetD8_v2_ptds(CUdeviceptr dstDevice, unsigned char uc, unsigned int N)
+CUresult WINAPI wine_cuMemsetD8_v2_ptds(CUdeviceptr dstDevice, unsigned char uc, size_t N)
 {
-    TRACE("(" DEV_PTR ", %x, %u)\n", dstDevice, uc, N);
+    TRACE("(" DEV_PTR ", %x, %lu)\n", dstDevice, uc, (SIZE_T)N);
     return pcuMemsetD8_v2_ptds(dstDevice, uc, N);
 }
 
