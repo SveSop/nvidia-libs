@@ -47,6 +47,12 @@ typedef unsigned int CUdeviceptr_v2;
 #endif
 typedef CUdeviceptr_v2 CUdeviceptr;
 
+typedef enum CUdriverProcAddressQueryResult_enum {
+    CU_GET_PROC_ADDRESS_SUCCESS                = 0,
+    CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND       = 1,
+    CU_GET_PROC_ADDRESS_VERSION_NOT_SUFFICIENT = 2
+}  CUdriverProcAddressQueryResult;
+
 typedef unsigned long long CUmemGenericAllocationHandle_v1;
 typedef CUmemGenericAllocationHandle_v1 CUmemGenericAllocationHandle;
 typedef int CUGLDeviceList;

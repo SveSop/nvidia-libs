@@ -675,3 +675,5 @@
 @ stdcall cuMulticastCreate(ptr ptr) wine_cuMulticastCreate
 @ stdcall cuMulticastGetGranularity(ptr ptr ptr) wine_cuMulticastGetGranularity
 @ stdcall cuMulticastUnbind(long long long long) wine_cuMulticastUnbind
+@ stdcall cuGetProcAddress(ptr ptr long long) wine_cuGetProcAddress
+@ stdcall cuGetProcAddress_v2(ptr ptr long long ptr) wine_cuGetProcAddress_v2
