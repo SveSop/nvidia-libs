@@ -47,6 +47,8 @@ typedef unsigned int CUdeviceptr_v2;
 #endif
 typedef CUdeviceptr_v2 CUdeviceptr;
 
+typedef unsigned long long CUmemGenericAllocationHandle_v1;
+typedef CUmemGenericAllocationHandle_v1 CUmemGenericAllocationHandle;
 typedef int CUGLDeviceList;
 typedef int CUaddress_mode;
 typedef int CUarray_format;
