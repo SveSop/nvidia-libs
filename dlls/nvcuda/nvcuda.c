@@ -433,6 +433,7 @@ static CUresult (*pcuStreamWriteValue64)(CUstream stream, CUdeviceptr_v2 addr, c
 static CUresult (*pcuStreamBatchMemOp)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
 static CUresult (*pcuMemAdvise)(CUdeviceptr_v2 devPtr, size_t count, void *advice, CUdevice_v1 device);
 static CUresult (*pcuMemPrefetchAsync)(CUdeviceptr_v2 devPtr, size_t count, CUdevice_v1 dstDevice, CUstream hStream);
+static CUresult (*pcuMemPrefetchAsync_ptsz)(CUdeviceptr_v2 devPtr, size_t count, CUdevice_v1 dstDevice, CUstream hStream);
 static CUresult (*pcuMemRangeGetAttribute)(void *data, size_t dataSize, void *attribute, CUdeviceptr_v2 devPtr, size_t count);
 static CUresult (*pcuMemRangeGetAttributes)(void **data, size_t *dataSizes, void *attributes, size_t numAttributes, CUdeviceptr_v2 devPtr, size_t count);
 
@@ -446,6 +447,7 @@ static CUresult (*pcuStreamGetCtx)(CUstream hStream, CUcontext *pctx);
 static CUresult (*pcuDeviceGetUuid)(CUuuid *uuid, CUdevice dev);
 static CUresult (*pcuDeviceGetLuid)(char *luid, unsigned int *deviceNodeMask, CUdevice dev);
 static CUresult (*pcuStreamIsCapturing)(CUstream hStream, CUstreamCaptureStatus *captureStatus);
+static CUresult (*pcuStreamIsCapturing_ptsz)(CUstream hStream, CUstreamCaptureStatus *captureStatus);
 static CUresult (*pcuGraphCreate)(CUgraph *phGraph, unsigned int flags);
 static CUresult (*pcuGraphAddMemcpyNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_MEMCPY3D *copyParams, CUcontext ctx);
 static CUresult (*pcuGraphAddMemsetNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const CUDA_NODE_PARAMS *memsetParams, CUcontext ctx);
@@ -455,9 +457,12 @@ static CUresult (*pcuGraphGetNodes)(CUgraph hGraph, CUgraphNode *nodes, size_t *
 static CUresult (*pcuGraphInstantiate)(CUgraphExec *phGraphExec, CUgraph hGraph, CUgraphNode *phErrorNode, char *logBuffer, size_t bufferSize);
 static CUresult (*pcuGraphClone)(CUgraph *phGraphClone, CUgraph originalGraph);
 static CUresult (*pcuGraphLaunch)(CUgraphExec hGraphExec, CUstream hStream);
+static CUresult (*pcuGraphLaunch_ptsz)(CUgraphExec hGraphExec, CUstream hStream);
 static CUresult (*pcuGraphExecKernelNodeSetParams)(CUgraphExec hGraphExec, CUgraphNode hNode, const CUDA_NODE_PARAMS *nodeParams);
 static CUresult (*pcuStreamBeginCapture_v2)(CUstream hStream, CUstreamCaptureMode mode);
+static CUresult (*pcuStreamBeginCapture_v2_ptsz)(CUstream hStream, CUstreamCaptureMode mode);
 static CUresult (*pcuStreamEndCapture)(CUstream hStream, CUgraph *phGraph);
+static CUresult (*pcuStreamEndCapture_ptsz)(CUstream hStream, CUgraph *phGraph);
 static CUresult (*pcuGraphDestroyNode)(CUgraphNode hNode);
 static CUresult (*pcuGraphDestroy)(CUgraph hGraph);
 static CUresult (*pcuGraphExecDestroy)(CUgraphExec hGraphExec);
@@ -469,7 +474,9 @@ static CUresult (*pcuExternalMemoryGetMappedMipmappedArray)(CUmipmappedArray *mi
 static CUresult (*pcuDestroyExternalMemory)(void *extMem);
 static CUresult (*pcuImportExternalSemaphore)(void *extSem_out, const void *semHandleDesc);
 static CUresult (*pcuSignalExternalSemaphoresAsync)(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream);
+static CUresult (*pcuSignalExternalSemaphoresAsync_ptsz)(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream);
 static CUresult (*pcuWaitExternalSemaphoresAsync)(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream);
+static CUresult (*pcuWaitExternalSemaphoresAsync_ptsz)(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream);
 static CUresult (*pcuDestroyExternalSemaphore)(void *extSem);
 static CUresult (*pcuOccupancyAvailableDynamicSMemPerBlock)(size_t *dynamicSmemSize, CUfunction func, int numBlocks, int blockSize);
 static CUresult (*pcuGraphKernelNodeGetParams)(CUgraphNode hNode, void *nodeParams);
@@ -497,17 +504,22 @@ static CUresult (*pcuGraphExecHostNodeSetParams)(CUgraphExec hGraphExec, CUgraph
 static CUresult (*pcuThreadExchangeStreamCaptureMode)(CUstreamCaptureMode *mode);
 static CUresult (*pcuGraphExecUpdate)(CUgraphExec hGraphExec, CUgraph hGraph, CUgraphNode *hErrorNode_out, void *updateResult_out);
 static CUresult (*pcuMemSetAccess)(CUdeviceptr_v2 ptr, size_t size, const void *desc, size_t count);
-static CUresult (*pcuStreamBeginCapture)(CUstream hStream, CUstreamCaptureMode mode);
+static CUresult (*pcuStreamBeginCapture)(CUstream hStream);
+static CUresult (*pcuStreamBeginCapture_ptsz)(CUstream hStream);
 static CUresult (*pcuMemCreate)(CUmemGenericAllocationHandle_v1 *handle, size_t size, const void *prop, unsigned long long flags);
 static CUresult (*pcuMemRelease)(CUmemGenericAllocationHandle_v1 handle);
 static CUresult (*pcuMemAddressFree)(CUdeviceptr_v2 ptr, size_t size);
 static CUresult (*pcuMemGetAccess)(unsigned long long *flags, const void *location, CUdeviceptr_v2 ptr);
 static CUresult (*pcuMemMap)(CUdeviceptr_v2 ptr, size_t size, size_t offset, CUmemGenericAllocationHandle_v1 handle, unsigned long long flags);
 static CUresult (*pcuMemUnmap)(CUdeviceptr_v2 ptr, size_t size);
+static CUresult (*pcuStreamGetCaptureInfo)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out);
+static CUresult (*pcuStreamGetCaptureInfo_ptsz)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out);
 
 /* Cuda 11 */
-static CUresult (*pcuMemAllocAsync)(CUdeviceptr *dptr, size_t bytesize, CUstream hStream);
-static CUresult (*pcuMemFreeAsync)(CUdeviceptr dptr, CUstream hStream);
+static CUresult (*pcuMemAllocAsync)(CUdeviceptr_v2 *dptr, size_t bytesize, CUstream hStream);
+static CUresult (*pcuMemAllocAsync_ptsz)(CUdeviceptr_v2 *dptr, size_t bytesize, CUstream hStream);
+static CUresult (*pcuMemFreeAsync)(CUdeviceptr_v2 dptr, CUstream hStream);
+static CUresult (*pcuMemFreeAsync_ptsz)(CUdeviceptr_v2 dptr, CUstream hStream);
 static CUresult (*pcuGraphAddMemAllocNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, CUDA_NODE_PARAMS *nodeParams);
 static CUresult (*pcuGraphAddMemFreeNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, CUdeviceptr dptr);
 static CUresult (*pcuDeviceGetGraphMemAttribute)(CUdevice device, CUgraphMem_attribute attr, void* value);
@@ -541,9 +553,13 @@ static CUresult (*pcuArrayGetSparseProperties)(void *sparseProperties, CUarray a
 static CUresult (*pcuArrayGetPlane)(CUarray *pPlaneArray, CUarray hArray, unsigned int planeIdx);
 static CUresult (*pcuMipmappedArrayGetSparseProperties)(void *sparseProperties, CUmipmappedArray mipmap);
 static CUresult (*pcuEventRecordWithFlags)(CUevent hEvent, CUstream hStream, unsigned int flags);
+static CUresult (*pcuEventRecordWithFlags_ptsz)(CUevent hEvent, CUstream hStream, unsigned int flags);
 static CUresult (*pcuStreamCopyAttributes)(CUstream dstStream, CUstream srcStream);
+static CUresult (*pcuStreamCopyAttributes_ptsz)(CUstream dstStream, CUstream srcStream);
 static CUresult (*pcuStreamGetAttribute)(CUstream hStream, void *attr, void *value);
+static CUresult (*pcuStreamGetAttribute_ptsz)(CUstream hStream, void *attr, void *value);
 static CUresult (*pcuStreamSetAttribute)(CUstream hStream, void *attr, const void *param);
+static CUresult (*pcuStreamSetAttribute_ptsz)(CUstream hStream, void *attr, const void *param);
 static CUresult (*pcuGraphAddEventRecordNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, CUevent event);
 static CUresult (*pcuGraphEventRecordNodeGetEvent)(CUgraphNode hNode, CUevent *event_out);
 static CUresult (*pcuGraphEventRecordNodeSetEvent)(CUgraphNode hNode, CUevent event);
@@ -562,9 +578,13 @@ static CUresult (*pcuGraphMemAllocNodeGetParams)(CUgraphNode hNode, void *params
 static CUresult (*pcuGraphMemFreeNodeGetParams)(CUgraphNode hNode, CUdeviceptr *dptr_out);
 static CUresult (*pcuGraphInstantiateWithFlags)(CUgraphExec *phGraphExec, CUgraph hGraph, unsigned long long flags);
 static CUresult (*pcuGraphUpload)(CUgraphExec hGraphExec, CUstream hStream);
-static CUresult (*pcuStreamGetCaptureInfo)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+static CUresult (*pcuGraphUpload_ptsz)(CUgraphExec hGraphExec, CUstream hStream);
+static CUresult (*pcuStreamGetCaptureInfo_v2)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+                                           size_t *numDependencies_out);
+static CUresult (*pcuStreamGetCaptureInfo_v2_ptsz)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
                                            size_t *numDependencies_out);
 static CUresult (*pcuStreamUpdateCaptureDependencies)(CUstream hStream, CUgraphNode *dependencies, size_t numDependencies, unsigned int flags);
+static CUresult (*pcuStreamUpdateCaptureDependencies_ptsz)(CUstream hStream, CUgraphNode *dependencies, size_t numDependencies, unsigned int flags);
 static CUresult (*pcuGraphExecChildGraphNodeSetParams)(CUgraphExec hGraphExec, CUgraphNode hNode, CUgraph childGraph);
 static CUresult (*pcuGraphExecEventRecordNodeSetEvent)(CUgraphExec hGraphExec, CUgraphNode hNode, CUevent event);
 static CUresult (*pcuGraphExecEventWaitNodeSetEvent)(CUgraphExec hGraphExec, CUgraphNode hNode, CUevent event);
@@ -589,6 +609,8 @@ static CUresult (*pcuStreamWaitValue64_v2)(CUstream stream, CUdeviceptr_v2 addr,
 static CUresult (*pcuStreamWriteValue64_v2)(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags);
 static CUresult (*pcuGraphInstantiate_v2)(CUgraphExec *phGraphExec, CUgraph hGraph, CUgraphNode *phErrorNode, char *logBuffer, size_t bufferSize);
 static CUresult (*pcuGetProcAddress)(const char *symbol, void **pfn, int driverVersion, cuuint64_t flags);
+static CUresult (*pcuStreamBatchMemOp_v2)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
+static CUresult (*pcuIpcOpenMemHandle_v2)(CUdeviceptr_v2 *pdptr, CUipcMemHandle handle, unsigned int Flags);
 
 /* Cuda 12 */
 static CUresult (*pcuLibraryLoadData)(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
@@ -618,6 +640,8 @@ static CUresult (*pcuMulticastBindAddr)(CUmemGenericAllocationHandle mcHandle, s
 static CUresult (*pcuMulticastUnbind)(CUmemGenericAllocationHandle mcHandle, CUdevice dev, size_t mcOffset, size_t size);
 static CUresult (*pcuMulticastGetGranularity)(size_t *granularity, const void *prop, void *option);
 static CUresult (*pcuGetProcAddress_v2)(const char *symbol, void **pfn, int driverVersion, cuuint64_t flags, CUdriverProcAddressQueryResult *symbolFound);
+static CUresult (*pcuStreamGetId)(CUstream hStream, unsigned long long *streamId);
+static CUresult (*pcuStreamGetId_ptsz)(CUstream hStream, unsigned long long *streamId);
 
 static void *cuda_handle = NULL;
 
@@ -984,6 +1008,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuStreamBatchMemOp);
     LOAD_FUNCPTR(cuMemAdvise);
     LOAD_FUNCPTR(cuMemPrefetchAsync);
+    LOAD_FUNCPTR(cuMemPrefetchAsync_ptsz);
     LOAD_FUNCPTR(cuMemRangeGetAttribute);
     LOAD_FUNCPTR(cuMemRangeGetAttributes);
 
@@ -996,6 +1021,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuDeviceGetUuid);
     LOAD_FUNCPTR(cuDeviceGetLuid);
     LOAD_FUNCPTR(cuStreamIsCapturing);
+    LOAD_FUNCPTR(cuStreamIsCapturing_ptsz);
     LOAD_FUNCPTR(cuGraphCreate);
     LOAD_FUNCPTR(cuGraphAddMemcpyNode);
     LOAD_FUNCPTR(cuGraphAddMemsetNode);
@@ -1005,9 +1031,12 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuGraphInstantiate);
     LOAD_FUNCPTR(cuGraphClone);
     LOAD_FUNCPTR(cuGraphLaunch);
+    LOAD_FUNCPTR(cuGraphLaunch_ptsz);
     LOAD_FUNCPTR(cuGraphExecKernelNodeSetParams);
     LOAD_FUNCPTR(cuStreamBeginCapture_v2);
+    LOAD_FUNCPTR(cuStreamBeginCapture_v2_ptsz);
     LOAD_FUNCPTR(cuStreamEndCapture);
+    LOAD_FUNCPTR(cuStreamEndCapture_ptsz);
     LOAD_FUNCPTR(cuGraphDestroyNode);
     LOAD_FUNCPTR(cuGraphDestroy);
     LOAD_FUNCPTR(cuGraphExecDestroy);
@@ -1019,7 +1048,9 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuDestroyExternalMemory);
     LOAD_FUNCPTR(cuImportExternalSemaphore);
     LOAD_FUNCPTR(cuSignalExternalSemaphoresAsync);
+    LOAD_FUNCPTR(cuSignalExternalSemaphoresAsync_ptsz);
     LOAD_FUNCPTR(cuWaitExternalSemaphoresAsync);
+    LOAD_FUNCPTR(cuWaitExternalSemaphoresAsync_ptsz);
     LOAD_FUNCPTR(cuDestroyExternalSemaphore);
     LOAD_FUNCPTR(cuOccupancyAvailableDynamicSMemPerBlock);
     LOAD_FUNCPTR(cuGraphKernelNodeGetParams);
@@ -1048,16 +1079,21 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuGraphExecUpdate);
     LOAD_FUNCPTR(cuMemSetAccess);
     LOAD_FUNCPTR(cuStreamBeginCapture);
+    LOAD_FUNCPTR(cuStreamBeginCapture_ptsz);
     LOAD_FUNCPTR(cuMemCreate);
     LOAD_FUNCPTR(cuMemRelease);
     LOAD_FUNCPTR(cuMemAddressFree);
     LOAD_FUNCPTR(cuMemGetAccess);
     LOAD_FUNCPTR(cuMemMap);
     LOAD_FUNCPTR(cuMemUnmap);
+    LOAD_FUNCPTR(cuStreamGetCaptureInfo);
+    LOAD_FUNCPTR(cuStreamGetCaptureInfo_ptsz);
 
     /* CUDA 11 */
     TRY_LOAD_FUNCPTR(cuMemAllocAsync);
+    TRY_LOAD_FUNCPTR(cuMemAllocAsync_ptsz);
     TRY_LOAD_FUNCPTR(cuMemFreeAsync);
+    TRY_LOAD_FUNCPTR(cuMemFreeAsync_ptsz);
     TRY_LOAD_FUNCPTR(cuGraphAddMemAllocNode);
     TRY_LOAD_FUNCPTR(cuGraphAddMemFreeNode);
     TRY_LOAD_FUNCPTR(cuDeviceGetGraphMemAttribute);
@@ -1091,9 +1127,13 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuArrayGetPlane);
     TRY_LOAD_FUNCPTR(cuMipmappedArrayGetSparseProperties);
     TRY_LOAD_FUNCPTR(cuEventRecordWithFlags);
+    TRY_LOAD_FUNCPTR(cuEventRecordWithFlags_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamCopyAttributes);
+    TRY_LOAD_FUNCPTR(cuStreamCopyAttributes_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamGetAttribute);
+    TRY_LOAD_FUNCPTR(cuStreamGetAttribute_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamSetAttribute);
+    TRY_LOAD_FUNCPTR(cuStreamSetAttribute_ptsz);
     TRY_LOAD_FUNCPTR(cuGraphAddEventRecordNode);
     TRY_LOAD_FUNCPTR(cuGraphEventRecordNodeGetEvent);
     TRY_LOAD_FUNCPTR(cuGraphEventRecordNodeSetEvent);
@@ -1112,8 +1152,11 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphMemFreeNodeGetParams);
     TRY_LOAD_FUNCPTR(cuGraphInstantiateWithFlags);
     TRY_LOAD_FUNCPTR(cuGraphUpload);
-    TRY_LOAD_FUNCPTR(cuStreamGetCaptureInfo);
+    TRY_LOAD_FUNCPTR(cuGraphUpload_ptsz);
+    TRY_LOAD_FUNCPTR(cuStreamGetCaptureInfo_v2);
+    TRY_LOAD_FUNCPTR(cuStreamGetCaptureInfo_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamUpdateCaptureDependencies);
+    TRY_LOAD_FUNCPTR(cuStreamUpdateCaptureDependencies_ptsz);
     TRY_LOAD_FUNCPTR(cuGraphExecChildGraphNodeSetParams);
     TRY_LOAD_FUNCPTR(cuGraphExecEventRecordNodeSetEvent);
     TRY_LOAD_FUNCPTR(cuGraphExecEventWaitNodeSetEvent);
@@ -1138,6 +1181,8 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuStreamWriteValue64_v2);
     TRY_LOAD_FUNCPTR(cuGraphInstantiate_v2);
     TRY_LOAD_FUNCPTR(cuGetProcAddress);
+    TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_v2);
+    TRY_LOAD_FUNCPTR(cuIpcOpenMemHandle_v2);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -1164,6 +1209,8 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuMulticastUnbind);
     TRY_LOAD_FUNCPTR(cuMulticastGetGranularity);
     TRY_LOAD_FUNCPTR(cuGetProcAddress_v2);
+    TRY_LOAD_FUNCPTR(cuStreamGetId);
+    TRY_LOAD_FUNCPTR(cuStreamGetId_ptsz);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -2308,7 +2355,7 @@ CUresult WINAPI wine_cuModuleGetGlobal(CUdeviceptr *dptr, unsigned int *bytes, C
     return pcuModuleGetGlobal(dptr, bytes, hmod, name);
 }
 
-CUresult WINAPI wine_cuModuleGetGlobal_v2(CUdeviceptr *dptr, size_t *bytes, CUmodule hmod, const char *name)
+CUresult WINAPI wine_cuModuleGetGlobal_v2(CUdeviceptr_v2 *dptr, size_t *bytes, CUmodule hmod, const char *name)
 {
     TRACE("(%p, %p, %p, %s)\n", dptr, bytes, hmod, name);
     return pcuModuleGetGlobal_v2(dptr, bytes, hmod, name);
@@ -3350,6 +3397,12 @@ CUresult WINAPI wine_cuMemPrefetchAsync(CUdeviceptr_v2 devPtr, size_t count, CUd
     return pcuMemPrefetchAsync(devPtr, count, dstDevice, hStream);
 }
 
+CUresult WINAPI wine_cuMemPrefetchAsync_ptsz(CUdeviceptr_v2 devPtr, size_t count, CUdevice_v1 dstDevice, CUstream hStream)
+{
+    TRACE("(" DEV_PTR ", %zd, %d, %p)\n", devPtr, count, dstDevice, hStream);
+    return pcuMemPrefetchAsync_ptsz(devPtr, count, dstDevice, hStream);
+}
+
 CUresult WINAPI wine_cuMemRangeGetAttribute(void *data, size_t dataSize, void *attribute, CUdeviceptr_v2 devPtr, size_t count)
 {
     TRACE("(%p, %lu, %p, " DEV_PTR ", %lu)\n", data, (SIZE_T)dataSize, attribute, devPtr, (SIZE_T)count);
@@ -3422,6 +3475,12 @@ CUresult WINAPI wine_cuStreamIsCapturing(CUstream hStream, CUstreamCaptureStatus
     return pcuStreamIsCapturing(hStream, captureStatus);
 }
 
+CUresult WINAPI wine_cuStreamIsCapturing_ptsz(CUstream hStream, CUstreamCaptureStatus *captureStatus)
+{
+    TRACE("(%p, %p)\n", hStream, captureStatus);
+    return pcuStreamIsCapturing_ptsz(hStream, captureStatus);
+}
+
 CUresult WINAPI wine_cuGraphCreate(CUgraph *phGraph, unsigned int flags)
 {
     TRACE("(%p, %d)\n", phGraph, flags);
@@ -3476,6 +3535,12 @@ CUresult WINAPI wine_cuGraphLaunch(CUgraphExec hGraphExec, CUstream hStream)
     return pcuGraphLaunch(hGraphExec, hStream);
 }
 
+CUresult WINAPI wine_cuGraphLaunch_ptsz(CUgraphExec hGraphExec, CUstream hStream)
+{
+    TRACE("(%p, %p)\n", hGraphExec, hStream);
+    return pcuGraphLaunch_ptsz(hGraphExec, hStream);
+}
+
 CUresult WINAPI wine_cuGraphExecKernelNodeSetParams(CUgraphExec hGraphExec, CUgraphNode hNode, const CUDA_NODE_PARAMS *nodeParams)
 {
     TRACE("(%p, %p, %p)\n", hGraphExec, hNode, nodeParams);
@@ -3488,10 +3553,22 @@ CUresult WINAPI wine_cuStreamBeginCapture_v2(CUstream hStream, CUstreamCaptureMo
     return pcuStreamBeginCapture_v2(hStream, mode);
 }
 
+CUresult WINAPI wine_cuStreamBeginCapture_v2_ptsz(CUstream hStream, CUstreamCaptureMode mode)
+{
+    TRACE("(%p, %d)\n", hStream, mode);
+    return pcuStreamBeginCapture_v2_ptsz(hStream, mode);
+}
+
 CUresult WINAPI wine_cuStreamEndCapture(CUstream hStream, CUgraph *phGraph)
 {
     TRACE("(%p, %p)\n", hStream, phGraph);
     return pcuStreamEndCapture(hStream, phGraph);
+}
+
+CUresult WINAPI wine_cuStreamEndCapture_ptsz(CUstream hStream, CUgraph *phGraph)
+{
+    TRACE("(%p, %p)\n", hStream, phGraph);
+    return pcuStreamEndCapture_ptsz(hStream, phGraph);
 }
 
 CUresult WINAPI wine_cuGraphDestroyNode(CUgraphNode hNode)
@@ -3560,10 +3637,22 @@ CUresult WINAPI wine_cuSignalExternalSemaphoresAsync(const void *extSemArray, co
     return pcuSignalExternalSemaphoresAsync(extSemArray, paramsArray, numExtSems, stream);
 }
 
+CUresult WINAPI wine_cuSignalExternalSemaphoresAsync_ptsz(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream)
+{
+    TRACE("(%p, %p, %u, %p)\n", extSemArray, paramsArray, numExtSems, stream);
+    return pcuSignalExternalSemaphoresAsync_ptsz(extSemArray, paramsArray, numExtSems, stream);
+}
+
 CUresult WINAPI wine_cuWaitExternalSemaphoresAsync(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream)
 {
     TRACE("(%p, %p, %u, %p)\n", extSemArray, paramsArray, numExtSems, stream);
     return pcuWaitExternalSemaphoresAsync(extSemArray, paramsArray, numExtSems, stream);
+}
+
+CUresult WINAPI wine_cuWaitExternalSemaphoresAsync_ptsz(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream)
+{
+    TRACE("(%p, %p, %u, %p)\n", extSemArray, paramsArray, numExtSems, stream);
+    return pcuWaitExternalSemaphoresAsync_ptsz(extSemArray, paramsArray, numExtSems, stream);
 }
 
 CUresult WINAPI wine_cuDestroyExternalSemaphore(void *extSem)
@@ -3728,10 +3817,16 @@ CUresult WINAPI wine_cuMemSetAccess(CUdeviceptr_v2 ptr, size_t size, const void 
     return pcuMemSetAccess(ptr, size, desc, count);
 }
 
-CUresult WINAPI wine_cuStreamBeginCapture(CUstream hStream, CUstreamCaptureMode mode)
+CUresult WINAPI wine_cuStreamBeginCapture(CUstream hStream)
 {
-    TRACE("(%p, %d)\n", hStream, mode);
-    return pcuStreamBeginCapture(hStream, mode);
+    TRACE("(%p)\n", hStream);
+    return pcuStreamBeginCapture(hStream);
+}
+
+CUresult WINAPI wine_cuStreamBeginCapture_ptsz(CUstream hStream)
+{
+    TRACE("(%p)\n", hStream);
+    return pcuStreamBeginCapture_ptsz(hStream);
 }
 
 CUresult WINAPI wine_cuMemCreate(CUmemGenericAllocationHandle_v1 *handle, size_t size, const void *prop, unsigned long long flags)
@@ -3770,6 +3865,18 @@ CUresult WINAPI wine_cuMemUnmap(CUdeviceptr_v2 ptr, size_t size)
     return pcuMemUnmap(ptr, size);
 }
 
+CUresult WINAPI wine_cuStreamGetCaptureInfo(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out)
+{
+    TRACE("(%p, %p, %lu)\n", hStream, captureStatus_out, (SIZE_T)id_out);
+    return pcuStreamGetCaptureInfo(hStream, captureStatus_out, id_out);
+}
+
+CUresult WINAPI wine_cuStreamGetCaptureInfo_ptsz(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out)
+{
+    TRACE("(%p, %p, %lu)\n", hStream, captureStatus_out, (SIZE_T)id_out);
+    return pcuStreamGetCaptureInfo_ptsz(hStream, captureStatus_out, id_out);
+}
+
 #define CHECK_FUNCPTR(f) \
     do \
     { \
@@ -3785,18 +3892,32 @@ CUresult WINAPI wine_cuMemUnmap(CUdeviceptr_v2 ptr, size_t size)
  * Additions in CUDA 11
  */
 
-CUresult WINAPI wine_cuMemAllocAsync(CUdeviceptr *dptr, size_t bytesize, CUstream hStream)
+CUresult WINAPI wine_cuMemAllocAsync(CUdeviceptr_v2 *dptr, size_t bytesize, CUstream hStream)
 {
     TRACE("(%p, %zu, %p)\n", dptr, bytesize, hStream);
     CHECK_FUNCPTR(cuMemAllocAsync);
     return pcuMemAllocAsync(dptr, bytesize, hStream);
 }
 
-CUresult WINAPI wine_cuMemFreeAsync(CUdeviceptr dptr, CUstream hStream)
+CUresult WINAPI wine_cuMemAllocAsync_ptsz(CUdeviceptr_v2 *dptr, size_t bytesize, CUstream hStream)
+{
+    TRACE("(%p, %zu, %p)\n", dptr, bytesize, hStream);
+    CHECK_FUNCPTR(cuMemAllocAsync_ptsz);
+    return pcuMemAllocAsync_ptsz(dptr, bytesize, hStream);
+}
+
+CUresult WINAPI wine_cuMemFreeAsync(CUdeviceptr_v2 dptr, CUstream hStream)
 {
     TRACE("(" DEV_PTR ", %p)\n", dptr, hStream);
     CHECK_FUNCPTR(cuMemFreeAsync);
     return pcuMemFreeAsync(dptr, hStream);
+}
+
+CUresult WINAPI wine_cuMemFreeAsync_ptsz(CUdeviceptr_v2 dptr, CUstream hStream)
+{
+    TRACE("(" DEV_PTR ", %p)\n", dptr, hStream);
+    CHECK_FUNCPTR(cuMemFreeAsync_ptsz);
+    return pcuMemFreeAsync_ptsz(dptr, hStream);
 }
 
 CUresult WINAPI wine_cuGraphAddMemAllocNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, CUDA_NODE_PARAMS *nodeParams)
@@ -4023,11 +4144,25 @@ CUresult WINAPI wine_cuEventRecordWithFlags(CUevent hEvent, CUstream hStream, un
     return pcuEventRecordWithFlags(hEvent, hStream, flags);
 }
 
+CUresult WINAPI wine_cuEventRecordWithFlags_ptsz(CUevent hEvent, CUstream hStream, unsigned int flags)
+{
+    TRACE("(%p, %p, %d)\n", hEvent, hStream, flags);
+    CHECK_FUNCPTR(cuEventRecordWithFlags_ptsz);
+    return pcuEventRecordWithFlags_ptsz(hEvent, hStream, flags);
+}
+
 CUresult WINAPI wine_cuStreamCopyAttributes(CUstream dstStream, CUstream srcStream)
 {
     TRACE("(%p, %p)\n", dstStream, srcStream);
     CHECK_FUNCPTR(cuStreamCopyAttributes);
     return pcuStreamCopyAttributes(dstStream, srcStream);
+}
+
+CUresult WINAPI wine_cuStreamCopyAttributes_ptsz(CUstream dstStream, CUstream srcStream)
+{
+    TRACE("(%p, %p)\n", dstStream, srcStream);
+    CHECK_FUNCPTR(cuStreamCopyAttributes_ptsz);
+    return pcuStreamCopyAttributes_ptsz(dstStream, srcStream);
 }
 
 CUresult WINAPI wine_cuStreamGetAttribute(CUstream hStream, void *attr, void *value)
@@ -4037,11 +4172,25 @@ CUresult WINAPI wine_cuStreamGetAttribute(CUstream hStream, void *attr, void *va
     return pcuStreamGetAttribute(hStream, attr, value);
 }
 
+CUresult WINAPI wine_cuStreamGetAttribute_ptsz(CUstream hStream, void *attr, void *value)
+{
+    TRACE("(%p, %p, %p)\n", hStream, attr, value);
+    CHECK_FUNCPTR(cuStreamGetAttribute_ptsz);
+    return pcuStreamGetAttribute_ptsz(hStream, attr, value);
+}
+
 CUresult WINAPI wine_cuStreamSetAttribute(CUstream hStream, void *attr, const void *param)
 {
     TRACE("(%p, %p, %p)\n", hStream, attr, param);
     CHECK_FUNCPTR(cuStreamSetAttribute);
     return pcuStreamSetAttribute(hStream, attr, param);
+}
+
+CUresult WINAPI wine_cuStreamSetAttribute_ptsz(CUstream hStream, void *attr, const void *param)
+{
+    TRACE("(%p, %p, %p)\n", hStream, attr, param);
+    CHECK_FUNCPTR(cuStreamSetAttribute_ptsz);
+    return pcuStreamSetAttribute_ptsz(hStream, attr, param);
 }
 
 CUresult WINAPI wine_cuGraphAddEventRecordNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, CUevent event)
@@ -4170,12 +4319,27 @@ CUresult WINAPI wine_cuGraphUpload(CUgraphExec hGraphExec, CUstream hStream)
     return pcuGraphUpload(hGraphExec, hStream);
 }
 
-CUresult WINAPI wine_cuStreamGetCaptureInfo(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+CUresult WINAPI wine_cuGraphUpload_ptsz(CUgraphExec hGraphExec, CUstream hStream)
+{
+    TRACE("(%p, %p)\n", hGraphExec, hStream);
+    CHECK_FUNCPTR(cuGraphUpload_ptsz);
+    return pcuGraphUpload_ptsz(hGraphExec, hStream);
+}
+
+CUresult WINAPI wine_cuStreamGetCaptureInfo_v2(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
                                            size_t *numDependencies_out)
 {
     TRACE("(%p, %p, %lu, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, numDependencies_out);
-    CHECK_FUNCPTR(cuStreamGetCaptureInfo);
-    return pcuStreamGetCaptureInfo(hStream, captureStatus_out, id_out, graph_out, dependencies_out, numDependencies_out);
+    CHECK_FUNCPTR(cuStreamGetCaptureInfo_v2);
+    return pcuStreamGetCaptureInfo_v2(hStream, captureStatus_out, id_out, graph_out, dependencies_out, numDependencies_out);
+}
+
+CUresult WINAPI wine_cuStreamGetCaptureInfo_v2_ptsz(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+                                           size_t *numDependencies_out)
+{
+    TRACE("(%p, %p, %lu, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, numDependencies_out);
+    CHECK_FUNCPTR(cuStreamGetCaptureInfo_v2_ptsz);
+    return pcuStreamGetCaptureInfo_v2_ptsz(hStream, captureStatus_out, id_out, graph_out, dependencies_out, numDependencies_out);
 }
 
 CUresult WINAPI wine_cuStreamUpdateCaptureDependencies(CUstream hStream, CUgraphNode *dependencies, size_t numDependencies, unsigned int flags)
@@ -4183,6 +4347,13 @@ CUresult WINAPI wine_cuStreamUpdateCaptureDependencies(CUstream hStream, CUgraph
     TRACE("(%p, %p, %zu, %u)\n", hStream, dependencies, numDependencies, flags);
     CHECK_FUNCPTR(cuStreamUpdateCaptureDependencies);
     return pcuStreamUpdateCaptureDependencies(hStream, dependencies, numDependencies, flags);
+}
+
+CUresult WINAPI wine_cuStreamUpdateCaptureDependencies_ptsz(CUstream hStream, CUgraphNode *dependencies, size_t numDependencies, unsigned int flags)
+{
+    TRACE("(%p, %p, %zu, %u)\n", hStream, dependencies, numDependencies, flags);
+    CHECK_FUNCPTR(cuStreamUpdateCaptureDependencies_ptsz);
+    return pcuStreamUpdateCaptureDependencies_ptsz(hStream, dependencies, numDependencies, flags);
 }
 
 CUresult WINAPI wine_cuGraphExecChildGraphNodeSetParams(CUgraphExec hGraphExec, CUgraphNode hNode, CUgraph childGraph)
@@ -4366,6 +4537,20 @@ CUresult WINAPI wine_cuGetProcAddress(const char *symbol, void **pfn, int driver
     return CUDA_SUCCESS;
 }
 
+CUresult WINAPI wine_cuStreamBatchMemOp_v2(CUstream stream, unsigned int count, void *paramArray, unsigned int flags)
+{
+    TRACE("(%p, %u, %p, %u)\n", stream, count, paramArray, flags);
+    CHECK_FUNCPTR(cuStreamBatchMemOp_v2);
+    return pcuStreamBatchMemOp_v2(stream, count, paramArray, flags);
+}
+
+CUresult WINAPI wine_cuIpcOpenMemHandle_v2(CUdeviceptr_v2 *pdptr, CUipcMemHandle handle, unsigned int Flags)
+{
+    TRACE("(%p, %p, %u)\n", pdptr, &handle, Flags); /* FIXME */
+    CHECK_FUNCPTR(cuIpcOpenMemHandle_v2);
+    return pcuIpcOpenMemHandle_v2(pdptr, handle, Flags);
+}
+
 /*
  * Additions in CUDA 12
  */
@@ -4533,6 +4718,20 @@ CUresult WINAPI wine_cuMulticastGetGranularity(size_t *granularity, const void *
     return pcuMulticastGetGranularity(granularity, prop, option);
 }
 
+CUresult WINAPI wine_cuStreamGetId(CUstream hStream, unsigned long long *streamId)
+{
+    TRACE("(%p, %p)\n", hStream, streamId);
+    CHECK_FUNCPTR(cuStreamGetId);
+    return pcuStreamGetId(hStream, streamId);
+}
+
+CUresult WINAPI wine_cuStreamGetId_ptsz(CUstream hStream, unsigned long long *streamId)
+{
+    TRACE("(%p, %p)\n", hStream, streamId);
+    CHECK_FUNCPTR(cuStreamGetId_ptsz);
+    return pcuStreamGetId_ptsz(hStream, streamId);
+}
+
 CUresult WINAPI wine_cuGetProcAddress_v2(const char *symbol, void **pfn, int driverVersion, cuuint64_t flags, CUdriverProcAddressQueryResult *symbolFound)
 {
     CHECK_FUNCPTR(cuGetProcAddress_v2);
@@ -4609,23 +4808,202 @@ CUresult WINAPI wine_cuGraphicsD3D11RegisterResource(CUgraphicsResource *pCudaRe
 void get_addr(const char *symbol, int driverVersion, void **pfn)
 {
     if(strcmp("cuGetProcAddress", symbol)==0){
-        if(driverVersion >= 12000){
-            *pfn = wine_cuGetProcAddress_v2;
-        }
+        if(driverVersion >= 12000) *pfn = wine_cuGetProcAddress_v2;
         else *pfn = wine_cuGetProcAddress;
     };
+    if(strcmp("cuIpcOpenMemHandle", symbol)==0){
+        if(driverVersion >= 11000) *pfn = wine_cuIpcOpenMemHandle_v2;
+        else *pfn = wine_cuIpcOpenMemHandle;
+    }
+    if(strcmp("cuGraphInstantiate", symbol)==0){
+        if(driverVersion >= 11000) *pfn = wine_cuGraphInstantiate_v2;
+        else *pfn = wine_cuGraphInstantiate;
+    }
+    if(strcmp("cuMemAlloc", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemAlloc_v2;
+        else *pfn = wine_cuMemAlloc;
+    }
+    if(strcmp("cuArray3DCreate", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuArray3DCreate_v2;
+        else *pfn = wine_cuArray3DCreate;
+    }
+    if(strcmp("cuArray3DGetDescriptor", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuArray3DGetDescriptor_v2;
+        else *pfn = wine_cuArray3DGetDescriptor;
+    }
+    if(strcmp("cuArrayCreate", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuArrayCreate_v2;
+        else *pfn = wine_cuArrayCreate;
+    }
+    if(strcmp("cuArrayGetDescriptor", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuArrayGetDescriptor_v2;
+        else *pfn = wine_cuArrayGetDescriptor;
+    }
+    if(strcmp("cuCtxCreate", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuCtxCreate_v2;
+        if(driverVersion >= 11040) *pfn = wine_cuCtxCreate_v3;
+        else *pfn = wine_cuCtxCreate;
+    }
+    if(strcmp("cuCtxPopCurrent", symbol)==0){
+        if(driverVersion >= 4000) *pfn = wine_cuCtxPopCurrent_v2;
+        else *pfn = wine_cuCtxPopCurrent;
+    }
+    if(strcmp("cuCtxPushCurrent", symbol)==0){
+        if(driverVersion >= 4000) *pfn = wine_cuCtxPushCurrent_v2;
+        else *pfn = wine_cuCtxPushCurrent;
+    }
+    if(strcmp("cuDeviceTotalMem", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuDeviceTotalMem_v2;
+        else *pfn = wine_cuDeviceTotalMem;
+    }
+    if(strcmp("cuEventDestroy", symbol)==0){
+        if(driverVersion >= 4000) *pfn = wine_cuEventDestroy_v2;
+        else *pfn = wine_cuEventDestroy;
+    }
+    if(strcmp("cuGLCtxCreate", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuGLCtxCreate_v2;
+        else *pfn = wine_cuGLCtxCreate;
+    }
+    if(strcmp("cuGLMapBufferObjectAsync", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuGLMapBufferObjectAsync_v2;
+        else *pfn = wine_cuGLMapBufferObjectAsync;
+    }
+    if(strcmp("cuGLMapBufferObject", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuGLMapBufferObject_v2;
+        else *pfn = wine_cuGLMapBufferObject;
+    }
+    if(strcmp("cuGraphicsResourceGetMappedPointer", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuGraphicsResourceGetMappedPointer_v2;
+        else *pfn = wine_cuGraphicsResourceGetMappedPointer;
+    }
+    if(strcmp("cuMemAllocPitch", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemAllocPitch_v2;
+        else *pfn = wine_cuMemAllocPitch;
+    }
+    if(strcmp("cuMemFree", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemFree_v2;
+        else *pfn = wine_cuMemFree;
+    }
+    if(strcmp("cuMemGetAddressRange", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemGetAddressRange_v2;
+        else *pfn = wine_cuMemGetAddressRange;
+    }
+    if(strcmp("cuMemGetInfo", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemGetInfo_v2;
+        else *pfn = wine_cuMemGetInfo;
+    }
+    if(strcmp("cuMemHostGetDevicePointer", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemHostGetDevicePointer_v2;
+        else *pfn = wine_cuMemHostGetDevicePointer;
+    }
+    if(strcmp("cuMemcpy2DAsync", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpy2DAsync_v2;
+        else *pfn = wine_cuMemcpy2DAsync;
+    }
+    if(strcmp("cuMemcpy2DUnaligned", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpy2DUnaligned_v2;
+        else *pfn = wine_cuMemcpy2DUnaligned;
+    }
+    if(strcmp("cuMemcpy3DAsync", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpy3DAsync_v2;
+        else *pfn = wine_cuMemcpy3DAsync;
+    }
+    if(strcmp("cuMemcpy3D", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpy3D_v2;
+        else *pfn = wine_cuMemcpy3D;
+    }
+    if(strcmp("cuMemcpyDtoDAsync", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpyDtoDAsync_v2;
+        else *pfn = wine_cuMemcpyDtoDAsync;
+    }
+    if(strcmp("cuMemcpyDtoD", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpyDtoD_v2;
+        else *pfn = wine_cuMemcpyDtoD;
+    }
+    if(strcmp("cuMemcpyDtoH", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpyDtoH_v2;
+        else *pfn = wine_cuMemcpyDtoH;
+    }
+    if(strcmp("cuMemcpyHtoDAsync", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpyHtoDAsync_v2;
+        else *pfn = wine_cuMemcpyHtoDAsync;
+    }
+    if(strcmp("cuMemcpyHtoD", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpyHtoD_v2;
+        else *pfn = wine_cuMemcpyHtoD;
+    }
+    if(strcmp("cuMemcpyDtoHAsync", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemcpyDtoHAsync_v2;
+        else *pfn = wine_cuMemcpyDtoHAsync;
+    }
+    if(strcmp("cuMemsetD2D8", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemsetD2D8_v2;
+        else *pfn = wine_cuMemsetD2D8;
+    }
+    if(strcmp("cuMemsetD8", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuMemsetD8_v2;
+        else *pfn = wine_cuMemsetD8;
+    }
+    if(strcmp("cuModuleGetGlobal", symbol)==0){
+        if(driverVersion >= 3020) *pfn = wine_cuModuleGetGlobal_v2;
+        else *pfn = wine_cuModuleGetGlobal;
+    }
+    if(strcmp("cuGLGetDevices", symbol)==0){
+        if(driverVersion >= 4010) *pfn = wine_cuGLGetDevices_v2;
+        else *pfn = wine_cuGLGetDevices;
+    }
+    if(strcmp("cuLinkAddData", symbol)==0){
+        if(driverVersion >= 6050) *pfn = wine_cuLinkAddData_v2;
+        else *pfn = wine_cuLinkAddData;
+    }
+    if(strcmp("cuLinkCreate", symbol)==0){
+        if(driverVersion >= 6050) *pfn = wine_cuLinkCreate_v2;
+        else *pfn = wine_cuLinkCreate;
+    }
+    if(strcmp("cuMemHostRegister", symbol)==0){
+        if(driverVersion >= 6050) *pfn = wine_cuMemHostRegister_v2;
+        else *pfn = wine_cuMemHostRegister;
+    }
+    if(strcmp("cuStreamBeginCapture", symbol)==0){
+        if(driverVersion >= 10010) *pfn = wine_cuStreamBeginCapture_v2;
+        else *pfn = wine_cuStreamBeginCapture;
+    }
+    if(strcmp("cuStreamGetCaptureInfo", symbol)==0){
+        if(driverVersion >= 10010) *pfn = wine_cuStreamGetCaptureInfo_v2;
+        else *pfn = wine_cuStreamGetCaptureInfo;
+    }
+    if(strcmp("cuStreamWaitValue32", symbol)==0){
+        if(driverVersion >= 11070) *pfn = wine_cuStreamWaitValue32_v2;
+        else *pfn = wine_cuStreamWaitValue32;
+    }
+    if(strcmp("cuStreamWriteValue32", symbol)==0){
+        if(driverVersion >= 11070) *pfn = wine_cuStreamWriteValue32_v2;
+        else *pfn = wine_cuStreamWriteValue32;
+    }
+    if(strcmp("cuStreamWaitValue64", symbol)==0){
+        if(driverVersion >= 11070) *pfn = wine_cuStreamWaitValue64_v2;
+        else *pfn = wine_cuStreamWaitValue64;
+    }
+    if(strcmp("cuStreamWriteValue64", symbol)==0){
+        if(driverVersion >= 11070) *pfn = wine_cuStreamWriteValue64_v2;
+        else *pfn = wine_cuStreamWriteValue64;
+    }
+    if(strcmp("cuStreamBatchMemOp", symbol)==0){
+        if(driverVersion >= 11070) *pfn = wine_cuStreamBatchMemOp_v2;
+        else *pfn = wine_cuStreamBatchMemOp;
+    }
 
     if(strcmp("cuInit", symbol)==0) *pfn = wine_cuInit;
     if(strcmp("cuDeviceGet", symbol)==0) *pfn = wine_cuDeviceGet;
     if(strcmp("cuDeviceGetCount", symbol)==0) *pfn = wine_cuDeviceGetCount;
     if(strcmp("cuDeviceGetName", symbol)==0) *pfn = wine_cuDeviceGetName;
-    if(strcmp("cuDeviceTotalMem", symbol)==0) *pfn = wine_cuDeviceTotalMem;
     if(strcmp("cuModuleGetLoadingMode", symbol)==0) *pfn = wine_cuModuleGetLoadingMode;
     if(strcmp("cuLibraryLoadFromFile", symbol)==0) *pfn = wine_cuLibraryLoadFromFile;
     if(strcmp("cuLibraryUnload", symbol)==0) *pfn = wine_cuLibraryUnload;
     if(strcmp("cuLibraryGetKernel", symbol)==0) *pfn = wine_cuLibraryGetKernel;
     if(strcmp("cuLibraryGetModule", symbol)==0) *pfn = wine_cuLibraryGetModule;
     if(strcmp("cuLaunchKernelEx", symbol)==0) *pfn = wine_cuLaunchKernelEx;
+    if(strcmp("cuLaunchKernelEx_ptsz", symbol)==0) *pfn = wine_cuLaunchKernelEx_ptsz;
     if(strcmp("cuKernelGetFunction", symbol)==0) *pfn = wine_cuKernelGetFunction;
     if(strcmp("cuLibraryGetGlobal", symbol)==0) *pfn = wine_cuLibraryGetGlobal;
     if(strcmp("cuLibraryGetManaged", symbol)==0) *pfn = wine_cuLibraryGetManaged;
@@ -4633,6 +5011,8 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuKernelSetAttribute", symbol)==0) *pfn = wine_cuKernelSetAttribute;
     if(strcmp("cuKernelSetCacheConfig", symbol)==0) *pfn = wine_cuKernelSetCacheConfig;
     if(strcmp("cuDeviceGetAttribute", symbol)==0) *pfn = wine_cuDeviceGetAttribute;
+    if(strcmp("cuStreamGetId", symbol)==0) *pfn = wine_cuStreamGetId;
+    if(strcmp("cuStreamGetId_ptsz", symbol)==0) *pfn = wine_cuStreamGetId_ptsz;
     if(strcmp("cuLibraryLoadData", symbol)==0) *pfn = wine_cuLibraryLoadData;
     if(strcmp("cuDeviceGetP2PAttribute", symbol)==0) *pfn = wine_cuDeviceGetP2PAttribute;
     if(strcmp("cuDriverGetVersion", symbol)==0) *pfn = wine_cuDriverGetVersion;
@@ -4654,9 +5034,6 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuDevicePrimaryCtxSetFlags", symbol)==0) *pfn = wine_cuDevicePrimaryCtxSetFlags;
     if(strcmp("cuDevicePrimaryCtxGetState", symbol)==0) *pfn = wine_cuDevicePrimaryCtxGetState;
     if(strcmp("cuDevicePrimaryCtxReset", symbol)==0) *pfn = wine_cuDevicePrimaryCtxReset;
-    if(strcmp("cuCtxPopCurrent", symbol)==0) *pfn = wine_cuCtxPopCurrent;
-    if(strcmp("cuCtxPushCurrent", symbol)==0) *pfn = wine_cuCtxPushCurrent;
-    if(strcmp("cuCtxCreate", symbol)==0) *pfn = wine_cuCtxCreate;
     if(strcmp("cuCtxGetFlags", symbol)==0) *pfn = wine_cuCtxGetFlags;
     if(strcmp("cuCtxSetCurrent", symbol)==0) *pfn = wine_cuCtxSetCurrent;
     if(strcmp("cuCtxGetCurrent", symbol)==0) *pfn = wine_cuCtxGetCurrent;
@@ -4677,31 +5054,24 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuModuleLoadFatBinary", symbol)==0) *pfn = wine_cuModuleLoadFatBinary;
     if(strcmp("cuModuleUnload", symbol)==0) *pfn = wine_cuModuleUnload;
     if(strcmp("cuModuleGetFunction", symbol)==0) *pfn = wine_cuModuleGetFunction;
-    if(strcmp("cuModuleGetGlobal", symbol)==0) *pfn = wine_cuModuleGetGlobal;
     if(strcmp("cuModuleGetTexRef", symbol)==0) *pfn = wine_cuModuleGetTexRef;
     if(strcmp("cuModuleGetSurfRef", symbol)==0) *pfn = wine_cuModuleGetSurfRef;
-    if(strcmp("cuLinkCreate", symbol)==0) *pfn = wine_cuLinkCreate;
-    if(strcmp("cuLinkAddData", symbol)==0) *pfn = wine_cuLinkAddData;
     if(strcmp("cuLinkAddFile", symbol)==0) *pfn = wine_cuLinkAddFile;
     if(strcmp("cuLinkComplete", symbol)==0) *pfn = wine_cuLinkComplete;
     if(strcmp("cuLinkDestroy", symbol)==0) *pfn = wine_cuLinkDestroy;
-    if(strcmp("cuMemGetInfo", symbol)==0) *pfn = wine_cuMemGetInfo;
     if(strcmp("cuMemAllocManaged", symbol)==0) *pfn = wine_cuMemAllocManaged;
-    if(strcmp("cuMemAlloc", symbol)==0) *pfn = wine_cuMemAlloc;
-    if(strcmp("cuMemAllocPitch", symbol)==0) *pfn = wine_cuMemAllocPitch;
-    if(strcmp("cuMemFree", symbol)==0) *pfn = wine_cuMemFree;
-    if(strcmp("cuMemGetAddressRange", symbol)==0) *pfn = wine_cuMemGetAddressRange;
     if(strcmp("cuMemFreeHost", symbol)==0) *pfn = wine_cuMemFreeHost;
     if(strcmp("cuMemHostAlloc", symbol)==0) *pfn = wine_cuMemHostAlloc;
-    if(strcmp("cuMemHostGetDevicePointer", symbol)==0) *pfn = wine_cuMemHostGetDevicePointer;
     if(strcmp("cuMemHostGetFlags", symbol)==0) *pfn = wine_cuMemHostGetFlags;
-    if(strcmp("cuMemHostRegister", symbol)==0) *pfn = wine_cuMemHostRegister;
     if(strcmp("cuMemHostUnregister", symbol)==0) *pfn = wine_cuMemHostUnregister;
     if(strcmp("cuPointerGetAttribute", symbol)==0) *pfn = wine_cuPointerGetAttribute;
     if(strcmp("cuPointerGetAttributes", symbol)==0) *pfn = wine_cuPointerGetAttributes;
     if(strcmp("cuMemAllocAsync", symbol)==0) *pfn = wine_cuMemAllocAsync;
+    if(strcmp("cuMemAllocAsync_ptsz", symbol)==0) *pfn = wine_cuMemAllocAsync_ptsz;
     if(strcmp("cuMemAllocFromPoolAsync", symbol)==0) *pfn = wine_cuMemAllocFromPoolAsync;
+    if(strcmp("cuMemAllocFromPoolAsync_ptsz", symbol)==0) *pfn = wine_cuMemAllocFromPoolAsync_ptsz;
     if(strcmp("cuMemFreeAsync", symbol)==0) *pfn = wine_cuMemFreeAsync;
+    if(strcmp("cuMemFreeAsync_ptsz", symbol)==0) *pfn = wine_cuMemFreeAsync_ptsz;
     if(strcmp("cuMemPoolTrimTo", symbol)==0) *pfn = wine_cuMemPoolTrimTo;
     if(strcmp("cuMemPoolSetAttribute", symbol)==0) *pfn = wine_cuMemPoolSetAttribute;
     if(strcmp("cuMemPoolGetAttribute", symbol)==0) *pfn = wine_cuMemPoolGetAttribute;
@@ -4714,35 +5084,23 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuMemPoolExportPointer", symbol)==0) *pfn = wine_cuMemPoolExportPointer;
     if(strcmp("cuMemPoolImportPointer", symbol)==0) *pfn = wine_cuMemPoolImportPointer;
     if(strcmp("cuMemcpy", symbol)==0) *pfn = wine_cuMemcpy;
+    if(strcmp("cuMemcpy_ptds", symbol)==0) *pfn = wine_cuMemcpy_ptds;
     if(strcmp("cuMemcpyAsync", symbol)==0) *pfn = wine_cuMemcpyAsync;
+    if(strcmp("cuMemcpyAsync_ptsz", symbol)==0) *pfn = wine_cuMemcpyAsync_ptsz;
     if(strcmp("cuMemcpyPeer", symbol)==0) *pfn = wine_cuMemcpyPeer;
+    if(strcmp("cuMemcpyPeer_ptds", symbol)==0) *pfn = wine_cuMemcpyPeer_ptds;
     if(strcmp("cuMemcpyPeerAsync", symbol)==0) *pfn = wine_cuMemcpyPeerAsync;
-    if(strcmp("cuMemcpyHtoD", symbol)==0) *pfn = wine_cuMemcpyHtoD;
-    if(strcmp("cuMemcpyHtoDAsync", symbol)==0) *pfn = wine_cuMemcpyHtoDAsync;
-    if(strcmp("cuMemcpyDtoH", symbol)==0) *pfn = wine_cuMemcpyDtoH;
-    if(strcmp("cuMemcpyDtoHAsync", symbol)==0) *pfn = wine_cuMemcpyDtoHAsync;
-    if(strcmp("cuMemcpyDtoD", symbol)==0) *pfn = wine_cuMemcpyDtoD;
-    if(strcmp("cuMemcpyDtoDAsync", symbol)==0) *pfn = wine_cuMemcpyDtoDAsync;
-    if(strcmp("cuMemcpy2DUnaligned", symbol)==0) *pfn = wine_cuMemcpy2DUnaligned;
-    if(strcmp("cuMemcpy2DAsync", symbol)==0) *pfn = wine_cuMemcpy2DAsync;
-    if(strcmp("cuMemcpy3D", symbol)==0) *pfn = wine_cuMemcpy3D;
-    if(strcmp("cuMemcpy3DAsync", symbol)==0) *pfn = wine_cuMemcpy3DAsync;
+    if(strcmp("cuMemcpyPeerAsync_ptsz", symbol)==0) *pfn = wine_cuMemcpyPeerAsync_ptsz;
     if(strcmp("cuMemcpy3DPeer", symbol)==0) *pfn = wine_cuMemcpy3DPeer;
     if(strcmp("cuMemcpy3DPeerAsync", symbol)==0) *pfn = wine_cuMemcpy3DPeerAsync;
-    if(strcmp("cuMemsetD8", symbol)==0) *pfn = wine_cuMemsetD8;
     if(strcmp("cuMemsetD8Async", symbol)==0) *pfn = wine_cuMemsetD8Async;
-    if(strcmp("cuMemsetD2D8", symbol)==0) *pfn = wine_cuMemsetD2D8;
     if(strcmp("cuMemsetD2D8Async", symbol)==0) *pfn = wine_cuMemsetD2D8Async;
     if(strcmp("cuFuncSetCacheConfig", symbol)==0) *pfn = wine_cuFuncSetCacheConfig;
     if(strcmp("cuFuncSetSharedMemConfig", symbol)==0) *pfn = wine_cuFuncSetSharedMemConfig;
     if(strcmp("cuFuncGetAttribute", symbol)==0) *pfn = wine_cuFuncGetAttribute;
     if(strcmp("cuFuncSetAttribute", symbol)==0) *pfn = wine_cuFuncSetAttribute;
-    if(strcmp("cuArrayCreate", symbol)==0) *pfn = wine_cuArrayCreate;
-    if(strcmp("cuArrayGetDescriptor", symbol)==0) *pfn = wine_cuArrayGetDescriptor;
     if(strcmp("cuArrayGetSparseProperties", symbol)==0) *pfn = wine_cuArrayGetSparseProperties;
     if(strcmp("cuArrayGetPlane", symbol)==0) *pfn = wine_cuArrayGetPlane;
-    if(strcmp("cuArray3DCreate", symbol)==0) *pfn = wine_cuArray3DCreate;
-    if(strcmp("cuArray3DGetDescriptor", symbol)==0) *pfn = wine_cuArray3DGetDescriptor;
     if(strcmp("cuArrayDestroy", symbol)==0) *pfn = wine_cuArrayDestroy;
     if(strcmp("cuMipmappedArrayCreate", symbol)==0) *pfn = wine_cuMipmappedArrayCreate;
     if(strcmp("cuMipmappedArrayGetLevel", symbol)==0) *pfn = wine_cuMipmappedArrayGetLevel;
@@ -4779,52 +5137,56 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuDestroyExternalMemory", symbol)==0) *pfn = wine_cuDestroyExternalMemory;
     if(strcmp("cuImportExternalSemaphore", symbol)==0) *pfn = wine_cuImportExternalSemaphore;
     if(strcmp("cuSignalExternalSemaphoresAsync", symbol)==0) *pfn = wine_cuSignalExternalSemaphoresAsync;
+    if(strcmp("cuSignalExternalSemaphoresAsync_ptsz", symbol)==0) *pfn = wine_cuSignalExternalSemaphoresAsync_ptsz;
     if(strcmp("cuWaitExternalSemaphoresAsync", symbol)==0) *pfn = wine_cuWaitExternalSemaphoresAsync;
+    if(strcmp("cuWaitExternalSemaphoresAsync_ptsz", symbol)==0) *pfn = wine_cuWaitExternalSemaphoresAsync_ptsz;
     if(strcmp("cuDestroyExternalSemaphore", symbol)==0) *pfn = wine_cuDestroyExternalSemaphore;
     if(strcmp("cuLaunchKernel", symbol)==0) *pfn = wine_cuLaunchKernel;
+    if(strcmp("cuLaunchKernel_ptsz", symbol)==0) *pfn = wine_cuLaunchKernel_ptsz;
     if(strcmp("cuLaunchCooperativeKernel", symbol)==0) *pfn = wine_cuLaunchCooperativeKernel;
     if(strcmp("cuLaunchCooperativeKernelMultiDevice", symbol)==0) *pfn = wine_cuLaunchCooperativeKernelMultiDevice;
     if(strcmp("cuLaunchHostFunc", symbol)==0) *pfn = wine_cuLaunchHostFunc;
     if(strcmp("cuEventCreate", symbol)==0) *pfn = wine_cuEventCreate;
     if(strcmp("cuEventRecord", symbol)==0) *pfn = wine_cuEventRecord;
+    if(strcmp("cuEventRecord_ptsz", symbol)==0) *pfn = wine_cuEventRecord_ptsz;
     if(strcmp("cuEventRecordWithFlags", symbol)==0) *pfn = wine_cuEventRecordWithFlags;
+    if(strcmp("cuEventRecordWithFlags_ptsz", symbol)==0) *pfn = wine_cuEventRecordWithFlags_ptsz;
     if(strcmp("cuEventQuery", symbol)==0) *pfn = wine_cuEventQuery;
     if(strcmp("cuEventSynchronize", symbol)==0) *pfn = wine_cuEventSynchronize;
-    if(strcmp("cuEventDestroy", symbol)==0) *pfn = wine_cuEventDestroy;
     if(strcmp("cuEventElapsedTime", symbol)==0) *pfn = wine_cuEventElapsedTime;
-    if(strcmp("cuStreamWaitValue32", symbol)==0) *pfn = wine_cuStreamWaitValue32;
-    if(strcmp("cuStreamWriteValue32", symbol)==0) *pfn = wine_cuStreamWriteValue32;
-    if(strcmp("cuStreamWaitValue64", symbol)==0) *pfn = wine_cuStreamWaitValue64;
-    if(strcmp("cuStreamWriteValue64", symbol)==0) *pfn = wine_cuStreamWriteValue64;
-    if(strcmp("cuStreamBatchMemOp", symbol)==0) *pfn = wine_cuStreamBatchMemOp;
     if(strcmp("cuStreamCreate", symbol)==0) *pfn = wine_cuStreamCreate;
     if(strcmp("cuStreamCreateWithPriority", symbol)==0) *pfn = wine_cuStreamCreateWithPriority;
     if(strcmp("cuStreamGetPriority", symbol)==0) *pfn = wine_cuStreamGetPriority;
+    if(strcmp("cuStreamGetPriority_ptsz", symbol)==0) *pfn = wine_cuStreamGetPriority_ptsz;
     if(strcmp("cuStreamGetFlags", symbol)==0) *pfn = wine_cuStreamGetFlags;
+    if(strcmp("cuStreamGetFlags_ptsz", symbol)==0) *pfn = wine_cuStreamGetFlags_ptsz;
     if(strcmp("cuStreamGetCtx", symbol)==0) *pfn = wine_cuStreamGetCtx;
     if(strcmp("cuStreamDestroy", symbol)==0) *pfn = wine_cuStreamDestroy;
     if(strcmp("cuStreamWaitEvent", symbol)==0) *pfn = wine_cuStreamWaitEvent;
+    if(strcmp("cuStreamWaitEvent_ptsz", symbol)==0) *pfn = wine_cuStreamWaitEvent_ptsz;
     if(strcmp("cuStreamAddCallback", symbol)==0) *pfn = wine_cuStreamAddCallback;
+    if(strcmp("cuStreamAddCallback_ptsz", symbol)==0) *pfn = wine_cuStreamAddCallback_ptsz;
     if(strcmp("cuStreamSynchronize", symbol)==0) *pfn = wine_cuStreamSynchronize;
+    if(strcmp("cuStreamSynchronize_ptsz", symbol)==0) *pfn = wine_cuStreamSynchronize_ptsz;
     if(strcmp("cuStreamQuery", symbol)==0) *pfn = wine_cuStreamQuery;
+    if(strcmp("cuStreamQuery_ptsz", symbol)==0) *pfn = wine_cuStreamQuery_ptsz;
     if(strcmp("cuStreamAttachMemAsync", symbol)==0) *pfn = wine_cuStreamAttachMemAsync;
+    if(strcmp("cuStreamAttachMemAsync_ptsz", symbol)==0) *pfn = wine_cuStreamAttachMemAsync_ptsz;
     if(strcmp("cuStreamCopyAttributes", symbol)==0) *pfn = wine_cuStreamCopyAttributes;
+    if(strcmp("cuStreamCopyAttributes_ptsz", symbol)==0) *pfn = wine_cuStreamCopyAttributes_ptsz;
     if(strcmp("cuStreamGetAttribute", symbol)==0) *pfn = wine_cuStreamGetAttribute;
+    if(strcmp("cuStreamGetAttribute_ptsz", symbol)==0) *pfn = wine_cuStreamGetAttribute_ptsz;
     if(strcmp("cuStreamSetAttribute", symbol)==0) *pfn = wine_cuStreamSetAttribute;
+    if(strcmp("cuStreamSetAttribute_ptsz", symbol)==0) *pfn = wine_cuStreamSetAttribute_ptsz;
     if(strcmp("cuDeviceCanAccessPeer", symbol)==0) *pfn = wine_cuDeviceCanAccessPeer;
     if(strcmp("cuCtxEnablePeerAccess", symbol)==0) *pfn = wine_cuCtxEnablePeerAccess;
     if(strcmp("cuCtxDisablePeerAccess", symbol)==0) *pfn = wine_cuCtxDisablePeerAccess;
     if(strcmp("cuIpcGetEventHandle", symbol)==0) *pfn = wine_cuIpcGetEventHandle;
     if(strcmp("cuIpcOpenEventHandle", symbol)==0) *pfn = wine_cuIpcOpenEventHandle;
     if(strcmp("cuIpcGetMemHandle", symbol)==0) *pfn = wine_cuIpcGetMemHandle;
-    if(strcmp("cuIpcOpenMemHandle", symbol)==0) *pfn = wine_cuIpcOpenMemHandle;
     if(strcmp("cuIpcCloseMemHandle", symbol)==0) *pfn = wine_cuIpcCloseMemHandle;
-    if(strcmp("cuGLCtxCreate", symbol)==0) *pfn = wine_cuGLCtxCreate;
     if(strcmp("cuGLInit", symbol)==0) *pfn = wine_cuGLInit;
-    if(strcmp("cuGLGetDevices", symbol)==0) *pfn = wine_cuGLGetDevices;
     if(strcmp("cuGLRegisterBufferObject", symbol)==0) *pfn = wine_cuGLRegisterBufferObject;
-    if(strcmp("cuGLMapBufferObject", symbol)==0) *pfn = wine_cuGLMapBufferObject;
-    if(strcmp("cuGLMapBufferObjectAsync", symbol)==0) *pfn = wine_cuGLMapBufferObjectAsync;
     if(strcmp("cuGLUnmapBufferObject", symbol)==0) *pfn = wine_cuGLUnmapBufferObject;
     if(strcmp("cuGLUnmapBufferObjectAsync", symbol)==0) *pfn = wine_cuGLUnmapBufferObjectAsync;
     if(strcmp("cuGLUnregisterBufferObject", symbol)==0) *pfn = wine_cuGLUnregisterBufferObject;
@@ -4834,11 +5196,12 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuWGLGetDevice", symbol)==0) *pfn = wine_cuWGLGetDevice;
     if(strcmp("cuGraphicsUnregisterResource", symbol)==0) *pfn = wine_cuGraphicsUnregisterResource;
     if(strcmp("cuGraphicsMapResources", symbol)==0) *pfn = wine_cuGraphicsMapResources;
+    if(strcmp("cuGraphicsMapResources_ptsz", symbol)==0) *pfn = wine_cuGraphicsMapResources_ptsz;
     if(strcmp("cuGraphicsUnmapResources", symbol)==0) *pfn = wine_cuGraphicsUnmapResources;
+    if(strcmp("cuGraphicsUnmapResources_ptsz", symbol)==0) *pfn = wine_cuGraphicsUnmapResources_ptsz;
     if(strcmp("cuGraphicsResourceSetMapFlags", symbol)==0) *pfn = wine_cuGraphicsResourceSetMapFlags;
     if(strcmp("cuGraphicsSubResourceGetMappedArray", symbol)==0) *pfn = wine_cuGraphicsSubResourceGetMappedArray;
     if(strcmp("cuGraphicsResourceGetMappedMipmappedArray", symbol)==0) *pfn = wine_cuGraphicsResourceGetMappedMipmappedArray;
-    if(strcmp("cuGraphicsResourceGetMappedPointer", symbol)==0) *pfn = wine_cuGraphicsResourceGetMappedPointer;
     if(strcmp("cuProfilerInitialize", symbol)==0) *pfn = wine_cuProfilerInitialize;
     if(strcmp("cuProfilerStart", symbol)==0) *pfn = wine_cuProfilerStart;
     if(strcmp("cuProfilerStop", symbol)==0) *pfn = wine_cuProfilerStop;
@@ -4890,6 +5253,7 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuOccupancyAvailableDynamicSMemPerBlock", symbol)==0) *pfn = wine_cuOccupancyAvailableDynamicSMemPerBlock;
     if(strcmp("cuMemAdvise", symbol)==0) *pfn = wine_cuMemAdvise;
     if(strcmp("cuMemPrefetchAsync", symbol)==0) *pfn = wine_cuMemPrefetchAsync;
+    if(strcmp("cuMemPrefetchAsync_ptsz", symbol)==0) *pfn = wine_cuMemPrefetchAsync_ptsz;
     if(strcmp("cuMemRangeGetAttribute", symbol)==0) *pfn = wine_cuMemRangeGetAttribute;
     if(strcmp("cuMemRangeGetAttributes", symbol)==0) *pfn = wine_cuMemRangeGetAttributes;
     if(strcmp("cuGetErrorString", symbol)==0) *pfn = wine_cuGetErrorString;
@@ -4942,17 +5306,21 @@ void get_addr(const char *symbol, int driverVersion, void **pfn)
     if(strcmp("cuGraphAddDependencies", symbol)==0) *pfn = wine_cuGraphAddDependencies;
     if(strcmp("cuGraphRemoveDependencies", symbol)==0) *pfn = wine_cuGraphRemoveDependencies;
     if(strcmp("cuGraphDestroyNode", symbol)==0) *pfn = wine_cuGraphDestroyNode;
-    if(strcmp("cuGraphInstantiate", symbol)==0) *pfn = wine_cuGraphInstantiate_v2;
     if(strcmp("cuGraphInstantiateWithFlags", symbol)==0) *pfn = wine_cuGraphInstantiateWithFlags;
     if(strcmp("cuGraphUpload", symbol)==0) *pfn = wine_cuGraphUpload;
+    if(strcmp("cuGraphUpload_ptsz", symbol)==0) *pfn = wine_cuGraphUpload_ptsz;
     if(strcmp("cuGraphLaunch", symbol)==0) *pfn = wine_cuGraphLaunch;
+    if(strcmp("cuGraphLaunch_ptsz", symbol)==0) *pfn = wine_cuGraphLaunch_ptsz;
     if(strcmp("cuGraphExecDestroy", symbol)==0) *pfn = wine_cuGraphExecDestroy;
     if(strcmp("cuGraphDestroy", symbol)==0) *pfn = wine_cuGraphDestroy;
-    if(strcmp("cuStreamBeginCapture", symbol)==0) *pfn = wine_cuStreamBeginCapture_v2;
+    if(strcmp("cuStreamBeginCapture_ptsz", symbol)==0) *pfn = wine_cuStreamBeginCapture_ptsz;
     if(strcmp("cuStreamEndCapture", symbol)==0) *pfn = wine_cuStreamEndCapture;
+    if(strcmp("cuStreamEndCapture_ptsz", symbol)==0) *pfn = wine_cuStreamEndCapture_ptsz;
     if(strcmp("cuStreamIsCapturing", symbol)==0) *pfn = wine_cuStreamIsCapturing;
-    if(strcmp("cuStreamGetCaptureInfo", symbol)==0) *pfn = wine_cuStreamGetCaptureInfo;
+    if(strcmp("cuStreamIsCapturing_ptsz", symbol)==0) *pfn = wine_cuStreamIsCapturing_ptsz;
+    if(strcmp("cuStreamGetCaptureInfo_ptsz", symbol)==0) *pfn = wine_cuStreamGetCaptureInfo_ptsz;
     if(strcmp("cuStreamUpdateCaptureDependencies", symbol)==0) *pfn = wine_cuStreamUpdateCaptureDependencies;
+    if(strcmp("cuStreamUpdateCaptureDependencies_ptsz", symbol)==0) *pfn = wine_cuStreamUpdateCaptureDependencies_ptsz;
     if(strcmp("cuGraphExecKernelNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecKernelNodeSetParams;
     if(strcmp("cuGraphExecMemcpyNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecMemcpyNodeSetParams;
     if(strcmp("cuGraphExecMemsetNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecMemsetNodeSetParams;
