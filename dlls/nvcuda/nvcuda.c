@@ -1436,16 +1436,17 @@ CUresult WINAPI wine_cuDeviceGet(CUdevice *device, int ordinal)
 
 CUresult WINAPI wine_cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice dev)
 {
-    TRACE("(%p, %d, %d)\n", pi, attrib, dev);
+    CUresult ret;
+    ret = pcuDeviceGetAttribute(pi, attrib, dev);
+    TRACE("(Device: %d, Attribute: %d) Returned value: (%d)\n", dev, attrib, *pi);
+    if(ret != CUDA_SUCCESS) TRACE("Attribute: %d, Returned error: %d\n", attrib, ret);
+
     if(attrib == 35){
         // Linux does not support WDDM and result might unpredictable
-        CUresult ret;
-        ret = pcuDeviceGetAttribute(pi, attrib, dev);
         *pi = 1; // 0 = WDDM, 1 = TCC
         FIXME("Reporting drivertype TCC on Linux\n");
-        return ret;
     }
-    return pcuDeviceGetAttribute(pi, attrib, dev);
+    return ret;
 }
 
 CUresult WINAPI wine_cuDeviceGetByPCIBusId(CUdevice *dev, const char *pciBusId)
