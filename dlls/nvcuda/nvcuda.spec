@@ -214,7 +214,7 @@
 @ stdcall cuLaunchGrid(ptr long long) wine_cuLaunchGrid
 @ stdcall cuLaunchGridAsync(ptr long long ptr) wine_cuLaunchGridAsync
 @ stdcall cuLaunchHostFunc(ptr ptr ptr) wine_cuLaunchHostFunc
-@ stub cuLaunchHostFunc_ptsz
+@ stdcall cuLaunchHostFunc_ptsz(ptr ptr ptr) wine_cuLaunchHostFunc_ptsz
 @ stdcall cuLaunchKernel(ptr long long long long long long long ptr ptr ptr) wine_cuLaunchKernel
 @ stdcall cuLaunchKernel_ptsz(ptr long long long long long long long ptr ptr ptr) wine_cuLaunchKernel_ptsz
 @ stdcall cuLaunchKernelEx(ptr ptr ptr ptr) wine_cuLaunchKernelEx
@@ -394,7 +394,7 @@
 @ stdcall cuStreamAttachMemAsync(ptr long long long) wine_cuStreamAttachMemAsync
 @ stdcall cuStreamAttachMemAsync_ptsz(ptr long long long) wine_cuStreamAttachMemAsync_ptsz
 @ stdcall cuStreamBatchMemOp(ptr long ptr long) wine_cuStreamBatchMemOp
-@ stub cuStreamBatchMemOp_ptsz
+@ stdcall cuStreamBatchMemOp_ptsz(ptr long ptr long) wine_cuStreamBatchMemOp_ptsz
 @ stdcall cuStreamBeginCapture(ptr) wine_cuStreamBeginCapture
 @ stdcall cuStreamBeginCapture_ptsz(ptr) wine_cuStreamBeginCapture_ptsz
 @ stdcall cuStreamBeginCapture_v2(ptr long) wine_cuStreamBeginCapture_v2
@@ -424,13 +424,13 @@
 @ stdcall cuStreamWaitEvent(ptr ptr long) wine_cuStreamWaitEvent
 @ stdcall cuStreamWaitEvent_ptsz(ptr ptr long) wine_cuStreamWaitEvent_ptsz
 @ stdcall cuStreamWaitValue32(ptr long long long) wine_cuStreamWaitValue32
-@ stub cuStreamWaitValue32_ptsz
+@ stdcall cuStreamWaitValue32_ptsz(ptr long long long) wine_cuStreamWaitValue32_ptsz
 @ stdcall cuStreamWaitValue64(ptr long long long) wine_cuStreamWaitValue64
-@ stub cuStreamWaitValue64_ptsz
+@ stdcall cuStreamWaitValue64_ptsz(ptr long long long) wine_cuStreamWaitValue64_ptsz
 @ stdcall cuStreamWriteValue32(ptr long long long) wine_cuStreamWriteValue32
-@ stub cuStreamWriteValue32_ptsz
+@ stdcall cuStreamWriteValue32_ptsz(ptr long long long) wine_cuStreamWriteValue32_ptsz
 @ stdcall cuStreamWriteValue64(ptr long long long) wine_cuStreamWriteValue64
-@ stub cuStreamWriteValue64_ptsz
+@ stdcall cuStreamWriteValue64_ptsz(ptr long long long) wine_cuStreamWriteValue64_ptsz
 @ stdcall cuSurfObjectCreate(ptr ptr) wine_cuSurfObjectCreate
 @ stdcall cuSurfObjectDestroy(int64) wine_cuSurfObjectDestroy
 @ stdcall cuSurfObjectGetResourceDesc(ptr int64) wine_cuSurfObjectGetResourceDesc
