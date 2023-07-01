@@ -1453,13 +1453,45 @@ CUresult WINAPI wine_cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CU
 {
     CUresult ret;
     ret = pcuDeviceGetAttribute(pi, attrib, dev);
-    TRACE("(Device: %d, Attribute: %d) Returned value: (%d)\n", dev, attrib, *pi);
+    TRACE("(Device: %d, Attribute: %d) Value: (%d)\n", dev, attrib, *pi);
     if(ret != CUDA_SUCCESS) TRACE("Attribute: %d, Returned error: %d\n", attrib, ret);
 
-    if(attrib == 35){
-        // Linux does not support WDDM and result might unpredictable
-        *pi = 1; // 0 = WDDM, 1 = TCC
-        FIXME("Reporting drivertype TCC on Linux\n");
+    switch(attrib){
+        case 35:
+            // Linux does not support WDDM and result might unpredictable
+            // Documentation also indicate that the value is "undefined"
+            // If we set it to 0 it will indicate WDDM driver to "fake" windows driver
+            *pi = 0; // 0 = WDDM, 1 = TCC
+            FIXME("Returning drivertype WDDM: (0)\n");
+            break;
+
+        case 89:
+            // On Linux the driver seems to support concurrent managed access
+            // Same hardware on Windows reports it do not
+            *pi = 0;
+            FIXME("Returning no coherent access memory support: (0)\n");
+            break;
+
+        case 91:
+            // Probably a safer option to NOT support something when running Wine
+            *pi = 0;
+            FIXME("Returning no host pointer for registered mem support: (0)\n");
+            break;
+
+        case 113:
+            // Let us NOT support
+            *pi = 0;
+            FIXME("Returning no support for read-only host register: (0)\n");
+            break;
+
+        case 119:
+            // Same hardware on windows reports 0 here.
+            *pi = 0;
+            FIXME("Returning 0 handle types supported\n");
+            break;
+
+        default:
+            return ret;
     }
     return ret;
 }
