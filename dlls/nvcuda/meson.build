@@ -1,6 +1,7 @@
 nvcuda_src = [
   'internal.c',
   'nvcuda.c',
+  'function_mappings.c',
 ]
 
 arch_dir_prefix = target_machine.cpu_family() == 'x86_64' ? 'x86_64-' : 'i386-'

@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2014-2015 Michael Müller
  * Copyright (C) 2014-2015 Sebastian Lackner
+ * Copyright (C) 2022-2023 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,6 +39,7 @@
 #include "d3d9.h"
 #include "dxgi.h"
 #include "d3d11.h"
+#include "function_mappings.h"
 
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
 #define DEV_PTR "%llu"
@@ -619,6 +621,7 @@ static CUresult (*pcuGetProcAddress)(const char *symbol, void **pfn, int driverV
 static CUresult (*pcuStreamBatchMemOp_v2)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
 static CUresult (*pcuIpcOpenMemHandle_v2)(CUdeviceptr_v2 *pdptr, CUipcMemHandle handle, unsigned int Flags);
 static CUresult (*pcuStreamBatchMemOp_ptsz)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
+static CUresult (*pcuOccupancyMaxPotentialClusterSize)(int *clusterSize, CUfunction func, const CUlaunchConfig *config);
 
 /* Cuda 12 */
 static CUresult (*pcuLibraryLoadData)(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
@@ -650,6 +653,11 @@ static CUresult (*pcuMulticastGetGranularity)(size_t *granularity, const void *p
 static CUresult (*pcuGetProcAddress_v2)(const char *symbol, void **pfn, int driverVersion, cuuint64_t flags, CUdriverProcAddressQueryResult *symbolFound);
 static CUresult (*pcuStreamGetId)(CUstream hStream, unsigned long long *streamId);
 static CUresult (*pcuStreamGetId_ptsz)(CUstream hStream, unsigned long long *streamId);
+static CUresult (*pcuGraphAddKernelNode_v2)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const void *nodeParams);
+static CUresult (*pcuGraphKernelNodeGetParams_v2)(CUgraphNode hNode, void *nodeParams);
+static CUresult (*pcuGraphKernelNodeSetParams_v2)(CUgraphNode hNode, const void *nodeParams);
+static CUresult (*pcuGraphExecKernelNodeSetParams_v2)(CUgraphExec hGraphExec, CUgraphNode hNode, const void *nodeParams);
+static CUresult (*pcuGraphExecUpdate_v2)(CUgraphExec hGraphExec, CUgraph hGraph, void *resultInfo);
 
 static void *cuda_handle = NULL;
 
@@ -1198,6 +1206,7 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_v2);
     TRY_LOAD_FUNCPTR(cuIpcOpenMemHandle_v2);
     TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_ptsz);
+    TRY_LOAD_FUNCPTR(cuOccupancyMaxPotentialClusterSize);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -1226,6 +1235,11 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGetProcAddress_v2);
     TRY_LOAD_FUNCPTR(cuStreamGetId);
     TRY_LOAD_FUNCPTR(cuStreamGetId_ptsz);
+    TRY_LOAD_FUNCPTR(cuGraphAddKernelNode_v2);
+    TRY_LOAD_FUNCPTR(cuGraphKernelNodeGetParams_v2);
+    TRY_LOAD_FUNCPTR(cuGraphKernelNodeSetParams_v2);
+    TRY_LOAD_FUNCPTR(cuGraphExecKernelNodeSetParams_v2);
+    TRY_LOAD_FUNCPTR(cuGraphExecUpdate_v2);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -4612,7 +4626,7 @@ CUresult WINAPI wine_cuGraphInstantiate_v2(CUgraphExec *phGraphExec, CUgraph hGr
 CUresult WINAPI wine_cuGetProcAddress(const char *symbol, void **pfn, int driverVersion, cuuint64_t flags)
 {
     CHECK_FUNCPTR(cuGetProcAddress);
-    get_addr(symbol, driverVersion, pfn, flags);
+    get_addr(symbol, driverVersion, flags, pfn);
 
     if(*pfn == NULL) {
         FIXME("(%s, %d, %lu) The SYMBOL ADDRESS was NOT found!\n", symbol, driverVersion, (SIZE_T)flags);
@@ -4641,6 +4655,13 @@ CUresult WINAPI wine_cuStreamBatchMemOp_ptsz(CUstream stream, unsigned int count
     TRACE("(%p, %u, %p, %u)\n", stream, count, paramArray, flags);
     CHECK_FUNCPTR(cuStreamBatchMemOp_ptsz);
     return pcuStreamBatchMemOp_ptsz(stream, count, paramArray, flags);
+}
+
+CUresult WINAPI wine_cuOccupancyMaxPotentialClusterSize(int *clusterSize, CUfunction func, const CUlaunchConfig *config)
+{
+    TRACE("(%p, %p, %p)\n", clusterSize, func, config);
+    CHECK_FUNCPTR(cuOccupancyMaxPotentialClusterSize);
+    return pcuOccupancyMaxPotentialClusterSize(clusterSize, func, config);
 }
 
 /*
@@ -4828,7 +4849,7 @@ CUresult WINAPI wine_cuGetProcAddress_v2(const char *symbol, void **pfn, int dri
 {
     CHECK_FUNCPTR(cuGetProcAddress_v2);
     symbolFound = (CUdriverProcAddressQueryResult *)CU_GET_PROC_ADDRESS_SUCCESS;
-    get_addr(symbol, driverVersion, pfn, flags);
+    get_addr(symbol, driverVersion, flags, pfn);
 
     if(*pfn == NULL) {
         FIXME("(%s, %d, %lu) The SYMBOL ADDRESS was NOT found! Returned CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND\n", symbol, driverVersion, (SIZE_T)flags);
@@ -4837,6 +4858,41 @@ CUresult WINAPI wine_cuGetProcAddress_v2(const char *symbol, void **pfn, int dri
     }
     TRACE("(%s, %d, %lu) returned address: (%p)\n", symbol, driverVersion, (SIZE_T)flags, *pfn);
     return CUDA_SUCCESS;
+}
+
+CUresult WINAPI wine_cuGraphAddKernelNode_v2(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const void *nodeParams)
+{
+    TRACE("(%p, %p, %p, %lu, %p)\n", phGraphNode, hGraph, dependencies, (SIZE_T)numDependencies, nodeParams);
+    CHECK_FUNCPTR(cuGraphAddKernelNode_v2);
+    return pcuGraphAddKernelNode_v2(phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphKernelNodeGetParams_v2(CUgraphNode hNode, void *nodeParams)
+{
+    TRACE("(%p, %p)\n", hNode, nodeParams);
+    CHECK_FUNCPTR(cuGraphKernelNodeGetParams_v2);
+    return pcuGraphKernelNodeGetParams_v2(hNode, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphKernelNodeSetParams_v2(CUgraphNode hNode, const void *nodeParams)
+{
+    TRACE("(%p, %p)\n", hNode, nodeParams);
+    CHECK_FUNCPTR(cuGraphKernelNodeSetParams_v2);
+    return pcuGraphKernelNodeSetParams_v2(hNode, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphExecKernelNodeSetParams_v2(CUgraphExec hGraphExec, CUgraphNode hNode, const void *nodeParams)
+{
+    TRACE("(%p, %p, %p)\n", hGraphExec, hNode, nodeParams);
+    CHECK_FUNCPTR(cuGraphExecKernelNodeSetParams_v2);
+    return pcuGraphExecKernelNodeSetParams_v2(hGraphExec, hNode, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphExecUpdate_v2(CUgraphExec hGraphExec, CUgraph hGraph, void *resultInfo)
+{
+    TRACE("(%p, %p, %p)\n", hGraphExec, hGraph, resultInfo);
+    CHECK_FUNCPTR(cuGraphExecUpdate_v2);
+    return pcuGraphExecUpdate_v2(hGraphExec, hGraph, resultInfo);
 }
 
 #undef CHECK_FUNCPTR
@@ -4897,649 +4953,23 @@ CUresult WINAPI wine_cuGraphicsD3D11RegisterResource(CUgraphicsResource *pCudaRe
 }
 
 /* Function checker used by CUDA Runtime API */
-void get_addr(const char *symbol, int driverVersion, void **pfn, cuuint64_t flags)
+void get_addr(const char* symbol, int driverVersion, size_t flags, void** pfn)
 {
-    if(strcmp("cuGetProcAddress", symbol)==0){
-        if(driverVersion >= 12000) *pfn = wine_cuGetProcAddress_v2;
-        else *pfn = wine_cuGetProcAddress;
-    };
-    if(strcmp("cuIpcOpenMemHandle", symbol)==0){
-        if(driverVersion >= 11000) *pfn = wine_cuIpcOpenMemHandle_v2;
-        else *pfn = wine_cuIpcOpenMemHandle;
+    const FunctionMapping* bestMapping = NULL;
+    for (size_t i = 0; i < mappings_count; ++i) {
+        const FunctionMapping* mapping = &mappings[i];
+        if (strcmp(mapping->symbol, symbol) == 0 && driverVersion == mapping->minVersion && flags == mapping->flags) {
+            if (bestMapping == NULL || (mapping->minVersion == bestMapping->minVersion && mapping->minVersion == bestMapping->flags)){
+                bestMapping = mapping;
+            }
+        }
     }
-    if(strcmp("cuGraphInstantiate", symbol)==0){
-        if(driverVersion >= 11000) *pfn = wine_cuGraphInstantiate_v2;
-        else *pfn = wine_cuGraphInstantiate;
-    }
-    if(strcmp("cuMemAlloc", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuMemAlloc_v2;
-        else *pfn = wine_cuMemAlloc;
-    }
-    if(strcmp("cuArray3DCreate", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuArray3DCreate_v2;
-        else *pfn = wine_cuArray3DCreate;
-    }
-    if(strcmp("cuArray3DGetDescriptor", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuArray3DGetDescriptor_v2;
-        else *pfn = wine_cuArray3DGetDescriptor;
-    }
-    if(strcmp("cuArrayCreate", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuArrayCreate_v2;
-        else *pfn = wine_cuArrayCreate;
-    }
-    if(strcmp("cuArrayGetDescriptor", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuArrayGetDescriptor_v2;
-        else *pfn = wine_cuArrayGetDescriptor;
-    }
-    if(strcmp("cuCtxCreate", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuCtxCreate_v2;
-        if(driverVersion >= 11040) *pfn = wine_cuCtxCreate_v3;
-        else *pfn = wine_cuCtxCreate;
-    }
-    if(strcmp("cuCtxPopCurrent", symbol)==0){
-        if(driverVersion >= 4000) *pfn = wine_cuCtxPopCurrent_v2;
-        else *pfn = wine_cuCtxPopCurrent;
-    }
-    if(strcmp("cuCtxPushCurrent", symbol)==0){
-        if(driverVersion >= 4000) *pfn = wine_cuCtxPushCurrent_v2;
-        else *pfn = wine_cuCtxPushCurrent;
-    }
-    if(strcmp("cuDeviceTotalMem", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuDeviceTotalMem_v2;
-        else *pfn = wine_cuDeviceTotalMem;
-    }
-    if(strcmp("cuEventDestroy", symbol)==0){
-        if(driverVersion >= 4000) *pfn = wine_cuEventDestroy_v2;
-        else *pfn = wine_cuEventDestroy;
-    }
-    if(strcmp("cuGLCtxCreate", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuGLCtxCreate_v2;
-        else *pfn = wine_cuGLCtxCreate;
-    }
-    if(strcmp("cuGLMapBufferObjectAsync", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuGLMapBufferObjectAsync_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuGLMapBufferObjectAsync_v2_ptsz;
-        else *pfn = wine_cuGLMapBufferObjectAsync;
-    }
-    if(strcmp("cuGLMapBufferObject", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuGLMapBufferObject_v2;
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuGLMapBufferObject_v2_ptds;
-        else *pfn = wine_cuGLMapBufferObject;
-    }
-    if(strcmp("cuGraphicsResourceGetMappedPointer", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuGraphicsResourceGetMappedPointer_v2;
-        else *pfn = wine_cuGraphicsResourceGetMappedPointer;
-    }
-    if(strcmp("cuMemAllocPitch", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuMemAllocPitch_v2;
-        else *pfn = wine_cuMemAllocPitch;
-    }
-    if(strcmp("cuMemFree", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuMemFree_v2;
-        else *pfn = wine_cuMemFree;
-    }
-    if(strcmp("cuMemGetAddressRange", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuMemGetAddressRange_v2;
-        else *pfn = wine_cuMemGetAddressRange;
-    }
-    if(strcmp("cuMemGetInfo", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuMemGetInfo_v2;
-        else *pfn = wine_cuMemGetInfo;
-    }
-    if(strcmp("cuMemHostGetDevicePointer", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuMemHostGetDevicePointer_v2;
-        else *pfn = wine_cuMemHostGetDevicePointer;
-    }
-    if(strcmp("cuMemcpy2DAsync", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpy2DAsync_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpy2DAsync_v2_ptsz;
-        else *pfn = wine_cuMemcpy2DAsync;
-    }
-    if(strcmp("cuMemcpy2DUnaligned", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpy2DUnaligned_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpy2DUnaligned_v2_ptds;
-        else *pfn = wine_cuMemcpy2DUnaligned;
-    }
-    if(strcmp("cuMemcpy3DAsync", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpy3DAsync_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpy3DAsync_v2_ptsz;
-        else *pfn = wine_cuMemcpy3DAsync;
-    }
-    if(strcmp("cuMemcpy3D", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpy3D_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpy3D_v2_ptds;
-        else *pfn = wine_cuMemcpy3D;
-    }
-    if(strcmp("cuMemcpyDtoDAsync", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpyDtoDAsync_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyDtoDAsync;
-        else *pfn = wine_cuMemcpyDtoDAsync;
-    }
-    if(strcmp("cuMemcpyDtoD", symbol)==0){
-        if(driverVersion >= 3020  && flags != 2) *pfn = wine_cuMemcpyDtoD_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyDtoD_v2_ptds;
-        else *pfn = wine_cuMemcpyDtoD;
-    }
-    if(strcmp("cuMemcpyDtoH", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpyDtoH_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyDtoH_v2_ptds;
-        else *pfn = wine_cuMemcpyDtoH;
-    }
-    if(strcmp("cuMemcpyHtoDAsync", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpyHtoDAsync_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyHtoDAsync_v2_ptsz;
-        else *pfn = wine_cuMemcpyHtoDAsync;
-    }
-    if(strcmp("cuMemcpyHtoD", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpyHtoD_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyHtoD_v2_ptds;
-        else *pfn = wine_cuMemcpyHtoD;
-    }
-    if(strcmp("cuMemcpyDtoHAsync", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemcpyDtoHAsync_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyDtoHAsync_v2_ptsz;
-        else *pfn = wine_cuMemcpyDtoHAsync;
-    }
-    if(strcmp("cuMemsetD2D8", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemsetD2D8_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemsetD2D8_v2_ptds;
-        else *pfn = wine_cuMemsetD2D8;
-    }
-    if(strcmp("cuMemsetD8", symbol)==0){
-        if(driverVersion >= 3020 && flags != 2) *pfn = wine_cuMemsetD8_v2;
-        else if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemsetD8_v2_ptds;
-        else *pfn = wine_cuMemsetD8;
-    }
-    if(strcmp("cuModuleGetGlobal", symbol)==0){
-        if(driverVersion >= 3020) *pfn = wine_cuModuleGetGlobal_v2;
-        else *pfn = wine_cuModuleGetGlobal;
-    }
-    if(strcmp("cuGLGetDevices", symbol)==0){
-        if(driverVersion >= 4010) *pfn = wine_cuGLGetDevices_v2;
-        else *pfn = wine_cuGLGetDevices;
-    }
-    if(strcmp("cuLinkAddData", symbol)==0){
-        if(driverVersion >= 6050) *pfn = wine_cuLinkAddData_v2;
-        else *pfn = wine_cuLinkAddData;
-    }
-    if(strcmp("cuLinkCreate", symbol)==0){
-        if(driverVersion >= 6050) *pfn = wine_cuLinkCreate_v2;
-        else *pfn = wine_cuLinkCreate;
-    }
-    if(strcmp("cuMemHostRegister", symbol)==0){
-        if(driverVersion >= 6050) *pfn = wine_cuMemHostRegister_v2;
-        else *pfn = wine_cuMemHostRegister;
-    }
-    if(strcmp("cuStreamBeginCapture", symbol)==0){
-        if(driverVersion >= 10010 && flags != 2) *pfn = wine_cuStreamBeginCapture_v2;
-        else if(driverVersion >= 10010 && flags == 2) *pfn = wine_cuStreamBeginCapture_v2_ptsz;
-        else if(driverVersion <= 10010 && flags == 2) *pfn = wine_cuStreamBeginCapture_ptsz;
-        else *pfn = wine_cuStreamBeginCapture;
-    }
-    if(strcmp("cuStreamGetCaptureInfo", symbol)==0){
-        if(driverVersion >= 11030 && flags != 2) *pfn = wine_cuStreamGetCaptureInfo_v2;
-        else if(driverVersion >= 10010 && driverVersion <= 11030 && flags == 2) *pfn = wine_cuStreamGetCaptureInfo_ptsz;
-        else if(driverVersion >= 11030 && flags == 2) *pfn = wine_cuStreamGetCaptureInfo_v2_ptsz;
-        else *pfn = wine_cuStreamGetCaptureInfo;
-    }
-    if(strcmp("cuStreamWaitValue32", symbol)==0){
-        if(driverVersion >= 11070 && flags != 2) *pfn = wine_cuStreamWaitValue32_v2;
-        else if(driverVersion >= 8000 && driverVersion < 11070 && flags == 2) *pfn = wine_cuStreamWaitValue32_ptsz;
-        else *pfn = wine_cuStreamWaitValue32;
-    }
-    if(strcmp("cuStreamWriteValue32", symbol)==0){
-        if(driverVersion >= 11070 && flags != 2) *pfn = wine_cuStreamWriteValue32_v2;
-        else if(driverVersion >= 8000 && driverVersion < 11070 && flags == 2) *pfn = wine_cuStreamWriteValue32_ptsz;
-        else *pfn = wine_cuStreamWriteValue32;
-    }
-    if(strcmp("cuStreamWaitValue64", symbol)==0){
-        if(driverVersion >= 11070 && flags != 2) *pfn = wine_cuStreamWaitValue64_v2;
-        else if(driverVersion >= 9000 && driverVersion < 11070 && flags == 2) *pfn = wine_cuStreamWaitValue64_ptsz;
-        else *pfn = wine_cuStreamWaitValue64;
-    }
-    if(strcmp("cuStreamWriteValue64", symbol)==0){
-        if(driverVersion >= 11070 && flags != 2) *pfn = wine_cuStreamWriteValue64_v2;
-        else if(driverVersion >= 9000 && driverVersion < 11070 && flags == 2) *pfn = wine_cuStreamWriteValue64_ptsz;
-        else *pfn = wine_cuStreamWriteValue64;
-    }
-    if(strcmp("cuStreamBatchMemOp", symbol)==0){
-        if(driverVersion >= 11070 && flags != 2) *pfn = wine_cuStreamBatchMemOp_v2;
-        else if(driverVersion >= 8000 && driverVersion < 11070 && flags == 2) *pfn = wine_cuStreamBatchMemOp_ptsz;
-        else *pfn = wine_cuStreamBatchMemOp;
-    }
-    if(strcmp("cuMemAllocAsync", symbol)==0){
-        if(driverVersion >= 11020 && flags == 2) *pfn = wine_cuMemAllocAsync_ptsz;
-        else *pfn = wine_cuMemAllocAsync;
-    }
-    if(strcmp("cuMemAllocFromPoolAsync", symbol)==0){
-        if(driverVersion >= 11020 && flags == 2) *pfn = wine_cuMemAllocFromPoolAsync_ptsz;
-        else *pfn = wine_cuMemAllocFromPoolAsync;
-    }
-    if(strcmp("cuMemFreeAsync", symbol)==0){
-        if(driverVersion >= 11020 && flags == 2) *pfn = wine_cuMemFreeAsync_ptsz;
-        else *pfn = wine_cuMemFreeAsync;
-    }
-    if(strcmp("cuMemcpy", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpy_ptds;
-        else *pfn = wine_cuMemcpy;
-    }
-    if(strcmp("cuMemcpyAsync", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyAsync_ptsz;
-        else *pfn = wine_cuMemcpyAsync;
-    }
-    if(strcmp("cuMemcpyPeer", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyPeer_ptds;
-        else *pfn = wine_cuMemcpyPeer;
-    }
-    if(strcmp("cuMemcpyPeerAsync", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpyPeerAsync_ptsz;
-        else *pfn = wine_cuMemcpyPeerAsync;
-    }
-    if(strcmp("cuMemcpy3DPeer", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpy3DPeer_ptds;
-        else *pfn = wine_cuMemcpy3DPeer;
-    }
-    if(strcmp("cuMemcpy3DPeerAsync", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemcpy3DPeerAsync_ptsz;
-        else *pfn = wine_cuMemcpy3DPeerAsync;
-    }
-    if(strcmp("cuMemsetD8Async", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemsetD8Async_ptsz;
-        else *pfn = wine_cuMemsetD8Async;
-    }
-    if(strcmp("cuMemsetD2D8Async", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuMemsetD2D8Async_ptsz;
-        else *pfn = wine_cuMemsetD2D8Async;
-    }
-    if(strcmp("cuSignalExternalSemaphoresAsync", symbol)==0){
-        if(driverVersion >= 10000 && flags == 2) *pfn = wine_cuSignalExternalSemaphoresAsync_ptsz;
-        else *pfn = wine_cuSignalExternalSemaphoresAsync;
-    }
-    if(strcmp("cuWaitExternalSemaphoresAsync", symbol)==0){
-        if(driverVersion >= 10000 && flags == 2) *pfn = wine_cuWaitExternalSemaphoresAsync_ptsz;
-        else *pfn = wine_cuWaitExternalSemaphoresAsync;
-    }
-    if(strcmp("cuLaunchKernel", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuLaunchKernel_ptsz;
-        else *pfn = wine_cuLaunchKernel;
-    }
-    if(strcmp("cuLaunchCooperativeKernel", symbol)==0){
-        if(driverVersion >= 9000 && flags == 2) *pfn = wine_cuLaunchCooperativeKernel_ptsz;
-        else *pfn = wine_cuLaunchCooperativeKernel;
-    }
-    if(strcmp("cuLaunchHostFunc", symbol)==0){
-        if(driverVersion >= 10000 && flags == 2) *pfn = wine_cuLaunchHostFunc_ptsz;
-        else *pfn = wine_cuLaunchHostFunc;
-    }
-    if(strcmp("cuLaunchKernelEx", symbol)==0){
-        if(driverVersion >= 11060 && flags == 2) *pfn = wine_cuLaunchKernelEx_ptsz;
-        else *pfn = wine_cuLaunchKernelEx;
-    }
-    if(strcmp("cuEventRecord", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuEventRecord_ptsz;
-        else *pfn = wine_cuEventRecord;
-    }
-    if(strcmp("cuEventRecordWithFlags", symbol)==0){
-        if(driverVersion >= 11010 && flags == 2) *pfn = wine_cuEventRecordWithFlags;
-        else *pfn = wine_cuEventRecordWithFlags;
-    }
-    if(strcmp("cuStreamGetPriority", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuStreamGetPriority_ptsz;
-        else *pfn = wine_cuStreamGetPriority;
-    }
-    if(strcmp("cuStreamGetFlags", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuStreamGetFlags_ptsz;
-        else *pfn = wine_cuStreamGetFlags;
-    }
-    if(strcmp("cuStreamGetId", symbol)==0){
-        if(driverVersion >= 12000 && flags == 2) *pfn = wine_cuStreamGetId_ptsz;
-        else *pfn = wine_cuStreamGetId;
-    }
-    if(strcmp("cuStreamWaitEvent", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuStreamWaitEvent_ptsz;
-        else *pfn = wine_cuStreamWaitEvent;
-    }
-    if(strcmp("cuStreamAddCallback", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuStreamAddCallback_ptsz;
-        else *pfn = wine_cuStreamAddCallback;
-    }
-    if(strcmp("cuStreamSynchronize", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuStreamSynchronize_ptsz;
-        else *pfn = wine_cuStreamSynchronize;
-    }
-    if(strcmp("cuStreamQuery", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuStreamQuery_ptsz;
-        else *pfn = wine_cuStreamQuery;
-    }
-    if(strcmp("cuStreamAttachMemAsync", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuStreamAttachMemAsync_ptsz;
-        else *pfn = wine_cuStreamAttachMemAsync;
-    }
-    if(strcmp("cuStreamCopyAttributes", symbol)==0){
-        if(driverVersion >= 11000 && flags == 2) *pfn = wine_cuStreamCopyAttributes_ptsz;
-        else *pfn = wine_cuStreamCopyAttributes;
-    }
-    if(strcmp("cuStreamGetAttribute", symbol)==0){
-        if(driverVersion >= 11000 && flags == 2) *pfn = wine_cuStreamGetAttribute_ptsz;
-        else *pfn = wine_cuStreamGetAttribute;
-    }
-    if(strcmp("cuStreamSetAttribute", symbol)==0){
-        if(driverVersion >= 11000 && flags == 2) *pfn = wine_cuStreamSetAttribute_ptsz;
-        else *pfn = wine_cuStreamSetAttribute;
-    }
-    if(strcmp("cuGraphicsMapResources", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuGraphicsMapResources_ptsz;
-        else *pfn = wine_cuGraphicsMapResources;
-    }
-    if(strcmp("cuGraphicsUnmapResources", symbol)==0){
-        if(driverVersion >= 7000 && flags == 2) *pfn = wine_cuGraphicsUnmapResources_ptsz;
-        else *pfn = wine_cuGraphicsUnmapResources;
-    }
-    if(strcmp("cuMemPrefetchAsync", symbol)==0){
-        if(driverVersion >= 8000 && flags == 2) *pfn = wine_cuMemPrefetchAsync_ptsz;
-        else *pfn = wine_cuMemPrefetchAsync;
-    }
-    if(strcmp("cuGraphUpload", symbol)==0){
-        if(driverVersion >= 11010 && flags == 2) *pfn = wine_cuGraphUpload_ptsz;
-        else *pfn = wine_cuGraphUpload;
-    }
-    if(strcmp("cuGraphLaunch", symbol)==0){
-        if(driverVersion >= 10000 && flags == 2) *pfn = wine_cuGraphLaunch_ptsz;
-        else *pfn = wine_cuGraphLaunch;
-    }
-    if(strcmp("cuStreamEndCapture", symbol)==0){
-        if(driverVersion >= 10000 && flags == 2) *pfn = wine_cuStreamEndCapture_ptsz;
-        else *pfn = wine_cuStreamEndCapture;
-    }
-    if(strcmp("cuStreamIsCapturing", symbol)==0){
-        if(driverVersion >= 10000 && flags == 2) *pfn = wine_cuStreamIsCapturing_ptsz;
-        else *pfn = wine_cuStreamIsCapturing;
-    }
-    if(strcmp("cuStreamUpdateCaptureDependencies", symbol)==0){
-        if(driverVersion >= 11030 && flags == 2) *pfn = wine_cuStreamUpdateCaptureDependencies_ptsz;
-        else *pfn = wine_cuStreamUpdateCaptureDependencies;
-    }
-    if(strcmp("cuGraphInstantiateWithParams_ptsz", symbol)==0) *pfn = wine_cuGraphInstantiateWithParams_ptsz;
-    if(strcmp("cuGraphInstantiateWithParams", symbol)==0) *pfn = wine_cuGraphInstantiateWithParams;
-    if(strcmp("cuInit", symbol)==0) *pfn = wine_cuInit;
-    if(strcmp("cuDeviceGet", symbol)==0) *pfn = wine_cuDeviceGet;
-    if(strcmp("cuDeviceGetCount", symbol)==0) *pfn = wine_cuDeviceGetCount;
-    if(strcmp("cuDeviceGetName", symbol)==0) *pfn = wine_cuDeviceGetName;
-    if(strcmp("cuModuleGetLoadingMode", symbol)==0) *pfn = wine_cuModuleGetLoadingMode;
-    if(strcmp("cuLibraryLoadFromFile", symbol)==0) *pfn = wine_cuLibraryLoadFromFile;
-    if(strcmp("cuLibraryUnload", symbol)==0) *pfn = wine_cuLibraryUnload;
-    if(strcmp("cuLibraryGetKernel", symbol)==0) *pfn = wine_cuLibraryGetKernel;
-    if(strcmp("cuLibraryGetModule", symbol)==0) *pfn = wine_cuLibraryGetModule;
-    if(strcmp("cuKernelGetFunction", symbol)==0) *pfn = wine_cuKernelGetFunction;
-    if(strcmp("cuLibraryGetGlobal", symbol)==0) *pfn = wine_cuLibraryGetGlobal;
-    if(strcmp("cuLibraryGetManaged", symbol)==0) *pfn = wine_cuLibraryGetManaged;
-    if(strcmp("cuKernelGetAttribute", symbol)==0) *pfn = wine_cuKernelGetAttribute;
-    if(strcmp("cuKernelSetAttribute", symbol)==0) *pfn = wine_cuKernelSetAttribute;
-    if(strcmp("cuKernelSetCacheConfig", symbol)==0) *pfn = wine_cuKernelSetCacheConfig;
-    if(strcmp("cuDeviceGetAttribute", symbol)==0) *pfn = wine_cuDeviceGetAttribute;
-    if(strcmp("cuLibraryLoadData", symbol)==0) *pfn = wine_cuLibraryLoadData;
-    if(strcmp("cuDeviceGetP2PAttribute", symbol)==0) *pfn = wine_cuDeviceGetP2PAttribute;
-    if(strcmp("cuDriverGetVersion", symbol)==0) *pfn = wine_cuDriverGetVersion;
-    if(strcmp("cuArrayGetMemoryRequirements", symbol)==0) *pfn = wine_cuArrayGetMemoryRequirements;
-    if(strcmp("cuMipmappedArrayGetMemoryRequirements", symbol)==0) *pfn = wine_cuMipmappedArrayGetMemoryRequirements;
-    if(strcmp("cuOccupancyMaxActiveClusters", symbol)==0) *pfn = wine_cuOccupancyMaxActiveClusters;
-    if(strcmp("cuDeviceGetByPCIBusId", symbol)==0) *pfn = wine_cuDeviceGetByPCIBusId;
-    if(strcmp("cuDeviceGetPCIBusId", symbol)==0) *pfn = wine_cuDeviceGetPCIBusId;
-    if(strcmp("cuDeviceGetUuid", symbol)==0) *pfn = wine_cuDeviceGetUuid;
-    if(strcmp("cuDeviceGetTexture1DLinearMaxWidth", symbol)==0) *pfn = wine_cuDeviceGetTexture1DLinearMaxWidth;
-    if(strcmp("cuDeviceGetDefaultMemPool", symbol)==0) *pfn = wine_cuDeviceGetDefaultMemPool;
-    if(strcmp("cuDeviceSetMemPool", symbol)==0) *pfn = wine_cuDeviceSetMemPool;
-    if(strcmp("cuDeviceGetMemPool", symbol)==0) *pfn = wine_cuDeviceGetMemPool;
-    if(strcmp("cuFlushGPUDirectRDMAWrites", symbol)==0) *pfn = wine_cuFlushGPUDirectRDMAWrites;
-    if(strcmp("cuDeviceGetLuid", symbol)==0) *pfn = wine_cuDeviceGetLuid;
-    if(strcmp("cuDeviceSetGraphMemAttribute", symbol)==0) *pfn = wine_cuDeviceSetGraphMemAttribute;
-    if(strcmp("cuDevicePrimaryCtxRetain", symbol)==0) *pfn = wine_cuDevicePrimaryCtxRetain;
-    if(strcmp("cuDevicePrimaryCtxRelease", symbol)==0) *pfn = wine_cuDevicePrimaryCtxRelease;
-    if(strcmp("cuDevicePrimaryCtxSetFlags", symbol)==0) *pfn = wine_cuDevicePrimaryCtxSetFlags;
-    if(strcmp("cuDevicePrimaryCtxGetState", symbol)==0) *pfn = wine_cuDevicePrimaryCtxGetState;
-    if(strcmp("cuDevicePrimaryCtxReset", symbol)==0) *pfn = wine_cuDevicePrimaryCtxReset;
-    if(strcmp("cuCtxGetFlags", symbol)==0) *pfn = wine_cuCtxGetFlags;
-    if(strcmp("cuCtxSetCurrent", symbol)==0) *pfn = wine_cuCtxSetCurrent;
-    if(strcmp("cuCtxGetCurrent", symbol)==0) *pfn = wine_cuCtxGetCurrent;
-    if(strcmp("cuCtxDetach", symbol)==0) *pfn = wine_cuCtxDetach;
-    if(strcmp("cuCtxGetApiVersion", symbol)==0) *pfn = wine_cuCtxGetApiVersion;
-    if(strcmp("cuCtxGetDevice", symbol)==0) *pfn = wine_cuCtxGetDevice;
-    if(strcmp("cuCtxGetLimit", symbol)==0) *pfn = wine_cuCtxGetLimit;
-    if(strcmp("cuCtxSetLimit", symbol)==0) *pfn = wine_cuCtxSetLimit;
-    if(strcmp("cuCtxGetCacheConfig", symbol)==0) *pfn = wine_cuCtxGetCacheConfig;
-    if(strcmp("cuCtxSetCacheConfig", symbol)==0) *pfn = wine_cuCtxSetCacheConfig;
-    if(strcmp("cuCtxGetSharedMemConfig", symbol)==0) *pfn = wine_cuCtxGetSharedMemConfig;
-    if(strcmp("cuCtxGetStreamPriorityRange", symbol)==0) *pfn = wine_cuCtxGetStreamPriorityRange;
-    if(strcmp("cuCtxSetSharedMemConfig", symbol)==0) *pfn = wine_cuCtxSetSharedMemConfig;
-    if(strcmp("cuCtxSynchronize", symbol)==0) *pfn = wine_cuCtxSynchronize;
-    if(strcmp("cuCtxResetPersistingL2Cache", symbol)==0) *pfn = wine_cuCtxResetPersistingL2Cache;
-    if(strcmp("cuModuleLoad", symbol)==0) *pfn = wine_cuModuleLoad;
-    if(strcmp("cuModuleLoadData", symbol)==0) *pfn = wine_cuModuleLoadData;
-    if(strcmp("cuModuleLoadFatBinary", symbol)==0) *pfn = wine_cuModuleLoadFatBinary;
-    if(strcmp("cuModuleUnload", symbol)==0) *pfn = wine_cuModuleUnload;
-    if(strcmp("cuModuleGetFunction", symbol)==0) *pfn = wine_cuModuleGetFunction;
-    if(strcmp("cuModuleGetTexRef", symbol)==0) *pfn = wine_cuModuleGetTexRef;
-    if(strcmp("cuModuleGetSurfRef", symbol)==0) *pfn = wine_cuModuleGetSurfRef;
-    if(strcmp("cuLinkAddFile", symbol)==0) *pfn = wine_cuLinkAddFile;
-    if(strcmp("cuLinkComplete", symbol)==0) *pfn = wine_cuLinkComplete;
-    if(strcmp("cuLinkDestroy", symbol)==0) *pfn = wine_cuLinkDestroy;
-    if(strcmp("cuMemAllocManaged", symbol)==0) *pfn = wine_cuMemAllocManaged;
-    if(strcmp("cuMemFreeHost", symbol)==0) *pfn = wine_cuMemFreeHost;
-    if(strcmp("cuMemHostAlloc", symbol)==0) *pfn = wine_cuMemHostAlloc;
-    if(strcmp("cuMemHostGetFlags", symbol)==0) *pfn = wine_cuMemHostGetFlags;
-    if(strcmp("cuMemHostUnregister", symbol)==0) *pfn = wine_cuMemHostUnregister;
-    if(strcmp("cuPointerGetAttribute", symbol)==0) *pfn = wine_cuPointerGetAttribute;
-    if(strcmp("cuPointerGetAttributes", symbol)==0) *pfn = wine_cuPointerGetAttributes;
-    if(strcmp("cuMemPoolTrimTo", symbol)==0) *pfn = wine_cuMemPoolTrimTo;
-    if(strcmp("cuMemPoolSetAttribute", symbol)==0) *pfn = wine_cuMemPoolSetAttribute;
-    if(strcmp("cuMemPoolGetAttribute", symbol)==0) *pfn = wine_cuMemPoolGetAttribute;
-    if(strcmp("cuMemPoolSetAccess", symbol)==0) *pfn = wine_cuMemPoolSetAccess;
-    if(strcmp("cuMemPoolGetAccess", symbol)==0) *pfn = wine_cuMemPoolGetAccess;
-    if(strcmp("cuMemPoolCreate", symbol)==0) *pfn = wine_cuMemPoolCreate;
-    if(strcmp("cuMemPoolDestroy", symbol)==0) *pfn = wine_cuMemPoolDestroy;
-    if(strcmp("cuMemPoolExportToShareableHandle", symbol)==0) *pfn = wine_cuMemPoolExportToShareableHandle;
-    if(strcmp("cuMemPoolImportFromShareableHandle", symbol)==0) *pfn = wine_cuMemPoolImportFromShareableHandle;
-    if(strcmp("cuMemPoolExportPointer", symbol)==0) *pfn = wine_cuMemPoolExportPointer;
-    if(strcmp("cuMemPoolImportPointer", symbol)==0) *pfn = wine_cuMemPoolImportPointer;
-    if(strcmp("cuFuncSetCacheConfig", symbol)==0) *pfn = wine_cuFuncSetCacheConfig;
-    if(strcmp("cuFuncSetSharedMemConfig", symbol)==0) *pfn = wine_cuFuncSetSharedMemConfig;
-    if(strcmp("cuFuncGetAttribute", symbol)==0) *pfn = wine_cuFuncGetAttribute;
-    if(strcmp("cuFuncSetAttribute", symbol)==0) *pfn = wine_cuFuncSetAttribute;
-    if(strcmp("cuArrayGetSparseProperties", symbol)==0) *pfn = wine_cuArrayGetSparseProperties;
-    if(strcmp("cuArrayGetPlane", symbol)==0) *pfn = wine_cuArrayGetPlane;
-    if(strcmp("cuArrayDestroy", symbol)==0) *pfn = wine_cuArrayDestroy;
-    if(strcmp("cuMipmappedArrayCreate", symbol)==0) *pfn = wine_cuMipmappedArrayCreate;
-    if(strcmp("cuMipmappedArrayGetLevel", symbol)==0) *pfn = wine_cuMipmappedArrayGetLevel;
-    if(strcmp("cuMipmappedArrayGetSparseProperties", symbol)==0) *pfn = wine_cuMipmappedArrayGetSparseProperties;
-    if(strcmp("cuMipmappedArrayDestroy", symbol)==0) *pfn = wine_cuMipmappedArrayDestroy;
-    if(strcmp("cuTexRefCreate", symbol)==0) *pfn = wine_cuTexRefCreate;
-    if(strcmp("cuTexRefDestroy", symbol)==0) *pfn = wine_cuTexRefDestroy;
-    if(strcmp("cuTexRefSetArray", symbol)==0) *pfn = wine_cuTexRefSetArray;
-    if(strcmp("cuTexRefSetMipmappedArray", symbol)==0) *pfn = wine_cuTexRefSetMipmappedArray;
-    if(strcmp("cuTexRefSetAddress", symbol)==0) *pfn = wine_cuTexRefSetAddress;
-    if(strcmp("cuTexRefSetAddress2D", symbol)==0) *pfn = wine_cuTexRefSetAddress2D;
-    if(strcmp("cuTexRefSetFormat", symbol)==0) *pfn = wine_cuTexRefSetFormat;
-    if(strcmp("cuTexRefSetAddressMode", symbol)==0) *pfn = wine_cuTexRefSetAddressMode;
-    if(strcmp("cuTexRefSetFilterMode", symbol)==0) *pfn = wine_cuTexRefSetFilterMode;
-    if(strcmp("cuTexRefSetMipmapFilterMode", symbol)==0) *pfn = wine_cuTexRefSetMipmapFilterMode;
-    if(strcmp("cuTexRefSetMipmapLevelBias", symbol)==0) *pfn = wine_cuTexRefSetMipmapLevelBias;
-    if(strcmp("cuTexRefSetMipmapLevelClamp", symbol)==0) *pfn = wine_cuTexRefSetMipmapLevelClamp;
-    if(strcmp("cuTexRefSetMaxAnisotropy", symbol)==0) *pfn = wine_cuTexRefSetMaxAnisotropy;
-    if(strcmp("cuTexRefSetFlags", symbol)==0) *pfn = wine_cuTexRefSetFlags;
-    if(strcmp("cuTexRefSetBorderColor", symbol)==0) *pfn = wine_cuTexRefSetBorderColor;
-    if(strcmp("cuTexRefGetBorderColor", symbol)==0) *pfn = wine_cuTexRefGetBorderColor;
-    if(strcmp("cuSurfRefSetArray", symbol)==0) *pfn = wine_cuSurfRefSetArray;
-    if(strcmp("cuTexObjectCreate", symbol)==0) *pfn = wine_cuTexObjectCreate;
-    if(strcmp("cuTexObjectDestroy", symbol)==0) *pfn = wine_cuTexObjectDestroy;
-    if(strcmp("cuTexObjectGetResourceDesc", symbol)==0) *pfn = wine_cuTexObjectGetResourceDesc;
-    if(strcmp("cuTexObjectGetTextureDesc", symbol)==0) *pfn = wine_cuTexObjectGetTextureDesc;
-    if(strcmp("cuTexObjectGetResourceViewDesc", symbol)==0) *pfn = wine_cuTexObjectGetResourceViewDesc;
-    if(strcmp("cuSurfObjectCreate", symbol)==0) *pfn = wine_cuSurfObjectCreate;
-    if(strcmp("cuSurfObjectDestroy", symbol)==0) *pfn = wine_cuSurfObjectDestroy;
-    if(strcmp("cuSurfObjectGetResourceDesc", symbol)==0) *pfn = wine_cuSurfObjectGetResourceDesc;
-    if(strcmp("cuImportExternalMemory", symbol)==0) *pfn = wine_cuImportExternalMemory;
-    if(strcmp("cuExternalMemoryGetMappedBuffer", symbol)==0) *pfn = wine_cuExternalMemoryGetMappedBuffer;
-    if(strcmp("cuExternalMemoryGetMappedMipmappedArray", symbol)==0) *pfn = wine_cuExternalMemoryGetMappedMipmappedArray;
-    if(strcmp("cuDestroyExternalMemory", symbol)==0) *pfn = wine_cuDestroyExternalMemory;
-    if(strcmp("cuImportExternalSemaphore", symbol)==0) *pfn = wine_cuImportExternalSemaphore;
-    if(strcmp("cuDestroyExternalSemaphore", symbol)==0) *pfn = wine_cuDestroyExternalSemaphore;
-    if(strcmp("cuLaunchCooperativeKernelMultiDevice", symbol)==0) *pfn = wine_cuLaunchCooperativeKernelMultiDevice;
-    if(strcmp("cuEventCreate", symbol)==0) *pfn = wine_cuEventCreate;
-    if(strcmp("cuEventQuery", symbol)==0) *pfn = wine_cuEventQuery;
-    if(strcmp("cuEventSynchronize", symbol)==0) *pfn = wine_cuEventSynchronize;
-    if(strcmp("cuEventElapsedTime", symbol)==0) *pfn = wine_cuEventElapsedTime;
-    if(strcmp("cuStreamCreate", symbol)==0) *pfn = wine_cuStreamCreate;
-    if(strcmp("cuStreamCreateWithPriority", symbol)==0) *pfn = wine_cuStreamCreateWithPriority;
-    if(strcmp("cuStreamGetCtx", symbol)==0) *pfn = wine_cuStreamGetCtx;
-    if(strcmp("cuStreamDestroy", symbol)==0) *pfn = wine_cuStreamDestroy;
-    if(strcmp("cuDeviceCanAccessPeer", symbol)==0) *pfn = wine_cuDeviceCanAccessPeer;
-    if(strcmp("cuCtxEnablePeerAccess", symbol)==0) *pfn = wine_cuCtxEnablePeerAccess;
-    if(strcmp("cuCtxDisablePeerAccess", symbol)==0) *pfn = wine_cuCtxDisablePeerAccess;
-    if(strcmp("cuIpcGetEventHandle", symbol)==0) *pfn = wine_cuIpcGetEventHandle;
-    if(strcmp("cuIpcOpenEventHandle", symbol)==0) *pfn = wine_cuIpcOpenEventHandle;
-    if(strcmp("cuIpcGetMemHandle", symbol)==0) *pfn = wine_cuIpcGetMemHandle;
-    if(strcmp("cuIpcCloseMemHandle", symbol)==0) *pfn = wine_cuIpcCloseMemHandle;
-    if(strcmp("cuGLInit", symbol)==0) *pfn = wine_cuGLInit;
-    if(strcmp("cuGLRegisterBufferObject", symbol)==0) *pfn = wine_cuGLRegisterBufferObject;
-    if(strcmp("cuGLUnmapBufferObject", symbol)==0) *pfn = wine_cuGLUnmapBufferObject;
-    if(strcmp("cuGLUnmapBufferObjectAsync", symbol)==0) *pfn = wine_cuGLUnmapBufferObjectAsync;
-    if(strcmp("cuGLUnregisterBufferObject", symbol)==0) *pfn = wine_cuGLUnregisterBufferObject;
-    if(strcmp("cuGLSetBufferObjectMapFlags", symbol)==0) *pfn = wine_cuGLSetBufferObjectMapFlags;
-    if(strcmp("cuGraphicsGLRegisterImage", symbol)==0) *pfn = wine_cuGraphicsGLRegisterImage;
-    if(strcmp("cuGraphicsGLRegisterBuffer", symbol)==0) *pfn = wine_cuGraphicsGLRegisterBuffer;
-    if(strcmp("cuWGLGetDevice", symbol)==0) *pfn = wine_cuWGLGetDevice;
-    if(strcmp("cuGraphicsUnregisterResource", symbol)==0) *pfn = wine_cuGraphicsUnregisterResource;
-    if(strcmp("cuGraphicsResourceSetMapFlags", symbol)==0) *pfn = wine_cuGraphicsResourceSetMapFlags;
-    if(strcmp("cuGraphicsSubResourceGetMappedArray", symbol)==0) *pfn = wine_cuGraphicsSubResourceGetMappedArray;
-    if(strcmp("cuGraphicsResourceGetMappedMipmappedArray", symbol)==0) *pfn = wine_cuGraphicsResourceGetMappedMipmappedArray;
-    if(strcmp("cuProfilerInitialize", symbol)==0) *pfn = wine_cuProfilerInitialize;
-    if(strcmp("cuProfilerStart", symbol)==0) *pfn = wine_cuProfilerStart;
-    if(strcmp("cuProfilerStop", symbol)==0) *pfn = wine_cuProfilerStop;
-    if(strcmp("cuD3D9CtxCreate", symbol)==0) *pfn = wine_cuD3D9CtxCreate;
-    if(strcmp("cuD3D9GetDevice", symbol)==0) *pfn = wine_cuD3D9GetDevice;
-    if(strcmp("cuD3D10GetDevice", symbol)==0) *pfn = wine_cuD3D10GetDevice;
-    if(strcmp("cuD3D11GetDevice", symbol)==0) *pfn = wine_cuD3D11GetDevice;
-    if(strcmp("cuGraphicsD3D11RegisterResource", symbol)==0) *pfn = wine_cuGraphicsD3D11RegisterResource;
-    /* D3D stuff not supported
-    if(strcmp("cuD3D11CtxCreateOnDevice", symbol)==0) *pfn = wine_cuD3D11CtxCreateOnDevice;
-    if(strcmp("cuD3D11GetDirect3DDevice", symbol)==0) *pfn = wine_cuD3D11GetDirect3DDevice;
-    if(strcmp("cuD3D10GetDevices", symbol)==0) *pfn = wine_cuD3D10GetDevices;
-    if(strcmp("cuD3D10CtxCreateOnDevice", symbol)==0) *pfn = wine_cuD3D10CtxCreateOnDevice;
-    if(strcmp("cuD3D10GetDirect3DDevice", symbol)==0) *pfn = wine_cuD3D10GetDirect3DDevice;
-    if(strcmp("cuGraphicsD3D10RegisterResource", symbol)==0) *pfn = wine_cuGraphicsD3D10RegisterResource;
-    if(strcmp("cuD3D10RegisterResource", symbol)==0) *pfn = wine_cuD3D10RegisterResource;
-    if(strcmp("cuD3D10UnregisterResource", symbol)==0) *pfn = wine_cuD3D10UnregisterResource;
-    if(strcmp("cuD3D10MapResources", symbol)==0) *pfn = wine_cuD3D10MapResources;
-    if(strcmp("cuD3D10UnmapResources", symbol)==0) *pfn = wine_cuD3D10UnmapResources;
-    if(strcmp("cuD3D10ResourceSetMapFlags", symbol)==0) *pfn = wine_cuD3D10ResourceSetMapFlags;
-    if(strcmp("cuD3D10ResourceGetSurfaceDimensions", symbol)==0) *pfn = wine_cuD3D10ResourceGetSurfaceDimensions;
-    if(strcmp("cuD3D10ResourceGetMappedArray", symbol)==0) *pfn = wine_cuD3D10ResourceGetMappedArray;
-    if(strcmp("cuD3D10ResourceGetMappedPointer", symbol)==0) *pfn = wine_cuD3D10ResourceGetMappedPointer;
-    if(strcmp("cuD3D10ResourceGetMappedSize", symbol)==0) *pfn = wine_cuD3D10ResourceGetMappedSize;
-    if(strcmp("cuD3D10ResourceGetMappedPitch", symbol)==0) *pfn = wine_cuD3D10ResourceGetMappedPitch;
-    if(strcmp("cuD3D9GetDevices", symbol)==0) *pfn = wine_cuD3D9GetDevices;
-    if(strcmp("cuD3D9CtxCreateOnDevice", symbol)==0) *pfn = wine_cuD3D9CtxCreateOnDevice;
-    if(strcmp("cuD3D9GetDirect3DDevice", symbol)==0) *pfn = wine_cuD3D9GetDirect3DDevice;
-    if(strcmp("cuGraphicsD3D9RegisterResource", symbol)==0) *pfn = wine_cuGraphicsD3D9RegisterResource;
-    if(strcmp("cuD3D9RegisterResource", symbol)==0) *pfn = wine_cuD3D9RegisterResource;
-    if(strcmp("cuD3D9UnregisterResource", symbol)==0) *pfn = wine_cuD3D9UnregisterResource;
-    if(strcmp("cuD3D9MapResources", symbol)==0) *pfn = wine_cuD3D9MapResources;
-    if(strcmp("cuD3D9UnmapResources", symbol)==0) *pfn = wine_cuD3D9UnmapResources;
-    if(strcmp("cuD3D9ResourceSetMapFlags", symbol)==0) *pfn = wine_cuD3D9ResourceSetMapFlags;
-    if(strcmp("cuD3D9ResourceGetSurfaceDimensions", symbol)==0) *pfn = wine_cuD3D9ResourceGetSurfaceDimensions;
-    if(strcmp("cuD3D9ResourceGetMappedArray", symbol)==0) *pfn = wine_cuD3D9ResourceGetMappedArray;
-    if(strcmp("cuD3D9ResourceGetMappedPointer", symbol)==0) *pfn = wine_cuD3D9ResourceGetMappedPointer;
-    if(strcmp("cuD3D9ResourceGetMappedSize", symbol)==0) *pfn = wine_cuD3D9ResourceGetMappedSize;
-    if(strcmp("cuD3D9ResourceGetMappedPitch", symbol)==0) *pfn = wine_cuD3D9ResourceGetMappedPitch;
-    if(strcmp("cuD3D9Begin", symbol)==0) *pfn = wine_cuD3D9Begin;
-    if(strcmp("cuD3D9RegisterVertexBuffer", symbol)==0) *pfn = wine_cuD3D9RegisterVertexBuffer;
-    if(strcmp("cuD3D9UnregisterVertexBuffer", symbol)==0) *pfn = wine_cuD3D9UnregisterVertexBuffer;
-    if(strcmp("cuD3D9MapVertexBuffer", symbol)==0) *pfn = wine_cuD3D9MapVertexBuffer;
-    if(strcmp("cuD3D9UnmapVertexBuffer", symbol)==0) *pfn = wine_cuD3D9UnmapVertexBuffer;
-    if(strcmp("cuD3D9End", symbol)==0) *pfn = wine_cuD3D9End;
-    */
-    if(strcmp("cuGetExportTable", symbol)==0) *pfn = wine_cuGetExportTable;
-    if(strcmp("cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags", symbol)==0) *pfn = wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags;
-    if(strcmp("cuOccupancyAvailableDynamicSMemPerBlock", symbol)==0) *pfn = wine_cuOccupancyAvailableDynamicSMemPerBlock;
-    if(strcmp("cuMemAdvise", symbol)==0) *pfn = wine_cuMemAdvise;
-    if(strcmp("cuMemRangeGetAttribute", symbol)==0) *pfn = wine_cuMemRangeGetAttribute;
-    if(strcmp("cuMemRangeGetAttributes", symbol)==0) *pfn = wine_cuMemRangeGetAttributes;
-    if(strcmp("cuGetErrorString", symbol)==0) *pfn = wine_cuGetErrorString;
-    if(strcmp("cuGetErrorName", symbol)==0) *pfn = wine_cuGetErrorName;
-    if(strcmp("cuGraphCreate", symbol)==0) *pfn = wine_cuGraphCreate;
-    if(strcmp("cuGraphAddKernelNode", symbol)==0) *pfn = wine_cuGraphAddKernelNode;
-    if(strcmp("cuGraphKernelNodeGetParams", symbol)==0) *pfn = wine_cuGraphKernelNodeGetParams;
-    if(strcmp("cuGraphKernelNodeSetParams", symbol)==0) *pfn = wine_cuGraphKernelNodeSetParams;
-    if(strcmp("cuGraphAddMemcpyNode", symbol)==0) *pfn = wine_cuGraphAddMemcpyNode;
-    if(strcmp("cuGraphMemcpyNodeGetParams", symbol)==0) *pfn = wine_cuGraphMemcpyNodeGetParams;
-    if(strcmp("cuGraphMemcpyNodeSetParams", symbol)==0) *pfn = wine_cuGraphMemcpyNodeSetParams;
-    if(strcmp("cuGraphAddMemcpyNode", symbol)==0) *pfn = wine_cuGraphAddMemcpyNode;
-    if(strcmp("cuGraphAddMemsetNode", symbol)==0) *pfn = wine_cuGraphAddMemsetNode;
-    if(strcmp("cuGraphMemsetNodeGetParams", symbol)==0) *pfn = wine_cuGraphMemsetNodeGetParams;
-    if(strcmp("cuGraphMemsetNodeSetParams", symbol)==0) *pfn = wine_cuGraphMemsetNodeSetParams;
-    if(strcmp("cuGraphAddHostNode", symbol)==0) *pfn = wine_cuGraphAddHostNode;
-    if(strcmp("cuGraphHostNodeGetParams", symbol)==0) *pfn = wine_cuGraphHostNodeGetParams;
-    if(strcmp("cuGraphHostNodeSetParams", symbol)==0) *pfn = wine_cuGraphHostNodeSetParams;
-    if(strcmp("cuGraphAddChildGraphNode", symbol)==0) *pfn = wine_cuGraphAddChildGraphNode;
-    if(strcmp("cuGraphChildGraphNodeGetGraph", symbol)==0) *pfn = wine_cuGraphChildGraphNodeGetGraph;
-    if(strcmp("cuGraphAddEmptyNode", symbol)==0) *pfn = wine_cuGraphAddEmptyNode;
-    if(strcmp("cuGraphAddEventRecordNode", symbol)==0) *pfn = wine_cuGraphAddEventRecordNode;
-    if(strcmp("cuGraphEventRecordNodeGetEvent", symbol)==0) *pfn = wine_cuGraphEventRecordNodeGetEvent;
-    if(strcmp("cuGraphEventRecordNodeSetEvent", symbol)==0) *pfn = wine_cuGraphEventRecordNodeSetEvent;
-    if(strcmp("cuGraphAddEventWaitNode", symbol)==0) *pfn = wine_cuGraphAddEventWaitNode;
-    if(strcmp("cuGraphEventWaitNodeGetEvent", symbol)==0) *pfn = wine_cuGraphEventWaitNodeGetEvent;
-    if(strcmp("cuGraphEventWaitNodeSetEvent", symbol)==0) *pfn = wine_cuGraphEventWaitNodeSetEvent;
-    if(strcmp("cuGraphAddExternalSemaphoresSignalNode", symbol)==0) *pfn = wine_cuGraphAddExternalSemaphoresSignalNode;
-    if(strcmp("cuGraphExternalSemaphoresSignalNodeGetParams", symbol)==0) *pfn = wine_cuGraphExternalSemaphoresSignalNodeGetParams;
-    if(strcmp("cuGraphExternalSemaphoresSignalNodeSetParams", symbol)==0) *pfn = wine_cuGraphExternalSemaphoresSignalNodeSetParams;
-    if(strcmp("cuGraphAddExternalSemaphoresWaitNode", symbol)==0) *pfn = wine_cuGraphAddExternalSemaphoresWaitNode;
-    if(strcmp("cuGraphExternalSemaphoresWaitNodeGetParams", symbol)==0) *pfn = wine_cuGraphExternalSemaphoresWaitNodeGetParams;
-    if(strcmp("cuGraphExternalSemaphoresWaitNodeSetParams", symbol)==0) *pfn = wine_cuGraphExternalSemaphoresWaitNodeSetParams;
-    if(strcmp("cuGraphExecExternalSemaphoresSignalNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecExternalSemaphoresSignalNodeSetParams;
-    if(strcmp("cuGraphExecExternalSemaphoresWaitNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecExternalSemaphoresWaitNodeSetParams;
-    if(strcmp("cuGraphAddMemAllocNode", symbol)==0) *pfn = wine_cuGraphAddMemAllocNode;
-    if(strcmp("cuGraphMemAllocNodeGetParams", symbol)==0) *pfn = wine_cuGraphMemAllocNodeGetParams;
-    if(strcmp("cuGraphAddMemFreeNode", symbol)==0) *pfn = wine_cuGraphAddMemFreeNode;
-    if(strcmp("cuGraphMemFreeNodeGetParams", symbol)==0) *pfn = wine_cuGraphMemFreeNodeGetParams;
-    if(strcmp("cuDeviceGraphMemTrim", symbol)==0) *pfn = wine_cuDeviceGraphMemTrim;
-    if(strcmp("cuDeviceGetGraphMemAttribute", symbol)==0) *pfn = wine_cuDeviceGetGraphMemAttribute;
-    if(strcmp("cuGraphClone", symbol)==0) *pfn = wine_cuGraphClone;
-    if(strcmp("cuGraphNodeFindInClone", symbol)==0) *pfn = wine_cuGraphNodeFindInClone;
-    if(strcmp("cuGraphNodeGetType", symbol)==0) *pfn = wine_cuGraphNodeGetType;
-    if(strcmp("cuGraphGetNodes", symbol)==0) *pfn = wine_cuGraphGetNodes;
-    if(strcmp("cuGraphGetRootNodes", symbol)==0) *pfn = wine_cuGraphGetRootNodes;
-    if(strcmp("cuGraphGetEdges", symbol)==0) *pfn = wine_cuGraphGetEdges;
-    if(strcmp("cuGraphNodeGetDependencies", symbol)==0) *pfn = wine_cuGraphNodeGetDependencies;
-    if(strcmp("cuGraphNodeGetDependentNodes", symbol)==0) *pfn = wine_cuGraphNodeGetDependentNodes;
-    if(strcmp("cuGraphAddDependencies", symbol)==0) *pfn = wine_cuGraphAddDependencies;
-    if(strcmp("cuGraphRemoveDependencies", symbol)==0) *pfn = wine_cuGraphRemoveDependencies;
-    if(strcmp("cuGraphDestroyNode", symbol)==0) *pfn = wine_cuGraphDestroyNode;
-    if(strcmp("cuGraphInstantiateWithFlags", symbol)==0) *pfn = wine_cuGraphInstantiateWithFlags;
-    if(strcmp("cuGraphExecDestroy", symbol)==0) *pfn = wine_cuGraphExecDestroy;
-    if(strcmp("cuGraphDestroy", symbol)==0) *pfn = wine_cuGraphDestroy;
-    if(strcmp("cuGraphExecKernelNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecKernelNodeSetParams;
-    if(strcmp("cuGraphExecMemcpyNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecMemcpyNodeSetParams;
-    if(strcmp("cuGraphExecMemsetNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecMemsetNodeSetParams;
-    if(strcmp("cuGraphExecHostNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecHostNodeSetParams;
-    if(strcmp("cuGraphExecChildGraphNodeSetParams", symbol)==0) *pfn = wine_cuGraphExecChildGraphNodeSetParams;
-    if(strcmp("cuGraphExecEventRecordNodeSetEvent", symbol)==0) *pfn = wine_cuGraphExecEventRecordNodeSetEvent;
-    if(strcmp("cuGraphExecEventWaitNodeSetEvent", symbol)==0) *pfn = wine_cuGraphExecEventWaitNodeSetEvent;
-    if(strcmp("cuThreadExchangeStreamCaptureMode", symbol)==0) *pfn = wine_cuThreadExchangeStreamCaptureMode;
-    if(strcmp("cuGraphExecUpdate", symbol)==0) *pfn = wine_cuGraphExecUpdate;
-    if(strcmp("cuGraphKernelNodeCopyAttributes", symbol)==0) *pfn = wine_cuGraphKernelNodeCopyAttributes;
-    if(strcmp("cuGraphKernelNodeGetAttribute", symbol)==0) *pfn = wine_cuGraphKernelNodeGetAttribute;
-    if(strcmp("cuGraphKernelNodeSetAttribute", symbol)==0) *pfn = wine_cuGraphKernelNodeSetAttribute;
-    if(strcmp("cuGraphDebugDotPrint", symbol)==0) *pfn = wine_cuGraphDebugDotPrint;
-    if(strcmp("cuUserObjectCreate", symbol)==0) *pfn = wine_cuUserObjectCreate;
-    if(strcmp("cuUserObjectRetain", symbol)==0) *pfn = wine_cuUserObjectRetain;
-    if(strcmp("cuUserObjectRelease", symbol)==0) *pfn = wine_cuUserObjectRelease;
-    if(strcmp("cuGraphRetainUserObject", symbol)==0) *pfn = wine_cuGraphRetainUserObject;
-    if(strcmp("cuGraphReleaseUserObject", symbol)==0) *pfn = wine_cuGraphReleaseUserObject;
-    if(strcmp("cuGraphNodeSetEnabled", symbol)==0) *pfn = wine_cuGraphNodeSetEnabled;
-    if(strcmp("cuGraphNodeGetEnabled", symbol)==0) *pfn = wine_cuGraphNodeGetEnabled;
-    if(strcmp("cuGraphExecGetFlags", symbol)==0) *pfn = wine_cuGraphExecGetFlags;
 
-    return;
+    if (bestMapping != NULL) {
+        *pfn = bestMapping->function;
+    } else {
+        *pfn = NULL;
+    }
 }
 
 BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)

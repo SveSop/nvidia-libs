@@ -375,7 +375,7 @@
 @ stdcall cuOccupancyMaxActiveClusters(long ptr ptr) wine_cuOccupancyMaxActiveClusters
 @ stdcall cuOccupancyMaxPotentialBlockSize(ptr ptr ptr ptr long long) wine_cuOccupancyMaxPotentialBlockSize
 @ stdcall cuOccupancyMaxPotentialBlockSizeWithFlags(ptr ptr ptr ptr long long long) wine_cuOccupancyMaxPotentialBlockSizeWithFlags
-@ stub cuOccupancyMaxPotentialClusterSize
+@ stdcall cuOccupancyMaxPotentialClusterSize(ptr ptr ptr) wine_cuOccupancyMaxPotentialClusterSize
 @ stdcall cuParamSetSize(ptr long) wine_cuParamSetSize
 @ stdcall cuParamSetTexRef(ptr long ptr) wine_cuParamSetTexRef
 @ stdcall cuParamSetf(ptr long float) wine_cuParamSetf
@@ -656,13 +656,13 @@
 @ stub cuCoredumpSetAttribute
 @ stub cuCoredumpSetAttributeGlobal
 @ stub cuEGLApiInit
-@ stub cuGraphAddKernelNode_v2
+@ stdcall cuGraphAddKernelNode_v2(ptr ptr ptr long ptr) wine_cuGraphAddKernelNode_v2
 @ stub cuGraphAddNode
-@ stub cuGraphExecKernelNodeSetParams_v2
+@ stdcall cuGraphExecKernelNodeSetParams_v2(ptr ptr ptr) wine_cuGraphExecKernelNodeSetParams_v2
 @ stub cuGraphExecNodeSetParams
-@ stub cuGraphExecUpdate_v2
-@ stub cuGraphKernelNodeGetParams_v2
-@ stub cuGraphKernelNodeSetParams_v2
+@ stdcall cuGraphExecUpdate_v2(ptr ptr ptr) wine_cuGraphExecUpdate_v2
+@ stdcall cuGraphKernelNodeGetParams_v2(ptr ptr) wine_cuGraphKernelNodeGetParams_v2
+@ stdcall cuGraphKernelNodeSetParams_v2(ptr ptr) wine_cuGraphKernelNodeSetParams_v2
 @ stub cuGraphNodeSetParams
 @ stub cuMemAdvise_v2
 @ stub cuMemGetAttribute
