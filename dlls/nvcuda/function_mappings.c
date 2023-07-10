@@ -456,8 +456,8 @@ extern void wine_cuGraphInstantiateWithParams_ptsz(void);
 extern void wine_cuGraphExecGetFlags(void);
 
 const FunctionMapping mappings[] = {
-    {"cuGetProcAddress", 3020, 0, wine_cuGetProcAddress},
-    {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress_v2},
+    {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
+    {"cuGetProcAddress", 12000, 0, wine_cuGetProcAddress_v2},
     {"cuInit", 2000, 0, wine_cuInit},
     {"cuDeviceGet", 2000, 0, wine_cuDeviceGet},
     {"cuDeviceGetCount", 2000, 0, wine_cuDeviceGetCount},
