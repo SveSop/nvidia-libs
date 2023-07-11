@@ -1,0 +1,54 @@
+name: Artifacts (Package)
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-artifacts:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Prepare environment (none-tag)
+      if: github.ref_type != 'tag'
+      run: |
+        export VERSION="${GITHUB_REF##*/}-${GITHUB_SHA##*/}"
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "ARTIFACT=build/nvidia-libs-${VERSION}" >> $GITHUB_ENV
+
+    - name: Prepare environment (tag)
+      if: github.ref_type == 'tag'
+      run: |
+        export VERSION=$(git describe --always --tags --dirty=+)
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        echo "ARTIFACT=nvidia-libs-${VERSION}.tar.gz" >> $GITHUB_ENV
+
+    - name: Setup problem matcher
+      uses: Joshua-Ashton/gcc-problem-matcher@v2
+
+    - name: Build
+      uses: Joshua-Ashton/arch-mingw-github-action@9cdb815264bce7a6346927521b176f578982679d
+      with:
+        command: |
+          ./package-release.sh "${{ env.VERSION }}" build
+
+    - name: Create tarball
+      if: github.ref_type == 'tag'
+      run: tar cvfz "nvidia-libs-${{ env.VERSION }}.tar.gz" -C "./build/nvidia-libs-${{ env.VERSION }}" .
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: nvidia-libs-${{ env.VERSION }}
+        path: ${{ env.ARTIFACT }}
+        if-no-files-found: error
