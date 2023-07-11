@@ -4,15 +4,16 @@ set -e
 
 shopt -s extglob
 
-if [ -z "$1" ]; then
-  echo "Usage: package-release.sh destdir"
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "Usage: $0 release destdir"
   exit 1
 fi
 
 git submodule update --init --recursive
 
-NVLIBS_SRC_DIR=`dirname $(readlink -f $0)`
-NVLIBS_BUILD_DIR=$(realpath "$1")"/nvidia-libs"
+VERSION="$1"
+NVLIBS_SRC_DIR=$(dirname "$(readlink -f "$0")")
+NVLIBS_BUILD_DIR=$(realpath "$2")"/nvidia-libs-$VERSION"
 
 if [ -e "$NVLIBS_BUILD_DIR" ]; then
   echo "Build directory $NVLIBS_BUILD_DIR already exists"
