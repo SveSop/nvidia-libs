@@ -658,6 +658,12 @@ static CUresult (*pcuGraphKernelNodeGetParams_v2)(CUgraphNode hNode, void *nodeP
 static CUresult (*pcuGraphKernelNodeSetParams_v2)(CUgraphNode hNode, const void *nodeParams);
 static CUresult (*pcuGraphExecKernelNodeSetParams_v2)(CUgraphExec hGraphExec, CUgraphNode hNode, const void *nodeParams);
 static CUresult (*pcuGraphExecUpdate_v2)(CUgraphExec hGraphExec, CUgraph hGraph, void *resultInfo);
+static CUresult (*pcuMemAdvise_v2)(CUdeviceptr_v2 devPtr, size_t count, void *advice, void *location);
+static CUresult (*pcuMemPrefetchAsync_v2)(CUdeviceptr_v2 devPtr, size_t count, void *location, unsigned int flags, CUstream hStream);
+static CUresult (*pcuMemPrefetchAsync_v2_ptsz)(CUdeviceptr_v2 devPtr, size_t count, void *location, unsigned int flags, CUstream hStream);
+static CUresult (*pcuGraphAddNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, void *nodeParams);
+static CUresult (*pcuGraphNodeSetParams)(CUgraphNode hNode, void *nodeParams);
+static CUresult (*pcuGraphExecNodeSetParams)(CUgraphExec hGraphExec, CUgraphNode hNode, void *nodeParams);
 
 static void *cuda_handle = NULL;
 
@@ -1240,6 +1246,12 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphKernelNodeSetParams_v2);
     TRY_LOAD_FUNCPTR(cuGraphExecKernelNodeSetParams_v2);
     TRY_LOAD_FUNCPTR(cuGraphExecUpdate_v2);
+    TRY_LOAD_FUNCPTR(cuMemAdvise_v2);
+    TRY_LOAD_FUNCPTR(cuMemPrefetchAsync_v2);
+    TRY_LOAD_FUNCPTR(cuMemPrefetchAsync_v2_ptsz);
+    TRY_LOAD_FUNCPTR(cuGraphAddNode);
+    TRY_LOAD_FUNCPTR(cuGraphNodeSetParams);
+    TRY_LOAD_FUNCPTR(cuGraphExecNodeSetParams);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -4893,6 +4905,48 @@ CUresult WINAPI wine_cuGraphExecUpdate_v2(CUgraphExec hGraphExec, CUgraph hGraph
     TRACE("(%p, %p, %p)\n", hGraphExec, hGraph, resultInfo);
     CHECK_FUNCPTR(cuGraphExecUpdate_v2);
     return pcuGraphExecUpdate_v2(hGraphExec, hGraph, resultInfo);
+}
+
+CUresult WINAPI wine_cuMemAdvise_v2(CUdeviceptr_v2 devPtr, size_t count, void *advice, void *location)
+{
+    TRACE("(" DEV_PTR ", %zd, %p, %p)\n", devPtr, count, advice, location);
+    CHECK_FUNCPTR(cuMemAdvise_v2);
+    return pcuMemAdvise_v2(devPtr, count, advice, location);
+}
+
+CUresult WINAPI wine_cuMemPrefetchAsync_v2(CUdeviceptr_v2 devPtr, size_t count, void *location, unsigned int flags, CUstream hStream)
+{
+    TRACE("(" DEV_PTR ", %zd, %p, %u, %p)\n", devPtr, count, location, flags, hStream);
+    CHECK_FUNCPTR(cuMemPrefetchAsync_v2);
+    return pcuMemPrefetchAsync_v2(devPtr, count, location, flags, hStream);
+}
+
+CUresult WINAPI wine_cuMemPrefetchAsync_v2_ptsz(CUdeviceptr_v2 devPtr, size_t count, void *location, unsigned int flags, CUstream hStream)
+{
+    TRACE("(" DEV_PTR ", %zd, %p, %u, %p)\n", devPtr, count, location, flags, hStream);
+    CHECK_FUNCPTR(cuMemPrefetchAsync_v2_ptsz);
+    return pcuMemPrefetchAsync_v2_ptsz(devPtr, count, location, flags, hStream);
+}
+
+CUresult WINAPI wine_cuGraphAddNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, void *nodeParams)
+{
+    TRACE("(%p, %p, %p, %zd, %p\n", phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+    CHECK_FUNCPTR(cuGraphAddNode);
+    return pcuGraphAddNode(phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphNodeSetParams(CUgraphNode hNode, void *nodeParams)
+{
+    TRACE("(%p, %p\n", hNode, nodeParams);
+    CHECK_FUNCPTR(cuGraphNodeSetParams);
+    return pcuGraphNodeSetParams(hNode, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphExecNodeSetParams(CUgraphExec hGraphExec, CUgraphNode hNode, void *nodeParams)
+{
+    TRACE("%p, %p, %p\n", hGraphExec, hNode, nodeParams);
+    CHECK_FUNCPTR(cuGraphExecNodeSetParams);
+    return pcuGraphExecNodeSetParams(hGraphExec, hNode, nodeParams);
 }
 
 #undef CHECK_FUNCPTR

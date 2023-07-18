@@ -454,6 +454,12 @@ extern void wine_cuGraphNodeGetEnabled(void);
 extern void wine_cuGraphInstantiateWithParams(void);
 extern void wine_cuGraphInstantiateWithParams_ptsz(void);
 extern void wine_cuGraphExecGetFlags(void);
+extern void wine_cuMemAdvise_v2(void);
+extern void wine_cuMemPrefetchAsync_v2(void);
+extern void wine_cuMemPrefetchAsync_v2_ptsz(void);
+extern void wine_cuGraphAddNode(void);
+extern void wine_cuGraphNodeSetParams(void);
+extern void wine_cuGraphExecNodeSetParams(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
@@ -890,6 +896,12 @@ const FunctionMapping mappings[] = {
     {"cuGraphInstantiateWithParams", 12000, 0, wine_cuGraphInstantiateWithParams},
     {"cuGraphInstantiateWithParams_ptsz", 12000, 2, wine_cuGraphInstantiateWithParams_ptsz},
     {"cuGraphExecGetFlags", 12000, 0, wine_cuGraphExecGetFlags},
+    {"cuMemAdvise", 12020, 0, wine_cuMemAdvise_v2},
+    {"cuMemPrefetchAsync", 12020, 0, wine_cuMemPrefetchAsync_v2},
+    {"cuMemPrefetchAsync", 12020, 2, wine_cuMemPrefetchAsync_v2_ptsz},
+    {"cuGraphAddNode", 12020, 0, wine_cuGraphAddNode},
+    {"cuGraphNodeSetParams", 12020, 0, wine_cuGraphNodeSetParams},
+    {"cuGraphExecNodeSetParams", 12020, 0, wine_cuGraphExecNodeSetParams},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);

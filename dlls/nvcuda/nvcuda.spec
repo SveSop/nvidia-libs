@@ -657,18 +657,18 @@
 @ stub cuCoredumpSetAttributeGlobal
 @ stub cuEGLApiInit
 @ stdcall cuGraphAddKernelNode_v2(ptr ptr ptr long ptr) wine_cuGraphAddKernelNode_v2
-@ stub cuGraphAddNode
+@ stdcall cuGraphAddNode(ptr ptr ptr long ptr) wine_cuGraphAddNode
 @ stdcall cuGraphExecKernelNodeSetParams_v2(ptr ptr ptr) wine_cuGraphExecKernelNodeSetParams_v2
-@ stub cuGraphExecNodeSetParams
+@ stdcall cuGraphExecNodeSetParams(ptr ptr ptr) wine_cuGraphExecNodeSetParams
 @ stdcall cuGraphExecUpdate_v2(ptr ptr ptr) wine_cuGraphExecUpdate_v2
 @ stdcall cuGraphKernelNodeGetParams_v2(ptr ptr) wine_cuGraphKernelNodeGetParams_v2
 @ stdcall cuGraphKernelNodeSetParams_v2(ptr ptr) wine_cuGraphKernelNodeSetParams_v2
-@ stub cuGraphNodeSetParams
-@ stub cuMemAdvise_v2
+@ stdcall cuGraphNodeSetParams(ptr ptr) wine_cuGraphNodeSetParams
+@ stdcall cuMemAdvise_v2(ptr long ptr ptr) wine_cuMemAdvise_v2
 @ stub cuMemGetAttribute
 @ stub cuMemGetAttribute_v2
-@ stub cuMemPrefetchAsync_v2
-@ stub cuMemPrefetchAsync_v2_ptsz
+@ stdcall cuMemPrefetchAsync_v2(ptr long ptr long ptr) wine_cuMemPrefetchAsync_v2
+@ stdcall cuMemPrefetchAsync_v2_ptsz(ptr long ptr long ptr) wine_cuMemPrefetchAsync_v2_ptsz
 @ stdcall cuMulticastAddDevice(long long) wine_cuMulticastAddDevice
 @ stdcall cuMulticastBindAddr(long long long long long) wine_cuMulticastBindAddr
 @ stdcall cuMulticastBindMem(long long long long long long) wine_cuMulticastBindMem
