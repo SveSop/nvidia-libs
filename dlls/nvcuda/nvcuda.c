@@ -3562,13 +3562,18 @@ CUresult WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice dev)
 
 CUresult WINAPI wine_cuDeviceGetLuid(char *luid, unsigned int *deviceNodeMask, CUdevice dev)
 {
-    int wine_luid[] = { 0x0000000e, 0x00000000 };
+    int wine_luid[] = { 0x0000adde, 0x00000000 };
 
     TRACE("(%p, %p, %d)\n", luid, deviceNodeMask, dev);
     /* Linux native libcuda does not provide a LUID, so we need to fake something and return a success */
 
     memcpy(luid, &wine_luid, sizeof(wine_luid));
-    FIXME("Fix this LUID: (0x%08x)\n", *luid);
+    FIXME("Fix this LUID: ");
+    for(int i = 0; i < sizeof(luid); i++){
+        FIXME("%02x", (unsigned char)luid[i]);
+        if(i == 3) FIXME("-");
+    }
+    FIXME("\n");
     *deviceNodeMask = 1;
 
     return CUDA_SUCCESS;
