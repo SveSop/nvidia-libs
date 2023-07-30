@@ -92,7 +92,7 @@ static const CUuuid UUID_Unknown3                   = {{0x42, 0xD8, 0x5A, 0x81, 
                                                     // {42d85a81-23f6-cb47-8298-f6e78a3aecdc}
 static const CUuuid UUID_ContextStorage             = {{0xC6, 0x93, 0x33, 0x6E, 0x11, 0x21, 0xDF, 0x11,
                                                         0xA8, 0xC3, 0x68, 0xF3, 0x55, 0xD8, 0x95, 0x93}};
-                                                    // {v693336e-1121-df11-a8c3-68f355d89593}
+                                                    // {c693336e-1121-df11-a8c3-68f355d89593}
 static const CUuuid UUID_Unknown5                   = {{0x0C, 0xA5, 0x0B, 0x8C, 0x10, 0x04, 0x92, 0x9A,
                                                         0x89, 0xA7, 0xD0, 0xDF, 0x10, 0xE7, 0x72, 0x86}};
                                                     // {0ca50b8c-1004-929a-89a7-f0ff10e77286}
