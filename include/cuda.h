@@ -29,16 +29,17 @@ typedef uint64_t cuuint64_t;
 #define CUDA_CB
 #endif
 
-#define CUDA_SUCCESS                0
-#define CUDA_ERROR_INVALID_VALUE    1
-#define CUDA_ERROR_OUT_OF_MEMORY    2
-#define CUDA_ERROR_INVALID_CONTEXT  201
-#define CUDA_ERROR_FILE_NOT_FOUND   301
-#define CUDA_ERROR_INVALID_HANDLE   400
-#define CUDA_ERROR_NOT_SUPPORTED    801
-#define CUDA_ERROR_UNKNOWN          999
+#define CUDA_SUCCESS                 0
+#define CUDA_ERROR_INVALID_VALUE     1
+#define CUDA_ERROR_OUT_OF_MEMORY     2
+#define CUDA_ERROR_INVALID_CONTEXT   201
+#define CUDA_ERROR_NO_BINARY_FOR_GPU 209
+#define CUDA_ERROR_FILE_NOT_FOUND    301
+#define CUDA_ERROR_INVALID_HANDLE    400
+#define CUDA_ERROR_NOT_SUPPORTED     801
+#define CUDA_ERROR_UNKNOWN           999
 
-#define CU_IPC_HANDLE_SIZE          64
+#define CU_IPC_HANDLE_SIZE           64
 
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64) || defined(__aarch64__)
 typedef unsigned long long CUdeviceptr_v2;

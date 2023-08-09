@@ -2482,7 +2482,8 @@ CUresult WINAPI wine_cuModuleLoadDataEx(CUmodule *module, const void *image, uns
 CUresult WINAPI wine_cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin)
 {
     TRACE("(%p, %p)\n", module, fatCubin);
-    return pcuModuleLoadFatBinary(module, fatCubin);
+    // There seems to be some issues with this causing crashes under wine.
+    return CUDA_ERROR_NO_BINARY_FOR_GPU;
 }
 
 CUresult WINAPI wine_cuModuleUnload(CUmodule hmod)
