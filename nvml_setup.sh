@@ -1,8 +1,8 @@
 #!/bin/bash
 
 nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
-lib='lib/wine'
-arch='i386'
+arch='x86_64'
+lib='lib64/wine'
 
 if [ ! -f "$nvlibs_dir/$lib/$arch-unix/nvml.so" ]; then
     echo "Files not found in $nvlibs_dir/$lib/$arch-unix" >&2
@@ -11,9 +11,9 @@ fi
 
 if [ -z "$WINE_BIN" ]; then
     echo -ne "WINE_BIN is not set!\n"
-    echo -ne "Example: WINE_BIN='/opt/wine-staging/'\n"
+    echo -ne "Example: WINE_BIN='/home/user/winebinaries/wine-staging/'\n"
     echo -ne "OBS. Installing to system wine install is not recommended.\n"
-    echo -ne "Better use custom wine binary folder.\n"
+    echo -ne "Better use custom wine binary.\n"
     exit 1
 fi
 
@@ -30,14 +30,6 @@ function install {
     cp -f "$nvlibs_dir/$lib/$arch-unix/$1" "$WINE_BIN/$lib/$arch-unix/"
 }
 
-fun=win_install
-$fun nvml.dll
-
-fun=install
-$fun nvml.so
-
-arch='x86_64'
-lib='lib64/wine'
 fun=win_install
 $fun nvml.dll
 
