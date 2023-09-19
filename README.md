@@ -1,7 +1,7 @@
 # NVIDIA Libs
 
-Release: 0.7.11  
-Recommended nVidia proprietary driver branch 525+ for best compatibility with OptiX and CUDA.  
+Release: 0.7.12  
+Recommended nVidia proprietary driver branch 535+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK >11.5 is not supported when samples/apps are using the CUDA RUNTIME API  
 This is typically used by NVIDIA IRAY and OptiX, and this will eventually fail if used on OptiX  
@@ -37,6 +37,12 @@ You can install symlinks and dll-overrides to the libraries in your wineprefix l
 To uninstall:  
 `WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh uninstall`  
 
+### WINE-NVML  
+In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
+you need to copy the NVML binaries to your wine binaries folder. You can do this by  
+running the included nvml_setup.sh script. NVML is only available as 64-bit  
+See the Readme_nvml.txt file.  
+
 ### Tests  
 You can run tests of your adapter and functions by running the test case file:  
 `WINEPREFIX=/your/wine/prefix wine bin/nvapi64-tests.exe`  
@@ -59,8 +65,8 @@ to your user_settings.py script in the proton folder eg:
 
 Or you can run the game with `PROTON_ENABLE_NVAPI=1 %command%`  
 
-You also need a working `dxvk.conf` file in the games binary folder with the setting:  
-`dxgi.nvapiHack = False`  
+You can also put a `dxvk.conf` file in the games binary folder with the setting:  
+`dxgi.hideNvidiaGpu = False`  
 
 Eg:  
 `$HOME/.steam/steam/steamapps/common/Batman Arkham Knight/Binaries/Win64/dxvk.conf`  
