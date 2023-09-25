@@ -669,34 +669,14 @@ static void *cuda_handle = NULL;
 
 static BOOL load_functions(void)
 {
-    static const char *libname[] =
+    if (!(cuda_handle = dlopen("libcuda.so.1", RTLD_NOW)))
     {
-    #ifdef __APPLE__
-        "libcuda.dylib",
-        "libcuda.6.0.dylib",
-        "/usr/local/cuda/lib/libcuda.dylib",
-        "/usr/local/cuda/lib/libcuda.6.0.dylib",
-    #else
-        "libcuda.so",
-        "libcuda.so.1"
-    #endif
-    };
-    int i;
-
-    for (i = 0; i < sizeof(libname)/sizeof(libname[0]); i++)
-    {
-        cuda_handle = dlopen(libname[i], RTLD_NOW);
-        if (cuda_handle) break;
-    }
-
-    if (!cuda_handle)
-    {
-        FIXME("Wine cannot find the libcuda library, CUDA support is disabled.\n");
+        FIXME("Wine cannot find the cuda library, CUDA support is disabled.\n");
         return FALSE;
     }
 
-    #define LOAD_FUNCPTR(f) if((p##f = dlsym(cuda_handle, #f)) == NULL){FIXME("Can't find symbol %s\n", #f); return FALSE;}
-    #define TRY_LOAD_FUNCPTR(f) p##f = dlsym(cuda_handle, #f)
+    #define LOAD_FUNCPTR(f) if((*(void **)(&p##f) = dlsym(cuda_handle, #f)) == NULL){ERR("Can't find symbol %s\n", #f); return FALSE;}
+    #define TRY_LOAD_FUNCPTR(f) *(void **)(&p##f) = dlsym(cuda_handle, #f)
 
     LOAD_FUNCPTR(cuArray3DCreate);
     LOAD_FUNCPTR(cuArray3DCreate_v2);
