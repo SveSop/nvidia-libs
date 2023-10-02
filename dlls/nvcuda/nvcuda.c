@@ -20,7 +20,6 @@
 
 #include "config.h"
 #include <dlfcn.h>
-
 #include <stdarg.h>
 #include <assert.h>
 
@@ -30,14 +29,12 @@
 
 #include "windef.h"
 #include "winbase.h"
-#include "winnls.h"
 #include "wine/debug.h"
 #include "wine/list.h"
 #include "wine/wgl.h"
 #include "cuda.h"
 #include "nvcuda.h"
 #include "d3d9.h"
-#include "dxgi.h"
 #include "d3d11.h"
 #include "function_mappings.h"
 

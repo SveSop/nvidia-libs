@@ -19,7 +19,6 @@
 
 #include "config.h"
 #include <dlfcn.h>
-
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -198,16 +197,6 @@ static const struct
 } *ContextStorage_orig = NULL;
 
 /*
- * TlsNotifyInterface
- */
-struct TlsNotifyInterface_table
-{
-    int size;
-    CUresult (WINAPI *Set)(void **handle, void *callback, void *data);
-    CUresult (WINAPI *Remove)(void *handle, void *param1);
-};
-
-/*
  * Unknown5
  */
 struct Unknown5_table
@@ -223,19 +212,29 @@ static const struct
 
 
 /*
+ * TlsNotifyInterface
+ */
+struct TlsNotifyInterface_table
+{
+    int size;
+    CUresult (WINAPI *Set)(void **handle, void *callback, void *data);
+    CUresult (WINAPI *Remove)(void *handle, void *param1);
+};
+
+/*
  * Unknown7
  */
 struct Unknown7_table
 {
     int size;
     void* (WINAPI *func0)(unsigned int cudaVersion, void *param1, void *param2);
-    void* (WINAPI *func1)(void *param0, void *param1);
+    void* (WINAPI *func1)(void *param0);
 };
 static const struct
 {
     int size;
     void* (*func0)(unsigned int cudaVersion, void *param1, void *param2);
-    void* (*func1)(void *param0, void *param1);
+    void* (*func1)(void *param0);
 } *Unknown7_orig = NULL;
 
 static void* WINAPI Unknown1_func0_relay(void *param0, void *param1)
@@ -533,10 +532,10 @@ static void* WINAPI Unknown7_func0_relay(unsigned int cudaVersion, void *param1,
     return Unknown7_orig->func0(cudaVersion, param1, param2);
 }
 
-static void* WINAPI Unknown7_func1_relay(void *param0, void *param1)
+static void* WINAPI Unknown7_func1_relay(void *param0)
 {
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown7_orig->func1(param0, param1);
+    TRACE("(%p)\n", param0);
+    return Unknown7_orig->func1(param0);
 }
 
 struct Unknown7_table Unknown7_Impl =

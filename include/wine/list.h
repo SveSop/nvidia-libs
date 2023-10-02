@@ -150,8 +150,8 @@ static inline unsigned int list_count( const struct list *list )
     return count;
 }
 
-/* move all elements from src to the tail of dst */
-static inline void list_move_tail( struct list *dst, struct list *src )
+/* move all elements from src to before the specified element */
+static inline void list_move_before( struct list *dst, struct list *src )
 {
     if (list_empty(src)) return;
 
@@ -162,8 +162,8 @@ static inline void list_move_tail( struct list *dst, struct list *src )
     list_init(src);
 }
 
-/* move all elements from src to the head of dst */
-static inline void list_move_head( struct list *dst, struct list *src )
+/* move all elements from src to after the specified element */
+static inline void list_move_after( struct list *dst, struct list *src )
 {
     if (list_empty(src)) return;
 
@@ -172,6 +172,42 @@ static inline void list_move_head( struct list *dst, struct list *src )
     dst->next = src->next;
     src->next->prev = dst;
     list_init(src);
+}
+
+/* move all elements from src to the head of dst */
+static inline void list_move_head( struct list *dst, struct list *src )
+{
+    list_move_after( dst, src );
+}
+
+/* move all elements from src to the tail of dst */
+static inline void list_move_tail( struct list *dst, struct list *src )
+{
+    list_move_before( dst, src );
+}
+
+/* move the slice of elements from begin to end inclusive to the head of dst */
+static inline void list_move_slice_head( struct list *dst, struct list *begin, struct list *end )
+{
+    struct list *dst_next = dst->next;
+    begin->prev->next = end->next;
+    end->next->prev = begin->prev;
+    dst->next = begin;
+    dst_next->prev = end;
+    begin->prev = dst;
+    end->next = dst_next;
+}
+
+/* move the slice of elements from begin to end inclusive to the tail of dst */
+static inline void list_move_slice_tail( struct list *dst, struct list *begin, struct list *end )
+{
+    struct list *dst_prev = dst->prev;
+    begin->prev->next = end->next;
+    end->next->prev = begin->prev;
+    dst_prev->next = begin;
+    dst->prev = end;
+    begin->prev = dst_prev;
+    end->next = dst;
 }
 
 /* iterate through the list */
@@ -228,7 +264,13 @@ static inline void list_move_head( struct list *dst, struct list *src )
 
 /* get pointer to object containing list element */
 #undef LIST_ENTRY
-#define LIST_ENTRY(elem, type, field) \
-    ((type *)((char *)(elem) - offsetof(type, field)))
+#ifdef __GNUC__
+# define LIST_ENTRY(elem, type, field) ({               \
+     const typeof(((type *)0)->field) *__ptr = (elem);  \
+     (type *)((char *)__ptr - offsetof(type, field)); })
+#else
+# define LIST_ENTRY(elem, type, field) \
+     ((type *)((char *)(elem) - offsetof(type, field)))
+#endif
 
 #endif  /* __WINE_SERVER_LIST_H */

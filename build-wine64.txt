@@ -4,7 +4,7 @@ ar = 'ar'
 strip = 'strip'
 
 [built-in options]
-c_args = ['-m64', '--no-gnu-unique', '-D__WINESRC__', '-Wno-attributes', '-Wno-implicit-function-declaration']
+c_args = ['-m64', '--no-gnu-unique', '-D__WINESRC__']
 c_link_args = ['-m64', '-mwindows']
 
 [properties]
