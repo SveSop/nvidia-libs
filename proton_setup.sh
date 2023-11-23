@@ -47,18 +47,15 @@ function default_pfx {
 
 fun=fake_install
 $fun nvcuda.dll
-$fun nvml.dll
 
 fun=install
 $fun nvcuda.dll.so
-$fun nvml.so
 
 fun=nvapi
 $fun nvapi.dll
 
 fun=default_pfx
 $fun nvcuda.dll
-$fun nvml.dll
 
 arch='x86_64'
 lib='lib64/wine'
