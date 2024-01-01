@@ -1,11 +1,10 @@
 # NVIDIA Libs
 
-Release: 0.7.12  
+Release: 0.7.13  
 Recommended nVidia proprietary driver branch 535+ for best compatibility with OptiX and CUDA.  
 
-CUDA SDK >11.5 is not supported when samples/apps are using the CUDA RUNTIME API  
-This is typically used by NVIDIA IRAY and OptiX, and this will eventually fail if used on OptiX  
-sources that requires this.  
+CUDA SDK >11.5 should now mostly be supported. There can still be missing functions  
+
 Older drivers that does not support SDK 10 and older may also fail/crash. Report any crashes with  
 logs on the issue page. However these are highly outdated drivers in general and will probably not  
 see too much attention in that regard.  
