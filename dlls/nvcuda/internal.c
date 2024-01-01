@@ -529,6 +529,26 @@ struct TlsNotifyInterface_table TlsNotifyInterface_Impl =
 static void* WINAPI Unknown7_func0_relay(unsigned int cudaVersion, void *param1, void *param2)
 {
     TRACE("(%u, %p, %p)\n", cudaVersion, param1, param2);
+
+    // After CUDA SDK 11.6 some checks is done by the CudaRuntimeLibrary (CudaRT)
+    // This fails for some reason when using wine, so this is somewhat of a hack
+    // altering the return address to skip this check.
+    void *retAddr = (char *)__builtin_frame_address(0) + 0x8;
+    if(cudaVersion >= 12000)
+    {
+        FIXME("Cuda Version >= 12.x detected! Workaround implemented\n");
+        *((long int*)retAddr) += 0x76;
+    }
+    else if(cudaVersion >= 11070)
+    {
+        FIXME("Cuda Version 11.7 or 11.8 detected! Workaround implemented\n");
+        *((long int*)retAddr) += 0x1b7;
+    }
+    else if(cudaVersion >= 11060)
+    {
+        FIXME("Cuda Version 11.6 detected! Workaround implemented\n");
+        *((long int*)retAddr) += 0x1ca;
+    }
     return Unknown7_orig->func0(cudaVersion, param1, param2);
 }
 
