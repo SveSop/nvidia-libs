@@ -460,6 +460,21 @@ extern void wine_cuMemPrefetchAsync_v2_ptsz(void);
 extern void wine_cuGraphAddNode(void);
 extern void wine_cuGraphNodeSetParams(void);
 extern void wine_cuGraphExecNodeSetParams(void);
+extern void wine_cuKernelGetName(void);
+extern void wine_cuFuncGetName(void);
+extern void wine_cuGraphGetEdges_v2(void);
+extern void wine_cuGraphNodeGetDependencies_v2(void);
+extern void wine_cuGraphNodeGetDependentNodes_v2(void);
+extern void wine_cuGraphAddDependencies_v2(void);
+extern void wine_cuGraphRemoveDependencies_v2(void);
+extern void wine_cuStreamBeginCaptureToGraph(void);
+extern void wine_cuStreamBeginCaptureToGraph_ptsz(void);
+extern void wine_cuStreamGetCaptureInfo_v3(void);
+extern void wine_cuStreamGetCaptureInfo_v3_ptsz(void);
+extern void wine_cuStreamUpdateCaptureDependencies_v2(void);
+extern void wine_cuStreamUpdateCaptureDependencies_v2_ptsz(void);
+extern void wine_cuGraphAddNode_v2(void);
+extern void wine_cuGraphConditionalHandleCreate(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
@@ -843,10 +858,15 @@ const FunctionMapping mappings[] = {
     {"cuGraphGetNodes", 10000, 0, wine_cuGraphGetNodes},
     {"cuGraphGetRootNodes", 10000, 0, wine_cuGraphGetRootNodes},
     {"cuGraphGetEdges", 10000, 0, wine_cuGraphGetEdges},
+    {"cuGraphGetEdges", 12030, 0, wine_cuGraphGetEdges_v2},
     {"cuGraphNodeGetDependencies", 10000, 0, wine_cuGraphNodeGetDependencies},
+    {"cuGraphNodeGetDependencies", 12030, 0, wine_cuGraphNodeGetDependencies_v2},
     {"cuGraphNodeGetDependentNodes", 10000, 0, wine_cuGraphNodeGetDependentNodes},
+    {"cuGraphNodeGetDependentNodes", 12030, 0, wine_cuGraphNodeGetDependentNodes_v2},
     {"cuGraphAddDependencies", 10000, 0, wine_cuGraphAddDependencies},
+    {"cuGraphAddDependencies", 12030, 0, wine_cuGraphAddDependencies_v2},
     {"cuGraphRemoveDependencies", 10000, 0, wine_cuGraphRemoveDependencies},
+    {"cuGraphRemoveDependencies", 12030, 0, wine_cuGraphRemoveDependencies_v2},
     {"cuGraphDestroyNode", 10000, 0, wine_cuGraphDestroyNode},
     {"cuGraphInstantiate", 10000, 0, wine_cuGraphInstantiate},
     {"cuGraphInstantiate", 11000, 0, wine_cuGraphInstantiate_v2},
@@ -869,8 +889,12 @@ const FunctionMapping mappings[] = {
     {"cuStreamGetCaptureInfo", 10010, 2, wine_cuStreamGetCaptureInfo_ptsz},
     {"cuStreamGetCaptureInfo", 11030, 0, wine_cuStreamGetCaptureInfo_v2},
     {"cuStreamGetCaptureInfo", 11030, 2, wine_cuStreamGetCaptureInfo_v2_ptsz},
+    {"cuStreamGetCaptureInfo", 12030, 0, wine_cuStreamGetCaptureInfo_v3},
+    {"cuStreamGetCaptureInfo", 12030, 2, wine_cuStreamGetCaptureInfo_v3_ptsz},
     {"cuStreamUpdateCaptureDependencies", 11030, 0, wine_cuStreamUpdateCaptureDependencies},
     {"cuStreamUpdateCaptureDependencies", 11030, 2, wine_cuStreamUpdateCaptureDependencies_ptsz},
+    {"cuStreamUpdateCaptureDependencies", 12030, 0, wine_cuStreamUpdateCaptureDependencies_v2},
+    {"cuStreamUpdateCaptureDependencies", 12030, 2, wine_cuStreamUpdateCaptureDependencies_v2_ptsz},
     {"cuGraphExecKernelNodeSetParams", 10010, 0, wine_cuGraphExecKernelNodeSetParams},
     {"cuGraphExecKernelNodeSetParams", 12000, 0, wine_cuGraphExecKernelNodeSetParams_v2},
     {"cuGraphExecMemcpyNodeSetParams", 10020, 0, wine_cuGraphExecMemcpyNodeSetParams},
@@ -894,14 +918,20 @@ const FunctionMapping mappings[] = {
     {"cuGraphNodeSetEnabled", 11060, 0, wine_cuGraphNodeSetEnabled},
     {"cuGraphNodeGetEnabled", 11060, 0, wine_cuGraphNodeGetEnabled},
     {"cuGraphInstantiateWithParams", 12000, 0, wine_cuGraphInstantiateWithParams},
-    {"cuGraphInstantiateWithParams_ptsz", 12000, 2, wine_cuGraphInstantiateWithParams_ptsz},
+    {"cuGraphInstantiateWithParams", 12000, 2, wine_cuGraphInstantiateWithParams_ptsz},
     {"cuGraphExecGetFlags", 12000, 0, wine_cuGraphExecGetFlags},
     {"cuMemAdvise", 12020, 0, wine_cuMemAdvise_v2},
     {"cuMemPrefetchAsync", 12020, 0, wine_cuMemPrefetchAsync_v2},
     {"cuMemPrefetchAsync", 12020, 2, wine_cuMemPrefetchAsync_v2_ptsz},
     {"cuGraphAddNode", 12020, 0, wine_cuGraphAddNode},
+    {"cuGraphAddNode", 12030, 0, wine_cuGraphAddNode_v2},
     {"cuGraphNodeSetParams", 12020, 0, wine_cuGraphNodeSetParams},
     {"cuGraphExecNodeSetParams", 12020, 0, wine_cuGraphExecNodeSetParams},
+    {"cuKernelGetName", 12030, 0, wine_cuKernelGetName},
+    {"cuFuncGetName", 12030, 0, wine_cuFuncGetName},
+    {"cuStreamBeginCaptureToGraph", 12030, 0, wine_cuStreamBeginCaptureToGraph},
+    {"cuStreamBeginCaptureToGraph", 12030, 2, wine_cuStreamBeginCaptureToGraph_ptsz},
+    {"cuGraphConditionalHandleCreate", 12030, 0, wine_cuGraphConditionalHandleCreate},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);

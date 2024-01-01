@@ -661,6 +661,23 @@ static CUresult (*pcuMemPrefetchAsync_v2_ptsz)(CUdeviceptr_v2 devPtr, size_t cou
 static CUresult (*pcuGraphAddNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, void *nodeParams);
 static CUresult (*pcuGraphNodeSetParams)(CUgraphNode hNode, void *nodeParams);
 static CUresult (*pcuGraphExecNodeSetParams)(CUgraphExec hGraphExec, CUgraphNode hNode, void *nodeParams);
+static CUresult (*pcuKernelGetName)(const char **name, void *hfunc);
+static CUresult (*pcuFuncGetName)(const char **name, void *hfunc);
+static CUresult (*pcuGraphGetEdges_v2)(CUgraph hGraph, CUgraphNode *from, CUgraphNode *to, void *edgeData, size_t *numEdges);
+static CUresult (*pcuGraphNodeGetDependencies_v2)(CUgraphNode hNode, CUgraphNode *dependencies, void *edgeData, size_t *numDependencies);
+static CUresult (*pcuGraphNodeGetDependentNodes_v2)(CUgraphNode hNode, CUgraphNode *dependentNodes, void *edgeData, size_t *numDependentNodes);
+static CUresult (*pcuGraphAddDependencies_v2)(CUgraph hGraph, const CUgraphNode *from, const CUgraphNode *to, void *edgeData, size_t numDependencies);
+static CUresult (*pcuGraphRemoveDependencies_v2)(CUgraph hGraph, const CUgraphNode *from, const CUgraphNode *to, void *edgeData, size_t numDependencies);
+static CUresult (*pcuStreamBeginCaptureToGraph)(CUstream hStream, CUgraph hGraph, const CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, CUstreamCaptureMode mode);
+static CUresult (*pcuStreamBeginCaptureToGraph_ptsz)(CUstream hStream, CUgraph hGraph, const CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, CUstreamCaptureMode mode);
+static CUresult (*pcuStreamGetCaptureInfo_v3)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+                                           const void **edgeData, size_t *numDependencies_out);
+static CUresult (*pcuStreamGetCaptureInfo_v3_ptsz)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+                                           const void **edgeData, size_t *numDependencies_out);
+static CUresult (*pcuStreamUpdateCaptureDependencies_v2)(CUstream hStream, CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, unsigned int flags);
+static CUresult (*pcuStreamUpdateCaptureDependencies_v2_ptsz)(CUstream hStream, CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, unsigned int flags);
+static CUresult (*pcuGraphAddNode_v2)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, void *nodeParams);
+static CUresult (*pcuGraphConditionalHandleCreate)(void *pHandle_out, CUgraph hGraph, CUcontext ctx, unsigned int defaultLaunchValue, unsigned int flags);
 
 static void *cuda_handle = NULL;
 
@@ -1190,6 +1207,7 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuIpcOpenMemHandle_v2);
     TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_ptsz);
     TRY_LOAD_FUNCPTR(cuOccupancyMaxPotentialClusterSize);
+    TRY_LOAD_FUNCPTR(cuGraphGetEdges_v2);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -1229,6 +1247,20 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphAddNode);
     TRY_LOAD_FUNCPTR(cuGraphNodeSetParams);
     TRY_LOAD_FUNCPTR(cuGraphExecNodeSetParams);
+    TRY_LOAD_FUNCPTR(cuKernelGetName);
+    TRY_LOAD_FUNCPTR(cuFuncGetName);
+    TRY_LOAD_FUNCPTR(cuGraphNodeGetDependencies_v2);
+    TRY_LOAD_FUNCPTR(cuGraphNodeGetDependentNodes_v2);
+    TRY_LOAD_FUNCPTR(cuGraphAddDependencies_v2);
+    TRY_LOAD_FUNCPTR(cuGraphRemoveDependencies_v2);
+    TRY_LOAD_FUNCPTR(cuStreamBeginCaptureToGraph);
+    TRY_LOAD_FUNCPTR(cuStreamBeginCaptureToGraph_ptsz);
+    TRY_LOAD_FUNCPTR(cuStreamGetCaptureInfo_v3);
+    TRY_LOAD_FUNCPTR(cuStreamGetCaptureInfo_v3_ptsz);
+    TRY_LOAD_FUNCPTR(cuStreamUpdateCaptureDependencies_v2);
+    TRY_LOAD_FUNCPTR(cuStreamUpdateCaptureDependencies_v2_ptsz);
+    TRY_LOAD_FUNCPTR(cuGraphAddNode_v2);
+    TRY_LOAD_FUNCPTR(cuGraphConditionalHandleCreate);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -4930,6 +4962,113 @@ CUresult WINAPI wine_cuGraphExecNodeSetParams(CUgraphExec hGraphExec, CUgraphNod
     TRACE("%p, %p, %p\n", hGraphExec, hNode, nodeParams);
     CHECK_FUNCPTR(cuGraphExecNodeSetParams);
     return pcuGraphExecNodeSetParams(hGraphExec, hNode, nodeParams);
+}
+
+CUresult WINAPI wine_cuKernelGetName(const char **name, void *hfunc)
+{
+    TRACE("%s, %p\n", *name, hfunc);
+    CHECK_FUNCPTR(cuKernelGetName);
+    return pcuKernelGetName(name, hfunc);
+}
+
+CUresult WINAPI wine_cuFuncGetName(const char **name, void *hfunc)
+{
+    TRACE("%s, %p\n", *name, hfunc);
+    CHECK_FUNCPTR(cuFuncGetName);
+    return pcuFuncGetName(name, hfunc);
+}
+
+CUresult WINAPI wine_cuGraphGetEdges_v2(CUgraph hGraph, CUgraphNode *from, CUgraphNode *to, void *edgeData, size_t *numEdges)
+{
+    TRACE("(%p, %p, %p, %p, %zn)\n", hGraph, from, to, edgeData, numEdges);
+    CHECK_FUNCPTR(cuGraphGetEdges_v2);
+    return pcuGraphGetEdges_v2(hGraph, from, to, edgeData, numEdges);
+}
+
+CUresult WINAPI wine_cuGraphNodeGetDependencies_v2(CUgraphNode hNode, CUgraphNode *dependencies, void *edgeData, size_t *numDependencies)
+{
+    TRACE("(%p, %p, %p, %zn)\n", hNode, dependencies, edgeData, numDependencies);
+    CHECK_FUNCPTR(cuGraphNodeGetDependencies_v2);
+    return pcuGraphNodeGetDependencies_v2(hNode, dependencies, edgeData, numDependencies);
+}
+
+CUresult WINAPI wine_cuGraphNodeGetDependentNodes_v2(CUgraphNode hNode, CUgraphNode *dependentNodes, void *edgeData, size_t *numDependentNodes)
+{
+    TRACE("(%p, %p, %p, %zn)\n", hNode, dependentNodes, edgeData, numDependentNodes);
+    CHECK_FUNCPTR(cuGraphNodeGetDependentNodes_v2);
+    return pcuGraphNodeGetDependentNodes_v2(hNode, dependentNodes, edgeData, numDependentNodes);
+}
+
+CUresult WINAPI wine_cuGraphAddDependencies_v2(CUgraph hGraph, const CUgraphNode *from, const CUgraphNode *to, void *edgeData, size_t numDependencies)
+{
+    TRACE("(%p, %p, %p, %p, %zu)\n", hGraph, from, to, edgeData, numDependencies);
+    CHECK_FUNCPTR(cuGraphAddDependencies_v2);
+    return pcuGraphAddDependencies_v2(hGraph, from, to, edgeData, numDependencies);
+}
+
+CUresult WINAPI wine_cuGraphRemoveDependencies_v2(CUgraph hGraph, const CUgraphNode *from, const CUgraphNode *to, void *edgeData, size_t numDependencies)
+{
+    TRACE("(%p, %p, %p, %p, %zu)\n", hGraph, from, to, edgeData, numDependencies);
+    CHECK_FUNCPTR(cuGraphRemoveDependencies_v2);
+    return pcuGraphRemoveDependencies_v2(hGraph, from, to, edgeData, numDependencies);
+}
+
+CUresult WINAPI wine_cuStreamBeginCaptureToGraph(CUstream hStream, CUgraph hGraph, const CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, CUstreamCaptureMode mode)
+{
+    TRACE("(%p, %p, %p, %p, %zu, %d)\n", hStream, hGraph, dependencies, dependencyData, numDependencies, mode);
+    CHECK_FUNCPTR(cuStreamBeginCaptureToGraph);
+    return pcuStreamBeginCaptureToGraph(hStream, hGraph, dependencies, dependencyData, numDependencies, mode);
+}
+
+CUresult WINAPI wine_cuStreamBeginCaptureToGraph_ptsz(CUstream hStream, CUgraph hGraph, const CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, CUstreamCaptureMode mode)
+{
+    TRACE("(%p, %p, %p, %p, %zu, %d)\n", hStream, hGraph, dependencies, dependencyData, numDependencies, mode);
+    CHECK_FUNCPTR(cuStreamBeginCaptureToGraph_ptsz);
+    return pcuStreamBeginCaptureToGraph_ptsz(hStream, hGraph, dependencies, dependencyData, numDependencies, mode);
+}
+
+CUresult WINAPI wine_cuStreamGetCaptureInfo_v3(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+                                           const void **edgeData, size_t *numDependencies_out)
+{
+    TRACE("(%p, %p, %lu, %p, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
+    CHECK_FUNCPTR(cuStreamGetCaptureInfo_v3);
+    return pcuStreamGetCaptureInfo_v3(hStream, captureStatus_out, id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
+}
+
+CUresult WINAPI wine_cuStreamGetCaptureInfo_v3_ptsz(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
+                                           const void **edgeData, size_t *numDependencies_out)
+{
+    TRACE("(%p, %p, %lu, %p, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
+    CHECK_FUNCPTR(cuStreamGetCaptureInfo_v3_ptsz);
+    return pcuStreamGetCaptureInfo_v3_ptsz(hStream, captureStatus_out, id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
+}
+
+CUresult WINAPI wine_cuStreamUpdateCaptureDependencies_v2(CUstream hStream, CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, unsigned int flags)
+{
+    TRACE("(%p, %p, %p, %zu, %u)\n", hStream, dependencies, dependencyData, numDependencies, flags);
+    CHECK_FUNCPTR(cuStreamUpdateCaptureDependencies_v2);
+    return pcuStreamUpdateCaptureDependencies_v2(hStream, dependencies, dependencyData, numDependencies, flags);
+}
+
+CUresult WINAPI wine_cuStreamUpdateCaptureDependencies_v2_ptsz(CUstream hStream, CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, unsigned int flags)
+{
+    TRACE("(%p, %p, %p, %zu, %u)\n", hStream, dependencies, dependencyData, numDependencies, flags);
+    CHECK_FUNCPTR(cuStreamUpdateCaptureDependencies_v2_ptsz);
+    return pcuStreamUpdateCaptureDependencies_v2_ptsz(hStream, dependencies, dependencyData, numDependencies, flags);
+}
+
+CUresult WINAPI wine_cuGraphAddNode_v2(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, void *nodeParams)
+{
+    TRACE("(%p, %p, %p, %p, %zd, %p)\n", phGraphNode, hGraph, dependencies, dependencyData, numDependencies, nodeParams);
+    CHECK_FUNCPTR(cuGraphAddNode_v2);
+    return pcuGraphAddNode_v2(phGraphNode, hGraph, dependencies, dependencyData, numDependencies, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphConditionalHandleCreate(void *pHandle_out, CUgraph hGraph, CUcontext ctx, unsigned int defaultLaunchValue, unsigned int flags)
+{
+    TRACE("(%p, %p, %p, %u, %u)\n", pHandle_out, hGraph, ctx, defaultLaunchValue, flags);
+    CHECK_FUNCPTR(cuGraphConditionalHandleCreate);
+    return pcuGraphConditionalHandleCreate(pHandle_out, hGraph, ctx, defaultLaunchValue, flags);
 }
 
 #undef CHECK_FUNCPTR
