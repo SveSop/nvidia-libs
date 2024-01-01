@@ -104,6 +104,12 @@ static const CUuuid UUID_Unknown7                   = {{0xD4, 0x08, 0x20, 0x55, 
 static const CUuuid UUID_Unknown8                   = {{0x21, 0x31, 0x8C, 0x60, 0x97, 0x14, 0x32, 0x48,
                                                         0x8C, 0xA6, 0x41, 0xFF, 0x73, 0x24, 0xC8, 0xF2}};
                                                     // {21318c60-9714-3248-8ca6-41ff7324c8f2}
+static const CUuuid UUID_Unknown9                   = {{0x6E, 0x16, 0x3F, 0xBE, 0xB9, 0x58, 0x44, 0x4D,
+                                                        0x83, 0x5C, 0xE1, 0x82, 0xAF, 0xF1, 0x99, 0x1E}};
+                                                    // {6e163fbe-b958-444d-835c-e182aff1991e}
+static const CUuuid UUID_Unknown10                  = {{0x26, 0x3E, 0x88, 0x60, 0x7C, 0xD2, 0x61, 0x43,
+                                                        0x92, 0xF6, 0xBB, 0xD5, 0x00, 0x6D, 0xFA, 0x7E}};
+                                                    // {263e8860-7cd2-6143-92f6-bbd5006dfa7e}
 
 struct cuda_table
 {
@@ -259,6 +265,48 @@ static const struct
     void* (*func2)(void *param0);
     void* (*func3)(void *param0, void *param1);
 } *Unknown8_orig = NULL;
+
+/*
+ * Unknown9
+ */
+struct Unknown9_table
+{
+    int size;
+    void* (WINAPI *func0)(void *param0);
+    void* (WINAPI *func1)(void *param0);
+    void* (WINAPI *func2)(void *param0);
+    void* (WINAPI *func3)(void *param0);
+    void* (WINAPI *func4)(void *param0);
+    void* (WINAPI *func5)(void *param0);
+    void* (WINAPI *func6)(void *param0, void *param1);
+};
+static const struct
+{
+    int size;
+    void* (*func0)(void *param0);
+    void* (*func1)(void *param0);
+    void* (*func2)(void *param0);
+    void* (*func3)(void *param0);
+    void* (*func4)(void *param0);
+    void* (*func5)(void *param0);
+    void* (*func6)(void *param0, void *param1);
+} *Unknown9_orig = NULL;
+
+/*
+ * Unknown10
+ */
+struct Unknown10_table
+{
+    int size;
+    void* (WINAPI *func0)(void *param0);
+    void* (WINAPI *func1)(void *param0, void *param1);
+};
+static const struct
+{
+    int size;
+    void* (*func0)(void *param0);
+    void* (*func1)(void *param0, void *param1);
+} *Unknown10_orig = NULL;
 
 static void* WINAPI Unknown1_func0_relay(void *param0, void *param1)
 {
@@ -621,6 +669,79 @@ static struct Unknown8_table Unknown8_Impl =
     Unknown8_func3_relay,
 };
 
+static void* WINAPI Unknown9_func0_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown9_orig->func0(param0);
+}
+
+static void* WINAPI Unknown9_func1_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown9_orig->func1(param0);
+}
+
+static void* WINAPI Unknown9_func2_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown9_orig->func2(param0);
+}
+
+static void* WINAPI Unknown9_func3_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown9_orig->func3(param0);
+}
+
+static void* WINAPI Unknown9_func4_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown9_orig->func4(param0);
+}
+
+static void* WINAPI Unknown9_func5_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown9_orig->func5(param0);
+}
+
+static void* WINAPI Unknown9_func6_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func6(param0, param1);
+}
+
+struct Unknown9_table Unknown9_Impl =
+{
+    sizeof(struct Unknown9_table),
+    Unknown9_func0_relay,
+    Unknown9_func1_relay,
+    Unknown9_func2_relay,
+    Unknown9_func3_relay,
+    Unknown9_func4_relay,
+    Unknown9_func5_relay,
+    Unknown9_func6_relay,
+};
+
+static void* WINAPI Unknown10_func0_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown10_orig->func0(param0);
+}
+
+static void* WINAPI Unknown10_func1_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown10_orig->func1(param0, param1);
+}
+
+static struct Unknown10_table Unknown10_Impl =
+{
+    sizeof(struct Unknown10_table),
+    Unknown10_func0_relay,
+    Unknown10_func1_relay,
+};
+
 static BOOL cuda_check_table(const struct cuda_table *orig, struct cuda_table *impl, const char *name)
 {
     if (!orig)
@@ -743,6 +864,28 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
 
         Unknown8_orig = orig_table;
         *table = (void *)&Unknown8_Impl;
+        return CUDA_SUCCESS;
+    }
+    else if (cuda_equal_uuid(uuid, &UUID_Unknown9))
+    {
+        if (orig_result)
+            return orig_result;
+        if (!cuda_check_table(orig_table, (void *)&Unknown9_Impl, "Unknown9"))
+            return CUDA_ERROR_UNKNOWN;
+
+        Unknown9_orig = orig_table;
+        *table = (void *)&Unknown9_Impl;
+        return CUDA_SUCCESS;
+    }
+    else if (cuda_equal_uuid(uuid, &UUID_Unknown10))
+    {
+        if (orig_result)
+            return orig_result;
+        if (!cuda_check_table(orig_table, (void *)&Unknown10_Impl, "Unknown10"))
+            return CUDA_ERROR_UNKNOWN;
+
+        Unknown10_orig = orig_table;
+        *table = (void *)&Unknown10_Impl;
         return CUDA_SUCCESS;
     }
 
