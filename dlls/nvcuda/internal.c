@@ -252,18 +252,164 @@ static const struct
 struct Unknown8_table
 {
     int size;
-    void* (WINAPI *func0)(void *param0);
-    void* (WINAPI *func1)(void *param0);
-    void* (WINAPI *func2)(void *param0);
+    void* (WINAPI *func0)(void *param0, void *param1);
+    void* (WINAPI *func1)(void *param0, void *param1);
+    void* (WINAPI *func2)(void *param0, void *param1);
     void* (WINAPI *func3)(void *param0, void *param1);
+    void* (WINAPI *func4)(void *param0, void *param1);
+    void* (WINAPI *func5)(void *param0, void *param1);
+    void* (WINAPI *func6)(void *param0, void *param1);
+    void* (WINAPI *func7)(void *param0, void *param1);
+    void* (WINAPI *func8)(void *param0, void *param1);
+    void* (WINAPI *func9)(void *param0, void *param1);
+    void* (WINAPI *func10)(void *param0, void *param1);
+    void* (WINAPI *func11)(void *param0, void *param1);
+    void* (WINAPI *func12)(void *param0, void *param1);
+    void* (WINAPI *func13)(void *param0, void *param1);
+    void* (WINAPI *func14)(void *param0, void *param1);
+    void* (WINAPI *func15)(void *param0, void *param1);
+    void* (WINAPI *func16)(void *param0, void *param1);
+    void* (WINAPI *func17)(void *param0, void *param1);
+    void* (WINAPI *func18)(void *param0, void *param1);
+    void* (WINAPI *func19)(void *param0, void *param1);
+    void* (WINAPI *func20)(void *param0, void *param1);
+    void* (WINAPI *func21)(void *param0, void *param1);
+    void* (WINAPI *func22)(void *param0, void *param1);
+    void* (WINAPI *func23)(void *param0, void *param1);
+    void* (WINAPI *func24)(void *param0, void *param1);
+    void* (WINAPI *func25)(void *param0, void *param1);
+    void* (WINAPI *func26)(void *param0, void *param1);
+    void* (WINAPI *func27)(void *param0, void *param1);
+    void* (WINAPI *func28)(void *param0, void *param1);
+    void* (WINAPI *func29)(void *param0, void *param1);
+    void* (WINAPI *func30)(void *param0, void *param1);
+    void* (WINAPI *func31)(void *param0, void *param1);
+    void* (WINAPI *func32)(void *param0, void *param1);
+    void* (WINAPI *func33)(void *param0, void *param1);
+    void* (WINAPI *func34)(void *param0, void *param1);
+    void* (WINAPI *func35)(void *param0, void *param1);
+    void* (WINAPI *func36)(void *param0, void *param1);
+    void* (WINAPI *func37)(void *param0, void *param1);
+    void* (WINAPI *func38)(void *param0, void *param1);
+    void* (WINAPI *func39)(void *param0, void *param1);
+    void* (WINAPI *func40)(void *param0, void *param1);
+    void* (WINAPI *func41)(void *param0, void *param1);
+    void* (WINAPI *func42)(void *param0, void *param1);
+    void* (WINAPI *func43)(void *param0, void *param1);
+    void* (WINAPI *func44)(void *param0, void *param1);
+    void* (WINAPI *func45)(void *param0, void *param1);
+    void* (WINAPI *func46)(void *param0, void *param1);
+    void* (WINAPI *func47)(void *param0, void *param1);
+    void* (WINAPI *func48)(void *param0, void *param1);
+    void* (WINAPI *func49)(void *param0, void *param1);
+    void* (WINAPI *func50)(void *param0, void *param1);
+    void* (WINAPI *func51)(void *param0, void *param1);
+    void* (WINAPI *func52)(void *param0, void *param1);
+    void* (WINAPI *func53)(void *param0, void *param1);
+    void* (WINAPI *func54)(void *param0, void *param1);
+    void* (WINAPI *func55)(void *param0, void *param1);
+    void* (WINAPI *func56)(void *param0, void *param1);
+    void* (WINAPI *func57)(void *param0, void *param1);
+    void* (WINAPI *func58)(void *param0, void *param1);
+    void* (WINAPI *func59)(void *param0, void *param1);
+    void* (WINAPI *func60)(void *param0, void *param1);
+    void* (WINAPI *func61)(void *param0, void *param1);
+    void* (WINAPI *func62)(void *param0, void *param1);
+    void* (WINAPI *func63)(void *param0, void *param1);
+    void* (WINAPI *func64)(void *param0, void *param1);
+    void* (WINAPI *func65)(void *param0, void *param1);
+    void* (WINAPI *func66)(void *param0, void *param1);
+    void* (WINAPI *func67)(void *param0, void *param1);
+    void* (WINAPI *func68)(void *param0, void *param1);
+    void* (WINAPI *func69)(void *param0, void *param1);
+    void* (WINAPI *func70)(void *param0, void *param1);
+    void* (WINAPI *func71)(void *param0, void *param1);
+    void* (WINAPI *func72)(void *param0, void *param1);
+    void* (WINAPI *func73)(void *param0, void *param1);
+    void* (WINAPI *func74)(void *param0, void *param1);
+    void* (WINAPI *func75)(void *param0, void *param1);
+    void* (WINAPI *func76)(void *param0, void *param1);
 };
 static const struct
 {
     int size;
-    void* (*func0)(void *param0);
-    void* (*func1)(void *param0);
-    void* (*func2)(void *param0);
+    void* (*func0)(void *param0, void *param1);
+    void* (*func1)(void *param0, void *param1);
+    void* (*func2)(void *param0, void *param1);
     void* (*func3)(void *param0, void *param1);
+    void* (*func4)(void *param0, void *param1);
+    void* (*func5)(void *param0, void *param1);
+    void* (*func6)(void *param0, void *param1);
+    void* (*func7)(void *param0, void *param1);
+    void* (*func8)(void *param0, void *param1);
+    void* (*func9)(void *param0, void *param1);
+    void* (*func10)(void *param0, void *param1);
+    void* (*func11)(void *param0, void *param1);
+    void* (*func12)(void *param0, void *param1);
+    void* (*func13)(void *param0, void *param1);
+    void* (*func14)(void *param0, void *param1);
+    void* (*func15)(void *param0, void *param1);
+    void* (*func16)(void *param0, void *param1);
+    void* (*func17)(void *param0, void *param1);
+    void* (*func18)(void *param0, void *param1);
+    void* (*func19)(void *param0, void *param1);
+    void* (*func20)(void *param0, void *param1);
+    void* (*func21)(void *param0, void *param1);
+    void* (*func22)(void *param0, void *param1);
+    void* (*func23)(void *param0, void *param1);
+    void* (*func24)(void *param0, void *param1);
+    void* (*func25)(void *param0, void *param1);
+    void* (*func26)(void *param0, void *param1);
+    void* (*func27)(void *param0, void *param1);
+    void* (*func28)(void *param0, void *param1);
+    void* (*func29)(void *param0, void *param1);
+    void* (*func30)(void *param0, void *param1);
+    void* (*func31)(void *param0, void *param1);
+    void* (*func32)(void *param0, void *param1);
+    void* (*func33)(void *param0, void *param1);
+    void* (*func34)(void *param0, void *param1);
+    void* (*func35)(void *param0, void *param1);
+    void* (*func36)(void *param0, void *param1);
+    void* (*func37)(void *param0, void *param1);
+    void* (*func38)(void *param0, void *param1);
+    void* (*func39)(void *param0, void *param1);
+    void* (*func40)(void *param0, void *param1);
+    void* (*func41)(void *param0, void *param1);
+    void* (*func42)(void *param0, void *param1);
+    void* (*func43)(void *param0, void *param1);
+    void* (*func44)(void *param0, void *param1);
+    void* (*func45)(void *param0, void *param1);
+    void* (*func46)(void *param0, void *param1);
+    void* (*func47)(void *param0, void *param1);
+    void* (*func48)(void *param0, void *param1);
+    void* (*func49)(void *param0, void *param1);
+    void* (*func50)(void *param0, void *param1);
+    void* (*func51)(void *param0, void *param1);
+    void* (*func52)(void *param0, void *param1);
+    void* (*func53)(void *param0, void *param1);
+    void* (*func54)(void *param0, void *param1);
+    void* (*func55)(void *param0, void *param1);
+    void* (*func56)(void *param0, void *param1);
+    void* (*func57)(void *param0, void *param1);
+    void* (*func58)(void *param0, void *param1);
+    void* (*func59)(void *param0, void *param1);
+    void* (*func60)(void *param0, void *param1);
+    void* (*func61)(void *param0, void *param1);
+    void* (*func62)(void *param0, void *param1);
+    void* (*func63)(void *param0, void *param1);
+    void* (*func64)(void *param0, void *param1);
+    void* (*func65)(void *param0, void *param1);
+    void* (*func66)(void *param0, void *param1);
+    void* (*func67)(void *param0, void *param1);
+    void* (*func68)(void *param0, void *param1);
+    void* (*func69)(void *param0, void *param1);
+    void* (*func70)(void *param0, void *param1);
+    void* (*func71)(void *param0, void *param1);
+    void* (*func72)(void *param0, void *param1);
+    void* (*func73)(void *param0, void *param1);
+    void* (*func74)(void *param0, void *param1);
+    void* (*func75)(void *param0, void *param1);
+    void* (*func76)(void *param0, void *param1);
 } *Unknown8_orig = NULL;
 
 /*
@@ -272,24 +418,184 @@ static const struct
 struct Unknown9_table
 {
     int size;
-    void* (WINAPI *func0)(void *param0);
-    void* (WINAPI *func1)(void *param0);
-    void* (WINAPI *func2)(void *param0);
-    void* (WINAPI *func3)(void *param0);
-    void* (WINAPI *func4)(void *param0);
-    void* (WINAPI *func5)(void *param0);
+    void* (WINAPI *func0)(void *param0, void *param1);
+    void* (WINAPI *func1)(void *param0, void *param1);
+    void* (WINAPI *func2)(void *param0, void *param1);
+    void* (WINAPI *func3)(void *param0, void *param1);
+    void* (WINAPI *func4)(void *param0, void *param1);
+    void* (WINAPI *func5)(void *param0, void *param1);
     void* (WINAPI *func6)(void *param0, void *param1);
+    void* (WINAPI *func7)(void *param0, void *param1);
+    void* (WINAPI *func8)(void *param0, void *param1);
+    void* (WINAPI *func9)(void *param0, void *param1);
+    void* (WINAPI *func10)(void *param0, void *param1);
+    void* (WINAPI *func11)(void *param0, void *param1);
+    void* (WINAPI *func12)(void *param0, void *param1);
+    void* (WINAPI *func13)(void *param0, void *param1);
+    void* (WINAPI *func14)(void *param0, void *param1);
+    void* (WINAPI *func15)(void *param0, void *param1);
+    void* (WINAPI *func16)(void *param0, void *param1);
+    void* (WINAPI *func17)(void *param0, void *param1);
+    void* (WINAPI *func18)(void *param0, void *param1);
+    void* (WINAPI *func19)(void *param0, void *param1);
+    void* (WINAPI *func20)(void *param0, void *param1);
+    void* (WINAPI *func21)(void *param0, void *param1);
+    void* (WINAPI *func22)(void *param0, void *param1);
+    void* (WINAPI *func23)(void *param0, void *param1);
+    void* (WINAPI *func24)(void *param0, void *param1);
+    void* (WINAPI *func25)(void *param0, void *param1);
+    void* (WINAPI *func26)(void *param0, void *param1);
+    void* (WINAPI *func27)(void *param0, void *param1);
+    void* (WINAPI *func28)(void *param0, void *param1);
+    void* (WINAPI *func29)(void *param0, void *param1);
+    void* (WINAPI *func30)(void *param0, void *param1);
+    void* (WINAPI *func31)(void *param0, void *param1);
+    void* (WINAPI *func32)(void *param0, void *param1);
+    void* (WINAPI *func33)(void *param0, void *param1);
+    void* (WINAPI *func34)(void *param0, void *param1);
+    void* (WINAPI *func35)(void *param0, void *param1);
+    void* (WINAPI *func36)(void *param0, void *param1);
+    void* (WINAPI *func37)(void *param0, void *param1);
+    void* (WINAPI *func38)(void *param0, void *param1);
+    void* (WINAPI *func39)(void *param0, void *param1);
+    void* (WINAPI *func40)(void *param0, void *param1);
+    void* (WINAPI *func41)(void *param0, void *param1);
+    void* (WINAPI *func42)(void *param0, void *param1);
+    void* (WINAPI *func43)(void *param0, void *param1);
+    void* (WINAPI *func44)(void *param0, void *param1);
+    void* (WINAPI *func45)(void *param0, void *param1);
+    void* (WINAPI *func46)(void *param0, void *param1);
+    void* (WINAPI *func47)(void *param0, void *param1);
+    void* (WINAPI *func48)(void *param0, void *param1);
+    void* (WINAPI *func49)(void *param0, void *param1);
+    void* (WINAPI *func50)(void *param0, void *param1);
+    void* (WINAPI *func51)(void *param0, void *param1);
+    void* (WINAPI *func52)(void *param0, void *param1);
+    void* (WINAPI *func53)(void *param0, void *param1);
+    void* (WINAPI *func54)(void *param0, void *param1);
+    void* (WINAPI *func55)(void *param0, void *param1);
+    void* (WINAPI *func56)(void *param0, void *param1);
+    void* (WINAPI *func57)(void *param0, void *param1);
+    void* (WINAPI *func58)(void *param0, void *param1);
+    void* (WINAPI *func59)(void *param0, void *param1);
+    void* (WINAPI *func60)(void *param0, void *param1);
+    void* (WINAPI *func61)(void *param0, void *param1);
+    void* (WINAPI *func62)(void *param0, void *param1);
+    void* (WINAPI *func63)(void *param0, void *param1);
+    void* (WINAPI *func64)(void *param0, void *param1);
+    void* (WINAPI *func65)(void *param0, void *param1);
+    void* (WINAPI *func66)(void *param0, void *param1);
+    void* (WINAPI *func67)(void *param0, void *param1);
+    void* (WINAPI *func68)(void *param0, void *param1);
+    void* (WINAPI *func69)(void *param0, void *param1);
+    void* (WINAPI *func70)(void *param0, void *param1);
+    void* (WINAPI *func71)(void *param0, void *param1);
+    void* (WINAPI *func72)(void *param0, void *param1);
+    void* (WINAPI *func73)(void *param0, void *param1);
+    void* (WINAPI *func74)(void *param0, void *param1);
+    void* (WINAPI *func75)(void *param0, void *param1);
+    void* (WINAPI *func76)(void *param0, void *param1);
+    void* (WINAPI *func77)(void *param0, void *param1);
+    void* (WINAPI *func78)(void *param0, void *param1);
+    void* (WINAPI *func79)(void *param0, void *param1);
+    void* (WINAPI *func80)(void *param0, void *param1);
+    void* (WINAPI *func81)(void *param0, void *param1);
+    void* (WINAPI *func82)(void *param0, void *param1);
+    void* (WINAPI *func83)(void *param0, void *param1);
+    void* (WINAPI *func84)(void *param0, void *param1);
+    void* (WINAPI *func85)(void *param0, void *param1);
+    void* (WINAPI *func86)(void *param0, void *param1);
 };
 static const struct
 {
     int size;
-    void* (*func0)(void *param0);
-    void* (*func1)(void *param0);
-    void* (*func2)(void *param0);
-    void* (*func3)(void *param0);
-    void* (*func4)(void *param0);
-    void* (*func5)(void *param0);
+    void* (*func0)(void *param0, void *param1);
+    void* (*func1)(void *param0, void *param1);
+    void* (*func2)(void *param0, void *param1);
+    void* (*func3)(void *param0, void *param1);
+    void* (*func4)(void *param0, void *param1);
+    void* (*func5)(void *param0, void *param1);
     void* (*func6)(void *param0, void *param1);
+    void* (*func7)(void *param0, void *param1);
+    void* (*func8)(void *param0, void *param1);
+    void* (*func9)(void *param0, void *param1);
+    void* (*func10)(void *param0, void *param1);
+    void* (*func11)(void *param0, void *param1);
+    void* (*func12)(void *param0, void *param1);
+    void* (*func13)(void *param0, void *param1);
+    void* (*func14)(void *param0, void *param1);
+    void* (*func15)(void *param0, void *param1);
+    void* (*func16)(void *param0, void *param1);
+    void* (*func17)(void *param0, void *param1);
+    void* (*func18)(void *param0, void *param1);
+    void* (*func19)(void *param0, void *param1);
+    void* (*func20)(void *param0, void *param1);
+    void* (*func21)(void *param0, void *param1);
+    void* (*func22)(void *param0, void *param1);
+    void* (*func23)(void *param0, void *param1);
+    void* (*func24)(void *param0, void *param1);
+    void* (*func25)(void *param0, void *param1);
+    void* (*func26)(void *param0, void *param1);
+    void* (*func27)(void *param0, void *param1);
+    void* (*func28)(void *param0, void *param1);
+    void* (*func29)(void *param0, void *param1);
+    void* (*func30)(void *param0, void *param1);
+    void* (*func31)(void *param0, void *param1);
+    void* (*func32)(void *param0, void *param1);
+    void* (*func33)(void *param0, void *param1);
+    void* (*func34)(void *param0, void *param1);
+    void* (*func35)(void *param0, void *param1);
+    void* (*func36)(void *param0, void *param1);
+    void* (*func37)(void *param0, void *param1);
+    void* (*func38)(void *param0, void *param1);
+    void* (*func39)(void *param0, void *param1);
+    void* (*func40)(void *param0, void *param1);
+    void* (*func41)(void *param0, void *param1);
+    void* (*func42)(void *param0, void *param1);
+    void* (*func43)(void *param0, void *param1);
+    void* (*func44)(void *param0, void *param1);
+    void* (*func45)(void *param0, void *param1);
+    void* (*func46)(void *param0, void *param1);
+    void* (*func47)(void *param0, void *param1);
+    void* (*func48)(void *param0, void *param1);
+    void* (*func49)(void *param0, void *param1);
+    void* (*func50)(void *param0, void *param1);
+    void* (*func51)(void *param0, void *param1);
+    void* (*func52)(void *param0, void *param1);
+    void* (*func53)(void *param0, void *param1);
+    void* (*func54)(void *param0, void *param1);
+    void* (*func55)(void *param0, void *param1);
+    void* (*func56)(void *param0, void *param1);
+    void* (*func57)(void *param0, void *param1);
+    void* (*func58)(void *param0, void *param1);
+    void* (*func59)(void *param0, void *param1);
+    void* (*func60)(void *param0, void *param1);
+    void* (*func61)(void *param0, void *param1);
+    void* (*func62)(void *param0, void *param1);
+    void* (*func63)(void *param0, void *param1);
+    void* (*func64)(void *param0, void *param1);
+    void* (*func65)(void *param0, void *param1);
+    void* (*func66)(void *param0, void *param1);
+    void* (*func67)(void *param0, void *param1);
+    void* (*func68)(void *param0, void *param1);
+    void* (*func69)(void *param0, void *param1);
+    void* (*func70)(void *param0, void *param1);
+    void* (*func71)(void *param0, void *param1);
+    void* (*func72)(void *param0, void *param1);
+    void* (*func73)(void *param0, void *param1);
+    void* (*func74)(void *param0, void *param1);
+    void* (*func75)(void *param0, void *param1);
+    void* (*func76)(void *param0, void *param1);
+    void* (*func77)(void *param0, void *param1);
+    void* (*func78)(void *param0, void *param1);
+    void* (*func79)(void *param0, void *param1);
+    void* (*func80)(void *param0, void *param1);
+    void* (*func81)(void *param0, void *param1);
+    void* (*func82)(void *param0, void *param1);
+    void* (*func83)(void *param0, void *param1);
+    void* (*func84)(void *param0, void *param1);
+    void* (*func85)(void *param0, void *param1);
+    void* (*func86)(void *param0, void *param1);
 } *Unknown9_orig = NULL;
 
 /*
@@ -636,28 +942,466 @@ struct Unknown7_table Unknown7_Impl =
     Unknown7_func1_relay,
 };
 
-static void* WINAPI Unknown8_func0_relay(void *param0)
+static void* WINAPI Unknown8_func0_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown8_orig->func0(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func0(param0, param1);
 }
 
-static void* WINAPI Unknown8_func1_relay(void *param0)
+static void* WINAPI Unknown8_func1_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown8_orig->func1(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown8_func2_relay(void *param0)
+static void* WINAPI Unknown8_func2_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown8_orig->func2(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func2(param0, param1);
 }
 
 static void* WINAPI Unknown8_func3_relay(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
     return Unknown8_orig->func3(param0, param1);
+}
+
+static void* WINAPI Unknown8_func4_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func4(param0, param1);
+}
+
+static void* WINAPI Unknown8_func5_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func5(param0, param1);
+}
+
+static void* WINAPI Unknown8_func6_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func6(param0, param1);
+}
+
+static void* WINAPI Unknown8_func7_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func7(param0, param1);
+}
+
+static void* WINAPI Unknown8_func8_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func8(param0, param1);
+}
+
+static void* WINAPI Unknown8_func9_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func9(param0, param1);
+}
+
+static void* WINAPI Unknown8_func10_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func10(param0, param1);
+}
+
+static void* WINAPI Unknown8_func11_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func11(param0, param1);
+}
+
+static void* WINAPI Unknown8_func12_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func12(param0, param1);
+}
+
+static void* WINAPI Unknown8_func13_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func13(param0, param1);
+}
+
+static void* WINAPI Unknown8_func14_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func14(param0, param1);
+}
+
+static void* WINAPI Unknown8_func15_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func15(param0, param1);
+}
+
+static void* WINAPI Unknown8_func16_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func16(param0, param1);
+}
+
+static void* WINAPI Unknown8_func17_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func17(param0, param1);
+}
+
+static void* WINAPI Unknown8_func18_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func18(param0, param1);
+}
+
+static void* WINAPI Unknown8_func19_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func19(param0, param1);
+}
+
+static void* WINAPI Unknown8_func20_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func20(param0, param1);
+}
+
+static void* WINAPI Unknown8_func21_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func21(param0, param1);
+}
+
+static void* WINAPI Unknown8_func22_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func22(param0, param1);
+}
+
+static void* WINAPI Unknown8_func23_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func23(param0, param1);
+}
+
+static void* WINAPI Unknown8_func24_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func24(param0, param1);
+}
+
+static void* WINAPI Unknown8_func25_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func25(param0, param1);
+}
+
+static void* WINAPI Unknown8_func26_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func26(param0, param1);
+}
+
+static void* WINAPI Unknown8_func27_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func27(param0, param1);
+}
+
+static void* WINAPI Unknown8_func28_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func28(param0, param1);
+}
+
+static void* WINAPI Unknown8_func29_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func29(param0, param1);
+}
+
+static void* WINAPI Unknown8_func30_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func30(param0, param1);
+}
+
+static void* WINAPI Unknown8_func31_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func31(param0, param1);
+}
+
+static void* WINAPI Unknown8_func32_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func32(param0, param1);
+}
+
+static void* WINAPI Unknown8_func33_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func33(param0, param1);
+}
+
+static void* WINAPI Unknown8_func34_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func34(param0, param1);
+}
+
+static void* WINAPI Unknown8_func35_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func35(param0, param1);
+}
+
+static void* WINAPI Unknown8_func36_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func36(param0, param1);
+}
+
+static void* WINAPI Unknown8_func37_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func37(param0, param1);
+}
+
+static void* WINAPI Unknown8_func38_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func38(param0, param1);
+}
+
+static void* WINAPI Unknown8_func39_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func39(param0, param1);
+}
+
+static void* WINAPI Unknown8_func40_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func40(param0, param1);
+}
+
+static void* WINAPI Unknown8_func41_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func41(param0, param1);
+}
+
+static void* WINAPI Unknown8_func42_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func42(param0, param1);
+}
+
+static void* WINAPI Unknown8_func43_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func43(param0, param1);
+}
+
+static void* WINAPI Unknown8_func44_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func44(param0, param1);
+}
+
+static void* WINAPI Unknown8_func45_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func45(param0, param1);
+}
+
+static void* WINAPI Unknown8_func46_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func46(param0, param1);
+}
+
+static void* WINAPI Unknown8_func47_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func47(param0, param1);
+}
+
+static void* WINAPI Unknown8_func48_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func48(param0, param1);
+}
+
+static void* WINAPI Unknown8_func49_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func49(param0, param1);
+}
+
+static void* WINAPI Unknown8_func50_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func50(param0, param1);
+}
+
+static void* WINAPI Unknown8_func51_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func51(param0, param1);
+}
+
+static void* WINAPI Unknown8_func52_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func52(param0, param1);
+}
+
+static void* WINAPI Unknown8_func53_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func53(param0, param1);
+}
+
+static void* WINAPI Unknown8_func54_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func54(param0, param1);
+}
+
+static void* WINAPI Unknown8_func55_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func55(param0, param1);
+}
+
+static void* WINAPI Unknown8_func56_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func56(param0, param1);
+}
+
+static void* WINAPI Unknown8_func57_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func57(param0, param1);
+}
+
+static void* WINAPI Unknown8_func58_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func58(param0, param1);
+}
+
+static void* WINAPI Unknown8_func59_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func59(param0, param1);
+}
+
+static void* WINAPI Unknown8_func60_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func60(param0, param1);
+}
+
+static void* WINAPI Unknown8_func61_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func61(param0, param1);
+}
+
+static void* WINAPI Unknown8_func62_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func62(param0, param1);
+}
+
+static void* WINAPI Unknown8_func63_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func63(param0, param1);
+}
+
+static void* WINAPI Unknown8_func64_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func64(param0, param1);
+}
+
+static void* WINAPI Unknown8_func65_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func65(param0, param1);
+}
+
+static void* WINAPI Unknown8_func66_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func66(param0, param1);
+}
+
+static void* WINAPI Unknown8_func67_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func67(param0, param1);
+}
+
+static void* WINAPI Unknown8_func68_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func68(param0, param1);
+}
+
+static void* WINAPI Unknown8_func69_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func69(param0, param1);
+}
+
+static void* WINAPI Unknown8_func70_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func70(param0, param1);
+}
+
+static void* WINAPI Unknown8_func71_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func71(param0, param1);
+}
+
+static void* WINAPI Unknown8_func72_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func72(param0, param1);
+}
+
+static void* WINAPI Unknown8_func73_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func73(param0, param1);
+}
+
+static void* WINAPI Unknown8_func74_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func74(param0, param1);
+}
+
+static void* WINAPI Unknown8_func75_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func75(param0, param1);
+}
+
+static void* WINAPI Unknown8_func76_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func76(param0, param1);
 }
 
 static struct Unknown8_table Unknown8_Impl =
@@ -667,48 +1411,601 @@ static struct Unknown8_table Unknown8_Impl =
     Unknown8_func1_relay,
     Unknown8_func2_relay,
     Unknown8_func3_relay,
+    Unknown8_func4_relay,
+    Unknown8_func5_relay,
+    Unknown8_func6_relay,
+    Unknown8_func7_relay,
+    Unknown8_func8_relay,
+    Unknown8_func9_relay,
+    Unknown8_func10_relay,
+    Unknown8_func11_relay,
+    Unknown8_func12_relay,
+    Unknown8_func13_relay,
+    Unknown8_func14_relay,
+    Unknown8_func15_relay,
+    Unknown8_func16_relay,
+    Unknown8_func17_relay,
+    Unknown8_func18_relay,
+    Unknown8_func19_relay,
+    Unknown8_func20_relay,
+    Unknown8_func21_relay,
+    Unknown8_func22_relay,
+    Unknown8_func23_relay,
+    Unknown8_func24_relay,
+    Unknown8_func25_relay,
+    Unknown8_func26_relay,
+    Unknown8_func27_relay,
+    Unknown8_func28_relay,
+    Unknown8_func29_relay,
+    Unknown8_func30_relay,
+    Unknown8_func31_relay,
+    Unknown8_func32_relay,
+    Unknown8_func33_relay,
+    Unknown8_func34_relay,
+    Unknown8_func35_relay,
+    Unknown8_func36_relay,
+    Unknown8_func37_relay,
+    Unknown8_func38_relay,
+    Unknown8_func39_relay,
+    Unknown8_func40_relay,
+    Unknown8_func41_relay,
+    Unknown8_func42_relay,
+    Unknown8_func43_relay,
+    Unknown8_func44_relay,
+    Unknown8_func45_relay,
+    Unknown8_func46_relay,
+    Unknown8_func47_relay,
+    Unknown8_func48_relay,
+    Unknown8_func49_relay,
+    Unknown8_func50_relay,
+    Unknown8_func51_relay,
+    Unknown8_func52_relay,
+    Unknown8_func53_relay,
+    Unknown8_func54_relay,
+    Unknown8_func55_relay,
+    Unknown8_func56_relay,
+    Unknown8_func57_relay,
+    Unknown8_func58_relay,
+    Unknown8_func59_relay,
+    Unknown8_func60_relay,
+    Unknown8_func61_relay,
+    Unknown8_func62_relay,
+    Unknown8_func63_relay,
+    Unknown8_func64_relay,
+    Unknown8_func65_relay,
+    Unknown8_func66_relay,
+    Unknown8_func67_relay,
+    Unknown8_func68_relay,
+    Unknown8_func69_relay,
+    Unknown8_func70_relay,
+    Unknown8_func71_relay,
+    Unknown8_func72_relay,
+    Unknown8_func73_relay,
+    Unknown8_func74_relay,
+    Unknown8_func75_relay,
+    Unknown8_func76_relay,
 };
 
-static void* WINAPI Unknown9_func0_relay(void *param0)
+static void* WINAPI Unknown9_func0_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown9_orig->func0(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func0(param0, param1);
 }
 
-static void* WINAPI Unknown9_func1_relay(void *param0)
+static void* WINAPI Unknown9_func1_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown9_orig->func1(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown9_func2_relay(void *param0)
+static void* WINAPI Unknown9_func2_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown9_orig->func2(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func2(param0, param1);
 }
 
-static void* WINAPI Unknown9_func3_relay(void *param0)
+static void* WINAPI Unknown9_func3_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown9_orig->func3(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func3(param0, param1);
 }
 
-static void* WINAPI Unknown9_func4_relay(void *param0)
+static void* WINAPI Unknown9_func4_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown9_orig->func4(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func4(param0, param1);
 }
 
-static void* WINAPI Unknown9_func5_relay(void *param0)
+static void* WINAPI Unknown9_func5_relay(void *param0, void *param1)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown9_orig->func5(param0);
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func5(param0, param1);
 }
 
 static void* WINAPI Unknown9_func6_relay(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
     return Unknown9_orig->func6(param0, param1);
+}
+
+static void* WINAPI Unknown9_func7_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func7(param0, param1);
+}
+
+static void* WINAPI Unknown9_func8_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func8(param0, param1);
+}
+
+static void* WINAPI Unknown9_func9_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func9(param0, param1);
+}
+
+static void* WINAPI Unknown9_func10_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func10(param0, param1);
+}
+
+static void* WINAPI Unknown9_func11_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func11(param0, param1);
+}
+
+static void* WINAPI Unknown9_func12_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func12(param0, param1);
+}
+
+static void* WINAPI Unknown9_func13_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func13(param0, param1);
+}
+
+static void* WINAPI Unknown9_func14_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func14(param0, param1);
+}
+
+static void* WINAPI Unknown9_func15_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func15(param0, param1);
+}
+
+static void* WINAPI Unknown9_func16_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func16(param0, param1);
+}
+
+static void* WINAPI Unknown9_func17_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func17(param0, param1);
+}
+
+static void* WINAPI Unknown9_func18_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func18(param0, param1);
+}
+
+static void* WINAPI Unknown9_func19_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func19(param0, param1);
+}
+
+static void* WINAPI Unknown9_func20_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func20(param0, param1);
+}
+
+static void* WINAPI Unknown9_func21_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func21(param0, param1);
+}
+
+static void* WINAPI Unknown9_func22_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func22(param0, param1);
+}
+
+static void* WINAPI Unknown9_func23_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func23(param0, param1);
+}
+
+static void* WINAPI Unknown9_func24_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func24(param0, param1);
+}
+
+static void* WINAPI Unknown9_func25_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func25(param0, param1);
+}
+
+static void* WINAPI Unknown9_func26_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func26(param0, param1);
+}
+
+static void* WINAPI Unknown9_func27_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func27(param0, param1);
+}
+
+static void* WINAPI Unknown9_func28_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func28(param0, param1);
+}
+
+static void* WINAPI Unknown9_func29_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func29(param0, param1);
+}
+
+static void* WINAPI Unknown9_func30_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func30(param0, param1);
+}
+
+static void* WINAPI Unknown9_func31_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func31(param0, param1);
+}
+
+static void* WINAPI Unknown9_func32_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func32(param0, param1);
+}
+
+static void* WINAPI Unknown9_func33_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func33(param0, param1);
+}
+
+static void* WINAPI Unknown9_func34_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func34(param0, param1);
+}
+
+static void* WINAPI Unknown9_func35_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func35(param0, param1);
+}
+
+static void* WINAPI Unknown9_func36_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func36(param0, param1);
+}
+
+static void* WINAPI Unknown9_func37_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func37(param0, param1);
+}
+
+static void* WINAPI Unknown9_func38_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func38(param0, param1);
+}
+
+static void* WINAPI Unknown9_func39_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func39(param0, param1);
+}
+
+static void* WINAPI Unknown9_func40_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func40(param0, param1);
+}
+
+static void* WINAPI Unknown9_func41_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func41(param0, param1);
+}
+
+static void* WINAPI Unknown9_func42_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func42(param0, param1);
+}
+
+static void* WINAPI Unknown9_func43_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func43(param0, param1);
+}
+
+static void* WINAPI Unknown9_func44_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func44(param0, param1);
+}
+
+static void* WINAPI Unknown9_func45_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func45(param0, param1);
+}
+
+static void* WINAPI Unknown9_func46_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func46(param0, param1);
+}
+
+static void* WINAPI Unknown9_func47_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func47(param0, param1);
+}
+
+static void* WINAPI Unknown9_func48_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func48(param0, param1);
+}
+
+static void* WINAPI Unknown9_func49_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func49(param0, param1);
+}
+
+static void* WINAPI Unknown9_func50_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func50(param0, param1);
+}
+
+static void* WINAPI Unknown9_func51_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func51(param0, param1);
+}
+
+static void* WINAPI Unknown9_func52_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func52(param0, param1);
+}
+
+static void* WINAPI Unknown9_func53_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func53(param0, param1);
+}
+
+static void* WINAPI Unknown9_func54_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func54(param0, param1);
+}
+
+static void* WINAPI Unknown9_func55_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func55(param0, param1);
+}
+
+static void* WINAPI Unknown9_func56_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func56(param0, param1);
+}
+
+static void* WINAPI Unknown9_func57_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func57(param0, param1);
+}
+
+static void* WINAPI Unknown9_func58_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func58(param0, param1);
+}
+
+static void* WINAPI Unknown9_func59_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func59(param0, param1);
+}
+
+static void* WINAPI Unknown9_func60_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func60(param0, param1);
+}
+
+static void* WINAPI Unknown9_func61_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func61(param0, param1);
+}
+
+static void* WINAPI Unknown9_func62_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func62(param0, param1);
+}
+
+static void* WINAPI Unknown9_func63_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func63(param0, param1);
+}
+
+static void* WINAPI Unknown9_func64_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func64(param0, param1);
+}
+
+static void* WINAPI Unknown9_func65_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func65(param0, param1);
+}
+
+static void* WINAPI Unknown9_func66_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func66(param0, param1);
+}
+
+static void* WINAPI Unknown9_func67_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func67(param0, param1);
+}
+
+static void* WINAPI Unknown9_func68_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func68(param0, param1);
+}
+
+static void* WINAPI Unknown9_func69_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func69(param0, param1);
+}
+
+static void* WINAPI Unknown9_func70_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func70(param0, param1);
+}
+
+static void* WINAPI Unknown9_func71_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func71(param0, param1);
+}
+
+static void* WINAPI Unknown9_func72_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func72(param0, param1);
+}
+
+static void* WINAPI Unknown9_func73_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func73(param0, param1);
+}
+
+static void* WINAPI Unknown9_func74_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func74(param0, param1);
+}
+
+static void* WINAPI Unknown9_func75_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func75(param0, param1);
+}
+
+static void* WINAPI Unknown9_func76_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func76(param0, param1);
+}
+
+static void* WINAPI Unknown9_func77_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func77(param0, param1);
+}
+
+static void* WINAPI Unknown9_func78_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func78(param0, param1);
+}
+
+static void* WINAPI Unknown9_func79_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func79(param0, param1);
+}
+
+static void* WINAPI Unknown9_func80_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func80(param0, param1);
+}
+
+static void* WINAPI Unknown9_func81_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func81(param0, param1);
+}
+
+static void* WINAPI Unknown9_func82_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func82(param0, param1);
+}
+
+static void* WINAPI Unknown9_func83_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func83(param0, param1);
+}
+
+static void* WINAPI Unknown9_func84_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func84(param0, param1);
+}
+
+static void* WINAPI Unknown9_func85_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func85(param0, param1);
+}
+
+static void* WINAPI Unknown9_func86_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func86(param0, param1);
 }
 
 struct Unknown9_table Unknown9_Impl =
@@ -721,6 +2018,86 @@ struct Unknown9_table Unknown9_Impl =
     Unknown9_func4_relay,
     Unknown9_func5_relay,
     Unknown9_func6_relay,
+    Unknown9_func7_relay,
+    Unknown9_func8_relay,
+    Unknown9_func9_relay,
+    Unknown9_func10_relay,
+    Unknown9_func11_relay,
+    Unknown9_func12_relay,
+    Unknown9_func13_relay,
+    Unknown9_func14_relay,
+    Unknown9_func15_relay,
+    Unknown9_func16_relay,
+    Unknown9_func17_relay,
+    Unknown9_func18_relay,
+    Unknown9_func19_relay,
+    Unknown9_func20_relay,
+    Unknown9_func21_relay,
+    Unknown9_func22_relay,
+    Unknown9_func23_relay,
+    Unknown9_func24_relay,
+    Unknown9_func25_relay,
+    Unknown9_func26_relay,
+    Unknown9_func27_relay,
+    Unknown9_func28_relay,
+    Unknown9_func29_relay,
+    Unknown9_func30_relay,
+    Unknown9_func31_relay,
+    Unknown9_func32_relay,
+    Unknown9_func33_relay,
+    Unknown9_func34_relay,
+    Unknown9_func35_relay,
+    Unknown9_func36_relay,
+    Unknown9_func37_relay,
+    Unknown9_func38_relay,
+    Unknown9_func39_relay,
+    Unknown9_func40_relay,
+    Unknown9_func41_relay,
+    Unknown9_func42_relay,
+    Unknown9_func43_relay,
+    Unknown9_func44_relay,
+    Unknown9_func45_relay,
+    Unknown9_func46_relay,
+    Unknown9_func47_relay,
+    Unknown9_func48_relay,
+    Unknown9_func49_relay,
+    Unknown9_func50_relay,
+    Unknown9_func51_relay,
+    Unknown9_func52_relay,
+    Unknown9_func53_relay,
+    Unknown9_func54_relay,
+    Unknown9_func55_relay,
+    Unknown9_func56_relay,
+    Unknown9_func57_relay,
+    Unknown9_func58_relay,
+    Unknown9_func59_relay,
+    Unknown9_func60_relay,
+    Unknown9_func61_relay,
+    Unknown9_func62_relay,
+    Unknown9_func63_relay,
+    Unknown9_func64_relay,
+    Unknown9_func65_relay,
+    Unknown9_func66_relay,
+    Unknown9_func67_relay,
+    Unknown9_func68_relay,
+    Unknown9_func69_relay,
+    Unknown9_func70_relay,
+    Unknown9_func71_relay,
+    Unknown9_func72_relay,
+    Unknown9_func73_relay,
+    Unknown9_func74_relay,
+    Unknown9_func75_relay,
+    Unknown9_func76_relay,
+    Unknown9_func77_relay,
+    Unknown9_func78_relay,
+    Unknown9_func79_relay,
+    Unknown9_func80_relay,
+    Unknown9_func81_relay,
+    Unknown9_func82_relay,
+    Unknown9_func83_relay,
+    Unknown9_func84_relay,
+    Unknown9_func85_relay,
+    Unknown9_func86_relay,
 };
 
 static void* WINAPI Unknown10_func0_relay(void *param0)
