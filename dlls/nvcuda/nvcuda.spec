@@ -182,9 +182,9 @@
 @ stdcall cuGraphNodeGetDependentNodes(ptr ptr long) wine_cuGraphNodeGetDependentNodes
 @ stdcall cuGraphNodeGetType(ptr ptr) wine_cuGraphNodeGetType
 @ stdcall cuGraphRemoveDependencies(ptr ptr ptr long) wine_cuGraphRemoveDependencies
-@ stub cuGraphicsD3D10RegisterResource
+@ stdcall cuGraphicsD3D9RegisterResource(ptr ptr long) wine_cuGraphicsD3D9RegisterResource
+@ stdcall cuGraphicsD3D10RegisterResource(ptr ptr long) wine_cuGraphicsD3D10RegisterResource
 @ stdcall cuGraphicsD3D11RegisterResource(ptr ptr long) wine_cuGraphicsD3D11RegisterResource
-@ stub cuGraphicsD3D9RegisterResource
 @ stdcall cuGraphicsGLRegisterBuffer(ptr long long) wine_cuGraphicsGLRegisterBuffer
 @ stdcall cuGraphicsGLRegisterImage(ptr long long long) wine_cuGraphicsGLRegisterImage
 @ stdcall cuGraphicsMapResources(long ptr ptr) wine_cuGraphicsMapResources
@@ -222,7 +222,7 @@
 @ stdcall cuLinkAddData(ptr long ptr long str long ptr ptr) wine_cuLinkAddData
 @ stdcall cuLinkAddData_v2(ptr long ptr long str long ptr ptr) wine_cuLinkAddData_v2
 @ stdcall cuLinkAddFile(ptr ptr str long ptr ptr) wine_cuLinkAddFile
-@ stub cuLinkAddFile_v2
+@ stdcall cuLinkAddFile_v2(ptr ptr str long ptr ptr) wine_cuLinkAddFile_v2
 @ stdcall cuLinkComplete(ptr ptr ptr) wine_cuLinkComplete
 @ stdcall cuLinkCreate(long ptr ptr ptr) wine_cuLinkCreate
 @ stdcall cuLinkCreate_v2(long ptr ptr ptr) wine_cuLinkCreate_v2
@@ -483,16 +483,16 @@
 @ stub cuDeviceGetExecAffinitySupport
 @ stdcall cuDeviceGetMemPool(ptr long) wine_cuDeviceGetMemPool
 @ stdcall cuDeviceGetTexture1DLinearMaxWidth(long long long long) wine_cuDeviceGetTexture1DLinearMaxWidth
-@ stub cuDeviceGetUuid_v2
-@ stub cuDevicePrimaryCtxRelease_v2
-@ stub cuDevicePrimaryCtxReset_v2
-@ stub cuDevicePrimaryCtxSetFlags_v2
+@ stdcall cuDeviceGetUuid_v2(ptr long) wine_cuDeviceGetUuid_v2
+@ stdcall cuDevicePrimaryCtxRelease_v2(long) wine_cuDevicePrimaryCtxRelease_v2
+@ stdcall cuDevicePrimaryCtxReset_v2(long) wine_cuDevicePrimaryCtxReset_v2
+@ stdcall cuDevicePrimaryCtxSetFlags_v2(long long) wine_cuDevicePrimaryCtxSetFlags_v2
 @ stdcall cuDeviceSetGraphMemAttribute(long long ptr) wine_cuDeviceSetGraphMemAttribute
 @ stdcall cuDeviceSetMemPool(long ptr) wine_cuDeviceSetMemPool
 @ stdcall cuEventRecordWithFlags(ptr ptr long) wine_cuEventRecordWithFlags
 @ stdcall cuEventRecordWithFlags_ptsz(ptr ptr long) wine_cuEventRecordWithFlags_ptsz
 @ stdcall cuFlushGPUDirectRDMAWrites(ptr ptr) wine_cuFlushGPUDirectRDMAWrites
-@ stub cuFuncGetModule
+@ stdcall cuFuncGetModule(ptr ptr) wine_cuFuncGetModule
 @ stdcall cuGraphAddEventRecordNode(ptr ptr ptr long ptr) wine_cuGraphAddEventRecordNode
 @ stdcall cuGraphAddEventWaitNode(ptr ptr ptr long ptr) wine_cuGraphAddEventWaitNode
 @ stdcall cuGraphAddExternalSemaphoresSignalNode(ptr ptr ptr long ptr) wine_cuGraphAddExternalSemaphoresSignalNode

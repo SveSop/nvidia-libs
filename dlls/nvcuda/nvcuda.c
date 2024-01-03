@@ -342,6 +342,7 @@ static CUresult (*pcuTexRefSetMipmapLevelBias)(CUtexref hTexRef, float bias);
 static CUresult (*pcuTexRefSetMipmapLevelClamp)(CUtexref hTexRef, float minMipmapLevelClamp, float maxMipmapLevelClamp);
 static CUresult (*pcuTexRefSetMipmappedArray)(CUtexref hTexRef, CUmipmappedArray hMipmappedArray, unsigned int Flags);
 static CUresult (*pcuProfilerInitialize)(const char *configFile, const char *outputFile, void *outputMode);
+static CUresult (*pcuLinkAddFile)(void *state, void *type, const char *path, unsigned int numOptions, void *options, void **optionValues);
 
 /* CUDA 6.5 */
 static CUresult (*pcuGLGetDevices_v2)(unsigned int *pCudaDeviceCount, CUdevice *pCudaDevices,
@@ -354,7 +355,7 @@ static CUresult (*pcuMemHostRegister_v2)(void *p, size_t bytesize, unsigned int 
 static CUresult (*pcuOccupancyMaxActiveBlocksPerMultiprocessor)(int *numBlocks, CUfunction func, int blockSize, size_t dynamicSMemSize);
 static CUresult (*pcuOccupancyMaxPotentialBlockSize)(int *minGridSize, int *blockSize, CUfunction func,
                                                      void *blockSizeToDynamicSMemSize, size_t dynamicSMemSize, int blockSizeLimit);
-static CUresult (*pcuLinkAddFile)(void *state, void *type, const char *path, unsigned int numOptions, void *options, void **optionValues);
+static CUresult (*pcuLinkAddFile_v2)(void *state, void *type, const char *path, unsigned int numOptions, void *options, void **optionValues);
 
 /* CUDA 7.0 */
 static CUresult (*pcuCtxGetFlags)(unsigned int *flags);
@@ -619,6 +620,11 @@ static CUresult (*pcuStreamBatchMemOp_v2)(CUstream stream, unsigned int count, v
 static CUresult (*pcuIpcOpenMemHandle_v2)(CUdeviceptr_v2 *pdptr, CUipcMemHandle handle, unsigned int Flags);
 static CUresult (*pcuStreamBatchMemOp_ptsz)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
 static CUresult (*pcuOccupancyMaxPotentialClusterSize)(int *clusterSize, CUfunction func, const CUlaunchConfig *config);
+static CUresult (*pcuDeviceGetUuid_v2)(CUuuid *uuid, CUdevice dev);
+static CUresult (*pcuFuncGetModule)(CUmodule *hmod, CUfunction hfunc);
+static CUresult (*pcuDevicePrimaryCtxSetFlags_v2)(CUdevice dev, unsigned int flags);
+static CUresult (*pcuDevicePrimaryCtxReset_v2)(CUdevice dev);
+static CUresult (*pcuDevicePrimaryCtxRelease_v2)(CUdevice dev);
 
 /* Cuda 12 */
 static CUresult (*pcuLibraryLoadData)(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
@@ -942,6 +948,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuTexRefSetMipmapLevelBias);
     LOAD_FUNCPTR(cuTexRefSetMipmapLevelClamp);
     LOAD_FUNCPTR(cuTexRefSetMipmappedArray);
+    LOAD_FUNCPTR(cuLinkAddFile);
 
     /* CUDA 6.5 */
     LOAD_FUNCPTR(cuGLGetDevices_v2);
@@ -951,7 +958,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuMemHostRegister_v2);
     LOAD_FUNCPTR(cuOccupancyMaxActiveBlocksPerMultiprocessor);
     LOAD_FUNCPTR(cuOccupancyMaxPotentialBlockSize);
-    LOAD_FUNCPTR(cuLinkAddFile);
+    LOAD_FUNCPTR(cuLinkAddFile_v2);
 
     /* CUDA 7.0 */
     LOAD_FUNCPTR(cuCtxGetFlags);
@@ -1208,6 +1215,11 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_ptsz);
     TRY_LOAD_FUNCPTR(cuOccupancyMaxPotentialClusterSize);
     TRY_LOAD_FUNCPTR(cuGraphGetEdges_v2);
+    TRY_LOAD_FUNCPTR(cuDeviceGetUuid_v2);
+    TRY_LOAD_FUNCPTR(cuFuncGetModule);
+    TRY_LOAD_FUNCPTR(cuDevicePrimaryCtxSetFlags_v2);
+    TRY_LOAD_FUNCPTR(cuDevicePrimaryCtxReset_v2);
+    TRY_LOAD_FUNCPTR(cuDevicePrimaryCtxRelease_v2);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -2993,6 +3005,12 @@ CUresult WINAPI wine_cuWGLGetDevice(CUdevice_v1 *pDevice, void *hGpu)
     return CUDA_SUCCESS;
 }
 
+CUresult WINAPI wine_cuLinkAddFile(void *state, void *type, const char *path, unsigned int numOptions, void *options, void **optionValues)
+{
+    TRACE("(%p, %p, %s, %u, %p, %p)\n", state, type, path, numOptions, options, optionValues);
+    return pcuLinkAddFile(state, type, path, numOptions, options, optionValues);
+}
+
 /*
  * Additions in CUDA 6.5
  */
@@ -3043,10 +3061,10 @@ CUresult WINAPI wine_cuOccupancyMaxPotentialBlockSize(int *minGridSize, int *blo
     return pcuOccupancyMaxPotentialBlockSize(minGridSize, blockSize, func, blockSizeToDynamicSMemSize, dynamicSMemSize, blockSizeLimit);
 }
 
-CUresult WINAPI wine_cuLinkAddFile(void *state, void *type, const char *path, unsigned int numOptions, void *options, void **optionValues)
+CUresult WINAPI wine_cuLinkAddFile_v2(void *state, void *type, const char *path, unsigned int numOptions, void *options, void **optionValues)
 {
     TRACE("(%p, %p, %s, %u, %p, %p)\n", state, type, path, numOptions, options, optionValues);
-    return pcuLinkAddFile(state, type, path, numOptions, options, optionValues);
+    return pcuLinkAddFile_v2(state, type, path, numOptions, options, optionValues);
 }
 
 /*
@@ -4691,6 +4709,45 @@ CUresult WINAPI wine_cuOccupancyMaxPotentialClusterSize(int *clusterSize, CUfunc
     return pcuOccupancyMaxPotentialClusterSize(clusterSize, func, config);
 }
 
+CUresult WINAPI wine_cuDeviceGetUuid_v2(CUuuid *uuid, CUdevice dev)
+{
+    CHECK_FUNCPTR(cuDeviceGetUuid_v2);
+    CUresult ret;
+    char buffer[128];
+
+    ret = pcuDeviceGetUuid_v2(uuid, dev);
+    if(ret == CUDA_SUCCESS){
+        TRACE("(UUID: %s, Device: %d)\n", cuda_print_uuid(uuid, buffer, sizeof(buffer)), dev);
+        return ret;
+    }
+    else return CUDA_ERROR_INVALID_VALUE;
+}
+
+CUresult WINAPI wine_cuFuncGetModule(CUmodule *hmod, CUfunction hfunc)
+{
+    TRACE("(%p, %p)\n", hmod, hfunc);
+    CHECK_FUNCPTR(cuFuncGetModule);
+    return pcuFuncGetModule(hmod, hfunc);
+}
+
+CUresult WINAPI wine_cuDevicePrimaryCtxSetFlags_v2(CUdevice dev, unsigned int flags)
+{
+    TRACE("(%u, %u)\n", dev, flags);
+    return pcuDevicePrimaryCtxSetFlags_v2(dev, flags);
+}
+
+CUresult WINAPI wine_cuDevicePrimaryCtxReset_v2(CUdevice dev)
+{
+    TRACE("(%u)\n", dev);
+    return pcuDevicePrimaryCtxReset_v2(dev);
+}
+
+CUresult WINAPI wine_cuDevicePrimaryCtxRelease_v2(CUdevice dev)
+{
+    TRACE("(%u)\n", dev);
+    return pcuDevicePrimaryCtxRelease_v2(dev);
+}
+
 /*
  * Additions in CUDA 12
  */
@@ -5103,11 +5160,33 @@ CUresult WINAPI wine_cuD3D9GetDevice(CUdevice *pCudaDevice, const char *pszAdapt
     return pcuDeviceGet(pCudaDevice, 0);
 }
 
+CUresult WINAPI wine_cuGraphicsD3D9RegisterResource(CUgraphicsResource *pCudaResource, IDirect3DResource9 *pD3DResource, unsigned int Flags)
+{
+    TRACE("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
+    /* Not able to handle spesific flags at this time */
+    if(Flags > 0)
+      return CUDA_ERROR_INVALID_VALUE;
+
+    /* pD3DResource is unknown at this time and cannot be "registered" */
+    return CUDA_ERROR_UNKNOWN;
+}
+
 CUresult WINAPI wine_cuD3D10GetDevice(CUdevice *pCudaDevice, IDXGIAdapter *pAdapter)
 {
     FIXME("(%p, %p) - semi-stub\n", pCudaDevice, pAdapter);
     /* DXGI adapters don't have an OpenGL context assigned yet, otherwise we could use cuGLGetDevices */
     return pcuDeviceGet(pCudaDevice, 0);
+}
+
+CUresult WINAPI wine_cuGraphicsD3D10RegisterResource(CUgraphicsResource *pCudaResource, ID3D10Resource *pD3DResource, unsigned int Flags)
+{
+    TRACE("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
+    /* Not able to handle spesific flags at this time */
+    if(Flags > 0)
+      return CUDA_ERROR_INVALID_VALUE;
+
+    /* pD3DResource is unknown at this time and cannot be "registered" */
+    return CUDA_ERROR_UNKNOWN;
 }
 
 CUresult WINAPI wine_cuD3D11GetDevice(CUdevice *pCudaDevice, IDXGIAdapter *pAdapter)
@@ -5124,7 +5203,7 @@ CUresult WINAPI wine_cuGraphicsD3D11RegisterResource(CUgraphicsResource *pCudaRe
     if(Flags > 0)
       return CUDA_ERROR_INVALID_VALUE;
 
-    /* pD3D11Resource is unknown at this time and cannot be "registered" */
+    /* pD3DResource is unknown at this time and cannot be "registered" */
     return CUDA_ERROR_UNKNOWN;
 }
 

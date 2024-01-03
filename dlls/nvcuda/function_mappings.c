@@ -33,6 +33,7 @@ extern void wine_cuDriverGetVersion(void);
 extern void wine_cuDeviceGetByPCIBusId(void);
 extern void wine_cuDeviceGetPCIBusId(void);
 extern void wine_cuDeviceGetUuid(void);
+extern void wine_cuDeviceGetUuid_v2(void);
 extern void wine_cuDeviceGetTexture1DLinearMaxWidth(void);
 extern void wine_cuDeviceGetDefaultMemPool(void);
 extern void wine_cuDeviceSetMemPool(void);
@@ -41,9 +42,12 @@ extern void wine_cuFlushGPUDirectRDMAWrites(void);
 extern void wine_cuDeviceGetLuid(void);
 extern void wine_cuDevicePrimaryCtxRetain(void);
 extern void wine_cuDevicePrimaryCtxRelease(void);
+extern void wine_cuDevicePrimaryCtxRelease_v2(void);
 extern void wine_cuDevicePrimaryCtxSetFlags(void);
+extern void wine_cuDevicePrimaryCtxSetFlags_v2(void);
 extern void wine_cuDevicePrimaryCtxGetState(void);
 extern void wine_cuDevicePrimaryCtxReset(void);
+extern void wine_cuDevicePrimaryCtxReset_v2(void);
 extern void wine_cuCtxCreate(void);
 extern void wine_cuCtxCreate_v2(void);
 extern void wine_cuCtxCreate_v3(void);
@@ -342,7 +346,9 @@ extern void wine_cuProfilerStop(void);
 extern void wine_cuD3D11GetDevice(void);
 extern void wine_cuGraphicsD3D11RegisterResource(void);
 extern void wine_cuD3D10GetDevice(void);
+extern void wine_cuGraphicsD3D10RegisterResource(void);
 extern void wine_cuD3D9GetDevice(void);
+extern void wine_cuGraphicsD3D9RegisterResource(void);
 extern void wine_cuGetExportTable(void);
 extern void wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags(void);
 extern void wine_cuOccupancyAvailableDynamicSMemPerBlock(void);
@@ -475,14 +481,17 @@ extern void wine_cuStreamUpdateCaptureDependencies_v2(void);
 extern void wine_cuStreamUpdateCaptureDependencies_v2_ptsz(void);
 extern void wine_cuGraphAddNode_v2(void);
 extern void wine_cuGraphConditionalHandleCreate(void);
+extern void wine_cuFuncGetModule(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
     {"cuGetProcAddress", 12000, 0, wine_cuGetProcAddress_v2},
     {"cuInit", 2000, 0, wine_cuInit},
     {"cuDeviceGet", 2000, 0, wine_cuDeviceGet},
+    {"cuDeviceGet", 12020, 0, wine_cuDeviceGet},
     {"cuDeviceGetCount", 2000, 0, wine_cuDeviceGetCount},
     {"cuDeviceGetName", 2000, 0, wine_cuDeviceGetName},
+    {"cuDeviceGetName", 12020, 0, wine_cuDeviceGetName},
     {"cuDeviceTotalMem", 2000, 0, wine_cuDeviceTotalMem},
     {"cuDeviceTotalMem", 3020, 0, wine_cuDeviceTotalMem_v2},
     {"cuDeviceGetAttribute", 2000, 0, wine_cuDeviceGetAttribute},
@@ -491,6 +500,7 @@ const FunctionMapping mappings[] = {
     {"cuDeviceGetByPCIBusId", 4010, 0, wine_cuDeviceGetByPCIBusId},
     {"cuDeviceGetPCIBusId", 4010, 0, wine_cuDeviceGetPCIBusId},
     {"cuDeviceGetUuid", 9020, 0, wine_cuDeviceGetUuid},
+    {"cuDeviceGetUuid", 11040, 0, wine_cuDeviceGetUuid_v2},
     {"cuDeviceGetTexture1DLinearMaxWidth", 11010, 0, wine_cuDeviceGetTexture1DLinearMaxWidth},
     {"cuDeviceGetDefaultMemPool", 11020, 0, wine_cuDeviceGetDefaultMemPool},
     {"cuDeviceSetMemPool", 11020, 0, wine_cuDeviceSetMemPool},
@@ -499,9 +509,11 @@ const FunctionMapping mappings[] = {
     {"cuDeviceGetLuid", 10000, 0, wine_cuDeviceGetLuid},
     {"cuDevicePrimaryCtxRetain", 7000, 0, wine_cuDevicePrimaryCtxRetain},
     {"cuDevicePrimaryCtxRelease", 7000, 0, wine_cuDevicePrimaryCtxRelease},
-    {"cuDevicePrimaryCtxSetFlags", 11000, 0, wine_cuDevicePrimaryCtxSetFlags},
+    {"cuDevicePrimaryCtxRelease", 11000, 0, wine_cuDevicePrimaryCtxRelease_v2},
+    {"cuDevicePrimaryCtxSetFlags", 11000, 0, wine_cuDevicePrimaryCtxSetFlags_v2},
     {"cuDevicePrimaryCtxGetState", 7000, 0, wine_cuDevicePrimaryCtxGetState},
     {"cuDevicePrimaryCtxReset", 7000, 0, wine_cuDevicePrimaryCtxReset},
+    {"cuDevicePrimaryCtxReset", 11000, 0, wine_cuDevicePrimaryCtxReset_v2},
     {"cuCtxCreate", 2000, 0, wine_cuCtxCreate},
     {"cuCtxCreate", 3020, 0, wine_cuCtxCreate_v2},
     {"cuCtxCreate", 11040, 0, wine_cuCtxCreate_v3},
@@ -799,7 +811,9 @@ const FunctionMapping mappings[] = {
     {"cuD3D11GetDevice", 3000, 0, wine_cuD3D11GetDevice},
     {"cuGraphicsD3D11RegisterResource", 3000, 0, wine_cuGraphicsD3D11RegisterResource},
     {"cuD3D10GetDevice", 2010, 0, wine_cuD3D10GetDevice},
+    {"cuGraphicsD3D10RegisterResource", 3000, 0, wine_cuGraphicsD3D10RegisterResource},
     {"cuD3D9GetDevice", 2000, 0, wine_cuD3D9GetDevice},
+    {"cuGraphicsD3D9RegisterResource", 3000, 0, wine_cuGraphicsD3D9RegisterResource},
     {"cuGetExportTable", 3000, 0, wine_cuGetExportTable},
     {"cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags", 7000, 0, wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags},
     {"cuOccupancyAvailableDynamicSMemPerBlock", 10020, 0, wine_cuOccupancyAvailableDynamicSMemPerBlock},
@@ -919,6 +933,7 @@ const FunctionMapping mappings[] = {
     {"cuGraphNodeGetEnabled", 11060, 0, wine_cuGraphNodeGetEnabled},
     {"cuGraphInstantiateWithParams", 12000, 0, wine_cuGraphInstantiateWithParams},
     {"cuGraphInstantiateWithParams", 12000, 2, wine_cuGraphInstantiateWithParams_ptsz},
+    {"cuGraphInstantiateWithParams_ptsz", 12000, 2, wine_cuGraphInstantiateWithParams_ptsz},
     {"cuGraphExecGetFlags", 12000, 0, wine_cuGraphExecGetFlags},
     {"cuMemAdvise", 12020, 0, wine_cuMemAdvise_v2},
     {"cuMemPrefetchAsync", 12020, 0, wine_cuMemPrefetchAsync_v2},
@@ -932,6 +947,7 @@ const FunctionMapping mappings[] = {
     {"cuStreamBeginCaptureToGraph", 12030, 0, wine_cuStreamBeginCaptureToGraph},
     {"cuStreamBeginCaptureToGraph", 12030, 2, wine_cuStreamBeginCaptureToGraph_ptsz},
     {"cuGraphConditionalHandleCreate", 12030, 0, wine_cuGraphConditionalHandleCreate},
+    {"cuFuncGetModule", 11000, 0, wine_cuFuncGetModule},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);
