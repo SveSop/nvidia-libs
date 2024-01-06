@@ -1557,13 +1557,13 @@ CUresult WINAPI wine_cuDeviceGetCount(int *count)
 
 CUresult WINAPI wine_cuDeviceGetName(char *name, int len, CUdevice dev)
 {
-    TRACE("(%p, %d, %d)\n", name, len, dev);
+    TRACE("(%s, %d, %d)\n", name, len, dev);
     return pcuDeviceGetName(name, len, dev);
 }
 
 CUresult WINAPI wine_cuDeviceGetPCIBusId(char *pciBusId, int len, CUdevice dev)
 {
-    TRACE("(%p, %d, %d)\n", pciBusId, len, dev);
+    TRACE("(%s, %d, %d)\n", pciBusId, len, dev);
     return pcuDeviceGetPCIBusId(pciBusId, len, dev);
 }
 
@@ -1994,7 +1994,7 @@ CUresult WINAPI wine_cuMemGetAddressRange(CUdeviceptr *pbase, unsigned int *psiz
 
 CUresult WINAPI wine_cuMemGetAddressRange_v2(CUdeviceptr_v2 *pbase, size_t *psize, CUdeviceptr_v2 dptr)
 {
-    TRACE("(%p, %lu, " DEV_PTR ")\n", pbase, (SIZE_T)psize, dptr);
+    TRACE("(%p, %p, " DEV_PTR ")\n", pbase, psize, dptr);
     return pcuMemGetAddressRange_v2(pbase, psize, dptr);
 }
 
@@ -2502,7 +2502,7 @@ CUresult WINAPI wine_cuModuleLoadDataEx(CUmodule *module, const void *image, uns
 
 CUresult WINAPI wine_cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin)
 {
-    TRACE("(%p, %p)\n", module, fatCubin);
+    FIXME("(%p, %p)\n", module, fatCubin);
     // There seems to be some issues with this causing crashes under wine.
     return CUDA_ERROR_NO_BINARY_FOR_GPU;
 }
@@ -3441,7 +3441,7 @@ CUresult WINAPI wine_cuStreamWaitEvent_ptsz(CUstream hStream, CUevent hEvent, un
 
 CUresult WINAPI wine_cuDeviceGetP2PAttribute(int *value, void *attrib, CUdevice_v1 srcDevice, CUdevice_v1 dstDevice)
 {
-    TRACE("(%n, %p, %d, %d)\n", value, attrib, srcDevice, dstDevice);
+    TRACE("(%p, %p, %d, %d)\n", value, attrib, srcDevice, dstDevice);
     return pcuDeviceGetP2PAttribute(value, attrib, srcDevice, dstDevice);
 }
 
@@ -3513,7 +3513,7 @@ CUresult WINAPI wine_cuMemRangeGetAttribute(void *data, size_t dataSize, void *a
 
 CUresult WINAPI wine_cuMemRangeGetAttributes(void **data, size_t *dataSizes, void *attributes, size_t numAttributes, CUdeviceptr_v2 devPtr, size_t count)
 {
-    TRACE("(%p, %lu, %p, %lu, " DEV_PTR ", %lu)\n", data, (SIZE_T)dataSizes, attributes, (SIZE_T)numAttributes, devPtr, (SIZE_T)count);
+    TRACE("(%p, %p, %p, %lu, " DEV_PTR ", %lu)\n", data, dataSizes, attributes, (SIZE_T)numAttributes, devPtr, (SIZE_T)count);
     return pcuMemRangeGetAttributes(data, dataSizes, attributes, numAttributes, devPtr, count);
 }
 
@@ -3651,7 +3651,7 @@ CUresult WINAPI wine_cuGraphAddHostNode(CUgraphNode *phGraphNode, CUgraph hGraph
 
 CUresult WINAPI wine_cuGraphGetNodes(CUgraph hGraph, CUgraphNode *nodes, size_t *numNodes)
 {
-    TRACE("(%p, %p, %zn)\n", hGraph, nodes, numNodes);
+    TRACE("(%p, %p, %p)\n", hGraph, nodes, numNodes);
     return pcuGraphGetNodes(hGraph, nodes, numNodes);
 }
 
@@ -3807,7 +3807,7 @@ CUresult WINAPI wine_cuDestroyExternalSemaphore(void *extSem)
 
 CUresult WINAPI wine_cuOccupancyAvailableDynamicSMemPerBlock(size_t *dynamicSmemSize, CUfunction func, int numBlocks, int blockSize)
 {
-    TRACE("(%zn, %p, %d, %d)\n", dynamicSmemSize, func, numBlocks, blockSize);
+    TRACE("(%p, %p, %d, %d)\n", dynamicSmemSize, func, numBlocks, blockSize);
     return pcuOccupancyAvailableDynamicSMemPerBlock(dynamicSmemSize, func, numBlocks, blockSize);
 }
 
@@ -3891,25 +3891,25 @@ CUresult WINAPI wine_cuGraphNodeGetType(CUgraphNode hNode, void *type)
 
 CUresult WINAPI wine_cuGraphGetRootNodes(CUgraph hGraph, CUgraphNode *rootNodes, size_t *numRootNodes)
 {
-    TRACE("(%p, %p, %zn)\n", hGraph, rootNodes, numRootNodes);
+    TRACE("(%p, %p, %p)\n", hGraph, rootNodes, numRootNodes);
     return pcuGraphGetRootNodes(hGraph, rootNodes, numRootNodes);
 }
 
 CUresult WINAPI wine_cuGraphGetEdges(CUgraph hGraph, CUgraphNode *from, CUgraphNode *to, size_t *numEdges)
 {
-    TRACE("(%p, %p, %p, %zn)\n", hGraph, from, to, numEdges);
+    TRACE("(%p, %p, %p, %p)\n", hGraph, from, to, numEdges);
     return pcuGraphGetEdges(hGraph, from, to, numEdges);
 }
 
 CUresult WINAPI wine_cuGraphNodeGetDependencies(CUgraphNode hNode, CUgraphNode *dependencies, size_t *numDependencies)
 {
-    TRACE("(%p, %p, %zn)\n", hNode, dependencies, numDependencies);
+    TRACE("(%p, %p, %p)\n", hNode, dependencies, numDependencies);
     return pcuGraphNodeGetDependencies(hNode, dependencies, numDependencies);
 }
 
 CUresult WINAPI wine_cuGraphNodeGetDependentNodes(CUgraphNode hNode, CUgraphNode *dependentNodes, size_t *numDependentNodes)
 {
-    TRACE("(%p, %p, %zn)\n", hNode, dependentNodes, numDependentNodes);
+    TRACE("(%p, %p, %p)\n", hNode, dependentNodes, numDependentNodes);
     return pcuGraphNodeGetDependentNodes(hNode, dependentNodes, numDependentNodes);
 }
 
@@ -4011,13 +4011,13 @@ CUresult WINAPI wine_cuMemUnmap(CUdeviceptr_v2 ptr, size_t size)
 
 CUresult WINAPI wine_cuStreamGetCaptureInfo(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out)
 {
-    TRACE("(%p, %p, %lu)\n", hStream, captureStatus_out, (SIZE_T)id_out);
+    TRACE("(%p, %p, %p)\n", hStream, captureStatus_out, id_out);
     return pcuStreamGetCaptureInfo(hStream, captureStatus_out, id_out);
 }
 
 CUresult WINAPI wine_cuStreamGetCaptureInfo_ptsz(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out)
 {
-    TRACE("(%p, %p, %lu)\n", hStream, captureStatus_out, (SIZE_T)id_out);
+    TRACE("(%p, %p, %p)\n", hStream, captureStatus_out, id_out);
     return pcuStreamGetCaptureInfo_ptsz(hStream, captureStatus_out, id_out);
 }
 
@@ -4473,7 +4473,7 @@ CUresult WINAPI wine_cuGraphUpload_ptsz(CUgraphExec hGraphExec, CUstream hStream
 CUresult WINAPI wine_cuStreamGetCaptureInfo_v2(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
                                            size_t *numDependencies_out)
 {
-    TRACE("(%p, %p, %lu, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, numDependencies_out);
+    TRACE("(%p, %p, %p, %p, %p, %p)\n", hStream, captureStatus_out, id_out, graph_out, dependencies_out, numDependencies_out);
     CHECK_FUNCPTR(cuStreamGetCaptureInfo_v2);
     return pcuStreamGetCaptureInfo_v2(hStream, captureStatus_out, id_out, graph_out, dependencies_out, numDependencies_out);
 }
@@ -4481,7 +4481,7 @@ CUresult WINAPI wine_cuStreamGetCaptureInfo_v2(CUstream hStream, CUstreamCapture
 CUresult WINAPI wine_cuStreamGetCaptureInfo_v2_ptsz(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
                                            size_t *numDependencies_out)
 {
-    TRACE("(%p, %p, %lu, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, numDependencies_out);
+    TRACE("(%p, %p, %p, %p, %p, %p)\n", hStream, captureStatus_out, id_out, graph_out, dependencies_out, numDependencies_out);
     CHECK_FUNCPTR(cuStreamGetCaptureInfo_v2_ptsz);
     return pcuStreamGetCaptureInfo_v2_ptsz(hStream, captureStatus_out, id_out, graph_out, dependencies_out, numDependencies_out);
 }
@@ -4600,7 +4600,7 @@ CUresult WINAPI wine_cuGraphNodeSetEnabled(CUgraphExec hGraphExec, CUgraphNode h
 
 CUresult WINAPI wine_cuGraphNodeGetEnabled(CUgraphExec hGraphExec, CUgraphNode hNode, unsigned int *isEnabled)
 {
-    TRACE("(%p, %p, %u)\n", hGraphExec, hNode, *isEnabled);
+    TRACE("(%p, %p, %p)\n", hGraphExec, hNode, isEnabled);
     CHECK_FUNCPTR(cuGraphNodeGetEnabled);
     return pcuGraphNodeGetEnabled(hGraphExec, hNode, isEnabled);
 }
@@ -4798,14 +4798,14 @@ CUresult WINAPI wine_cuKernelGetFunction(CUfunction *pFunc, void *kernel)
 
 CUresult WINAPI wine_cuLibraryGetGlobal(CUdeviceptr *dptr, size_t *bytes, void *library, const char *name)
 {
-    TRACE("(%p, %zn, %p, %s)\n", dptr, bytes, library, name);
+    TRACE("(%p, %p, %p, %s)\n", dptr, bytes, library, name);
     CHECK_FUNCPTR(cuLibraryGetGlobal);
     return pcuLibraryGetGlobal(dptr, bytes, library, name);
 }
 
 CUresult WINAPI wine_cuLibraryGetManaged(CUdeviceptr *dptr, size_t *bytes, void *library, const char *name)
 {
-    TRACE("(%p, %zn, %p, %s)\n", dptr, bytes, library, name);
+    TRACE("(%p, %p, %p, %s)\n", dptr, bytes, library, name);
     CHECK_FUNCPTR(cuLibraryGetManaged);
     return pcuLibraryGetManaged(dptr, bytes, library, name);
 }
@@ -4861,7 +4861,7 @@ CUresult WINAPI wine_cuGraphExecGetFlags(CUgraphExec hGraphExec, cuuint64_t *fla
 
 CUresult WINAPI wine_cuCtxGetId(CUcontext ctx, unsigned long long *ctxId)
 {
-    TRACE("(%p, %lln)\n", ctx, ctxId);
+    TRACE("(%p, %p)\n", ctx, ctxId);
     CHECK_FUNCPTR(cuCtxGetId);
     return pcuCtxGetId(ctx, ctxId);
 }
@@ -5037,21 +5037,21 @@ CUresult WINAPI wine_cuFuncGetName(const char **name, void *hfunc)
 
 CUresult WINAPI wine_cuGraphGetEdges_v2(CUgraph hGraph, CUgraphNode *from, CUgraphNode *to, void *edgeData, size_t *numEdges)
 {
-    TRACE("(%p, %p, %p, %p, %zn)\n", hGraph, from, to, edgeData, numEdges);
+    TRACE("(%p, %p, %p, %p, %p)\n", hGraph, from, to, edgeData, numEdges);
     CHECK_FUNCPTR(cuGraphGetEdges_v2);
     return pcuGraphGetEdges_v2(hGraph, from, to, edgeData, numEdges);
 }
 
 CUresult WINAPI wine_cuGraphNodeGetDependencies_v2(CUgraphNode hNode, CUgraphNode *dependencies, void *edgeData, size_t *numDependencies)
 {
-    TRACE("(%p, %p, %p, %zn)\n", hNode, dependencies, edgeData, numDependencies);
+    TRACE("(%p, %p, %p, %p)\n", hNode, dependencies, edgeData, numDependencies);
     CHECK_FUNCPTR(cuGraphNodeGetDependencies_v2);
     return pcuGraphNodeGetDependencies_v2(hNode, dependencies, edgeData, numDependencies);
 }
 
 CUresult WINAPI wine_cuGraphNodeGetDependentNodes_v2(CUgraphNode hNode, CUgraphNode *dependentNodes, void *edgeData, size_t *numDependentNodes)
 {
-    TRACE("(%p, %p, %p, %zn)\n", hNode, dependentNodes, edgeData, numDependentNodes);
+    TRACE("(%p, %p, %p, %p)\n", hNode, dependentNodes, edgeData, numDependentNodes);
     CHECK_FUNCPTR(cuGraphNodeGetDependentNodes_v2);
     return pcuGraphNodeGetDependentNodes_v2(hNode, dependentNodes, edgeData, numDependentNodes);
 }
@@ -5087,7 +5087,7 @@ CUresult WINAPI wine_cuStreamBeginCaptureToGraph_ptsz(CUstream hStream, CUgraph 
 CUresult WINAPI wine_cuStreamGetCaptureInfo_v3(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
                                            const void **edgeData, size_t *numDependencies_out)
 {
-    TRACE("(%p, %p, %lu, %p, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
+    TRACE("(%p, %p, %p, %p, %p, %p, %p)\n", hStream, captureStatus_out, id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
     CHECK_FUNCPTR(cuStreamGetCaptureInfo_v3);
     return pcuStreamGetCaptureInfo_v3(hStream, captureStatus_out, id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
 }
@@ -5095,7 +5095,7 @@ CUresult WINAPI wine_cuStreamGetCaptureInfo_v3(CUstream hStream, CUstreamCapture
 CUresult WINAPI wine_cuStreamGetCaptureInfo_v3_ptsz(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out, CUgraph *graph_out, const CUgraphNode **dependencies_out,
                                            const void **edgeData, size_t *numDependencies_out)
 {
-    TRACE("(%p, %p, %lu, %p, %p, %p, %zn)\n", hStream, captureStatus_out, (SIZE_T)id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
+    TRACE("(%p, %p, %p, %p, %p, %p, %p)\n", hStream, captureStatus_out, id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
     CHECK_FUNCPTR(cuStreamGetCaptureInfo_v3_ptsz);
     return pcuStreamGetCaptureInfo_v3_ptsz(hStream, captureStatus_out, id_out, graph_out, dependencies_out, edgeData, numDependencies_out);
 }
