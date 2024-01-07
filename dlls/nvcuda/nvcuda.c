@@ -521,6 +521,7 @@ static CUresult (*pcuMemMap)(CUdeviceptr_v2 ptr, size_t size, size_t offset, CUm
 static CUresult (*pcuMemUnmap)(CUdeviceptr_v2 ptr, size_t size);
 static CUresult (*pcuStreamGetCaptureInfo)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out);
 static CUresult (*pcuStreamGetCaptureInfo_ptsz)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out);
+static CUresult (*pcuMemAddressReserve)(CUdeviceptr_v2 *ptr, size_t size, size_t alignment, CUdeviceptr_v2 addr, unsigned long long flags);
 
 /* Cuda 11 */
 static CUresult (*pcuMemAllocAsync)(CUdeviceptr_v2 *dptr, size_t bytesize, CUstream hStream);
@@ -1117,6 +1118,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuMemUnmap);
     LOAD_FUNCPTR(cuStreamGetCaptureInfo);
     LOAD_FUNCPTR(cuStreamGetCaptureInfo_ptsz);
+    LOAD_FUNCPTR(cuMemAddressReserve);
 
     /* CUDA 11 */
     TRY_LOAD_FUNCPTR(cuMemAllocAsync);
@@ -1509,32 +1511,32 @@ CUresult WINAPI wine_cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CU
             // Documentation also indicate that the value is "undefined"
             // If we set it to 0 it will indicate WDDM driver to "fake" windows driver
             *pi = 0; // 0 = WDDM, 1 = TCC
-            FIXME("Returning drivertype WDDM: (0)\n");
+            FIXME("(Device: %d, Attribute: %d) Returning drivertype WDDM: (0)\n", dev, attrib);
             break;
 
         case 89:
             // On Linux the driver seems to support concurrent managed access
             // Same hardware on Windows reports it do not
             *pi = 0;
-            FIXME("Returning no coherent access memory support: (0)\n");
+            FIXME("(Device: %d, Attribute: %d) Returning no coherent access memory support: (0)\n", dev, attrib);
             break;
 
         case 91:
             // Probably a safer option to NOT support something when running Wine
             *pi = 0;
-            FIXME("Returning no host pointer for registered mem support: (0)\n");
+            FIXME("(Device: %d, Attribute: %d) Returning no host pointer for registered mem support: (0)\n", dev, attrib);
             break;
 
         case 113:
             // Let us NOT support
             *pi = 0;
-            FIXME("Returning no support for read-only host register: (0)\n");
+            FIXME("(Device: %d, Attribute: %d) Returning no support for read-only host register: (0)\n", dev, attrib);
             break;
 
         case 119:
             // Same hardware on windows reports 0 here.
             *pi = 0;
-            FIXME("Returning 0 handle types supported\n");
+            FIXME("(Device: %d, Attribute: %d) Returning 0 handle types supported\n", dev, attrib);
             break;
 
         default:
@@ -1557,7 +1559,7 @@ CUresult WINAPI wine_cuDeviceGetCount(int *count)
 
 CUresult WINAPI wine_cuDeviceGetName(char *name, int len, CUdevice dev)
 {
-    TRACE("(%s, %d, %d)\n", name, len, dev);
+    TRACE("(%p, %d, %d)\n", name, len, dev);
     return pcuDeviceGetName(name, len, dev);
 }
 
@@ -4019,6 +4021,12 @@ CUresult WINAPI wine_cuStreamGetCaptureInfo_ptsz(CUstream hStream, CUstreamCaptu
 {
     TRACE("(%p, %p, %p)\n", hStream, captureStatus_out, id_out);
     return pcuStreamGetCaptureInfo_ptsz(hStream, captureStatus_out, id_out);
+}
+
+CUresult WINAPI wine_cuMemAddressReserve(CUdeviceptr_v2 *ptr, size_t size, size_t alignment, CUdeviceptr_v2 addr, unsigned long long flags)
+{
+    TRACE("(%p, %zu, %zu, " DEV_PTR ", %llu)\n", ptr, size, alignment, addr, flags);
+    return pcuMemAddressReserve(ptr, size, alignment, addr, flags);
 }
 
 #define CHECK_FUNCPTR(f) \

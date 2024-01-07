@@ -526,7 +526,7 @@
 @ stdcall cuGraphUpload(ptr ptr) wine_cuGraphUpload
 @ stdcall cuGraphUpload_ptsz(ptr ptr) wine_cuGraphUpload_ptsz
 @ stdcall cuMemAddressFree(ptr long) wine_cuMemAddressFree
-@ stub cuMemAddressReserve
+@ stdcall cuMemAddressReserve(ptr long long long long) wine_cuMemAddressReserve
 @ stdcall cuMemAllocFromPoolAsync(ptr long ptr ptr) wine_cuMemAllocFromPoolAsync
 @ stdcall cuMemAllocFromPoolAsync_ptsz(ptr long ptr ptr) wine_cuMemAllocFromPoolAsync_ptsz
 @ stdcall cuMemCreate(ptr long ptr long) wine_cuMemCreate

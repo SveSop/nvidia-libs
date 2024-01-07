@@ -290,7 +290,7 @@ struct Unknown8_table
     void* (WINAPI *func35)(void *param0, void *param1);
     void* (WINAPI *func36)(void *param0, void *param1);
     void* (WINAPI *func37)(void *param0, void *param1);
-    void* (WINAPI *func38)(void *param0, void *param1);
+    void* (WINAPI *func38)(void *param0, void *param1, void *param2);
     void* (WINAPI *func39)(void *param0, void *param1);
     void* (WINAPI *func40)(void *param0, void *param1);
     void* (WINAPI *func41)(void *param0, void *param1);
@@ -302,7 +302,7 @@ struct Unknown8_table
     void* (WINAPI *func47)(void *param0, void *param1);
     void* (WINAPI *func48)(void *param0, void *param1);
     void* (WINAPI *func49)(void *param0, void *param1);
-    void* (WINAPI *func50)(void *param0, void *param1);
+    void* (WINAPI *func50)(void *param0, void *param1, void *param2);
     void* (WINAPI *func51)(void *param0, void *param1);
     void* (WINAPI *func52)(void *param0, void *param1);
     void* (WINAPI *func53)(void *param0, void *param1);
@@ -371,7 +371,7 @@ static const struct
     void* (*func35)(void *param0, void *param1);
     void* (*func36)(void *param0, void *param1);
     void* (*func37)(void *param0, void *param1);
-    void* (*func38)(void *param0, void *param1);
+    void* (*func38)(void *param0, void *param1, void *param2);
     void* (*func39)(void *param0, void *param1);
     void* (*func40)(void *param0, void *param1);
     void* (*func41)(void *param0, void *param1);
@@ -383,7 +383,7 @@ static const struct
     void* (*func47)(void *param0, void *param1);
     void* (*func48)(void *param0, void *param1);
     void* (*func49)(void *param0, void *param1);
-    void* (*func50)(void *param0, void *param1);
+    void* (*func50)(void *param0, void *param1, void *param2);
     void* (*func51)(void *param0, void *param1);
     void* (*func52)(void *param0, void *param1);
     void* (*func53)(void *param0, void *param1);
@@ -1170,10 +1170,10 @@ static void* WINAPI Unknown8_func37_relay(void *param0, void *param1)
     return Unknown8_orig->func37(param0, param1);
 }
 
-static void* WINAPI Unknown8_func38_relay(void *param0, void *param1)
+static void* WINAPI Unknown8_func38_relay(void *param0, void *param1, void *param2)
 {
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func38(param0, param1);
+    TRACE("(%p, %p, %p)\n", param0, param1, param2);
+    return Unknown8_orig->func38(param0, param1, param2);
 }
 
 static void* WINAPI Unknown8_func39_relay(void *param0, void *param1)
@@ -1242,10 +1242,10 @@ static void* WINAPI Unknown8_func49_relay(void *param0, void *param1)
     return Unknown8_orig->func49(param0, param1);
 }
 
-static void* WINAPI Unknown8_func50_relay(void *param0, void *param1)
+static void* WINAPI Unknown8_func50_relay(void *param0, void *param1, void *param2)
 {
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func50(param0, param1);
+    TRACE("(%p, %p, %p)\n", param0, param1, param2);
+    return Unknown8_orig->func50(param0, param1, param2);
 }
 
 static void* WINAPI Unknown8_func51_relay(void *param0, void *param1)
