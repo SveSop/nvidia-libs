@@ -23,7 +23,7 @@
 #include "winbase.h"
 #include "cuda.h"
 
-void cuda_process_tls_callbacks(DWORD reason) DECLSPEC_HIDDEN;
-CUresult cuda_get_table(const void **table, const CUuuid *id, const void *orig_table, CUresult orig_result) DECLSPEC_HIDDEN;
+void cuda_process_tls_callbacks(DWORD reason);
+CUresult __attribute((visibility("hidden"))) cuda_get_table(const void **table, const CUuuid *id, const void *orig_table, CUresult orig_result);
 
 #endif
