@@ -331,6 +331,14 @@ struct Unknown8_table
     void* (WINAPI *func74)(void *param0, void *param1);
     void* (WINAPI *func75)(void *param0, void *param1);
     void* (WINAPI *func76)(void *param0, void *param1);
+    void* (WINAPI *func77)(void *param0, void *param1);
+    void* (WINAPI *func78)(void *param0, void *param1);
+    void* (WINAPI *func79)(void *param0, void *param1);
+    void* (WINAPI *func80)(void *param0, void *param1);
+    void* (WINAPI *func81)(void *param0, void *param1);
+    void* (WINAPI *func82)(void *param0, void *param1);
+    void* (WINAPI *func83)(void *param0, void *param1);
+    void* (WINAPI *func84)(void *param0, void *param1);
 };
 static const struct
 {
@@ -412,6 +420,14 @@ static const struct
     void* (*func74)(void *param0, void *param1);
     void* (*func75)(void *param0, void *param1);
     void* (*func76)(void *param0, void *param1);
+    void* (*func77)(void *param0, void *param1);
+    void* (*func78)(void *param0, void *param1);
+    void* (*func79)(void *param0, void *param1);
+    void* (*func80)(void *param0, void *param1);
+    void* (*func81)(void *param0, void *param1);
+    void* (*func82)(void *param0, void *param1);
+    void* (*func83)(void *param0, void *param1);
+    void* (*func84)(void *param0, void *param1);
 } *Unknown8_orig = NULL;
 
 /*
@@ -507,6 +523,10 @@ struct Unknown9_table
     void* (WINAPI *func84)(void *param0, void *param1);
     void* (WINAPI *func85)(void *param0, void *param1);
     void* (WINAPI *func86)(void *param0, void *param1);
+    void* (WINAPI *func87)(void *param0, void *param1);
+    void* (WINAPI *func88)(void *param0, void *param1);
+    void* (WINAPI *func89)(void *param0, void *param1);
+    void* (WINAPI *func90)(void *param0, void *param1);
 };
 static const struct
 {
@@ -598,6 +618,10 @@ static const struct
     void* (*func84)(void *param0, void *param1);
     void* (*func85)(void *param0, void *param1);
     void* (*func86)(void *param0, void *param1);
+    void* (*func87)(void *param0, void *param1);
+    void* (*func88)(void *param0, void *param1);
+    void* (*func89)(void *param0, void *param1);
+    void* (*func90)(void *param0, void *param1);
 } *Unknown9_orig = NULL;
 
 /*
@@ -1417,6 +1441,54 @@ static void* WINAPI Unknown8_func76_relay(void *param0, void *param1)
     return Unknown8_orig->func76(param0, param1);
 }
 
+static void* WINAPI Unknown8_func77_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func77(param0, param1);
+}
+
+static void* WINAPI Unknown8_func78_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func78(param0, param1);
+}
+
+static void* WINAPI Unknown8_func79_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func79(param0, param1);
+}
+
+static void* WINAPI Unknown8_func80_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func80(param0, param1);
+}
+
+static void* WINAPI Unknown8_func81_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func81(param0, param1);
+}
+
+static void* WINAPI Unknown8_func82_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func82(param0, param1);
+}
+
+static void* WINAPI Unknown8_func83_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func83(param0, param1);
+}
+
+static void* WINAPI Unknown8_func84_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown8_orig->func84(param0, param1);
+}
+
 static struct Unknown8_table Unknown8_Impl =
 {
     sizeof(struct Unknown8_table),
@@ -1497,6 +1569,14 @@ static struct Unknown8_table Unknown8_Impl =
     Unknown8_func74_relay,
     Unknown8_func75_relay,
     Unknown8_func76_relay,
+    Unknown8_func77_relay,
+    Unknown8_func78_relay,
+    Unknown8_func79_relay,
+    Unknown8_func80_relay,
+    Unknown8_func81_relay,
+    Unknown8_func82_relay,
+    Unknown8_func83_relay,
+    Unknown8_func84_relay,
 };
 
 static void* WINAPI Unknown9_func0_relay(void *param0, void *param1)
@@ -2021,6 +2101,30 @@ static void* WINAPI Unknown9_func86_relay(void *param0, void *param1)
     return Unknown9_orig->func86(param0, param1);
 }
 
+static void* WINAPI Unknown9_func87_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func87(param0, param1);
+}
+
+static void* WINAPI Unknown9_func88_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func88(param0, param1);
+}
+
+static void* WINAPI Unknown9_func89_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func89(param0, param1);
+}
+
+static void* WINAPI Unknown9_func90_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown9_orig->func90(param0, param1);
+}
+
 struct Unknown9_table Unknown9_Impl =
 {
     sizeof(struct Unknown9_table),
@@ -2111,6 +2215,10 @@ struct Unknown9_table Unknown9_Impl =
     Unknown9_func84_relay,
     Unknown9_func85_relay,
     Unknown9_func86_relay,
+    Unknown9_func87_relay,
+    Unknown9_func88_relay,
+    Unknown9_func89_relay,
+    Unknown9_func90_relay,
 };
 
 static void* WINAPI Unknown10_func0_relay(void *param0)
