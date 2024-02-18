@@ -133,6 +133,7 @@ struct Unknown1_table
     void* (WINAPI *func7)(void *param0, void *param1);
     void* (WINAPI *func8)(void *param0, void *param1);
     void* (WINAPI *func9)(void *param0, void *param1);
+    void* (WINAPI *func10)(void *param0, void *param1);
 };
 static const struct
 {
@@ -147,6 +148,7 @@ static const struct
     void* (*func7)(void *param0, void *param1);
     void* (*func8)(void *param0, void *param1);
     void* (*func9)(void *param0, void *param1);
+    void* (*func10)(void *param0, void *param1);
 } *Unknown1_orig = NULL;
 
 /*
@@ -424,7 +426,7 @@ struct Unknown9_table
     void* (WINAPI *func3)(void *param0, void *param1);
     void* (WINAPI *func4)(void *param0, void *param1);
     void* (WINAPI *func5)(void *param0, void *param1);
-    void* (WINAPI *func6)(void *param0, void *param1);
+    void* (WINAPI *func6)(void *param0, void *param1, void *param2, void *param3);
     void* (WINAPI *func7)(void *param0, void *param1);
     void* (WINAPI *func8)(void *param0, void *param1);
     void* (WINAPI *func9)(void *param0, void *param1);
@@ -515,7 +517,7 @@ static const struct
     void* (*func3)(void *param0, void *param1);
     void* (*func4)(void *param0, void *param1);
     void* (*func5)(void *param0, void *param1);
-    void* (*func6)(void *param0, void *param1);
+    void* (*func6)(void *param0, void *param1, void *param2, void *param3);
     void* (*func7)(void *param0, void *param1);
     void* (*func8)(void *param0, void *param1);
     void* (*func9)(void *param0, void *param1);
@@ -606,12 +608,16 @@ struct Unknown10_table
     int size;
     void* (WINAPI *func0)(void *param0);
     void* (WINAPI *func1)(void *param0, void *param1);
+    void* (WINAPI *func2)(void *param0);
+    void* (WINAPI *func3)(void *param0);
 };
 static const struct
 {
     int size;
     void* (*func0)(void *param0);
     void* (*func1)(void *param0, void *param1);
+    void* (*func2)(void *param0);
+    void* (*func3)(void *param0);
 } *Unknown10_orig = NULL;
 
 static void* WINAPI Unknown1_func0_relay(void *param0, void *param1)
@@ -674,6 +680,12 @@ static void* WINAPI Unknown1_func9_relay(void *param0, void *param1)
     return Unknown1_orig->func9(param0, param1);
 }
 
+static void* WINAPI Unknown1_func10_relay(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Unknown1_orig->func10(param0, param1);
+}
+
 struct Unknown1_table Unknown1_Impl =
 {
     sizeof(struct Unknown1_table),
@@ -687,6 +699,7 @@ struct Unknown1_table Unknown1_Impl =
     Unknown1_func7_relay,
     Unknown1_func8_relay,
     Unknown1_func9_relay,
+    Unknown1_func10_relay,
 };
 
 static void* WINAPI Unknown2_func0_relay(void *param0, void *param1)
@@ -1522,10 +1535,10 @@ static void* WINAPI Unknown9_func5_relay(void *param0, void *param1)
     return Unknown9_orig->func5(param0, param1);
 }
 
-static void* WINAPI Unknown9_func6_relay(void *param0, void *param1)
+static void* WINAPI Unknown9_func6_relay(void *param0, void *param1, void *param2, void *param3)
 {
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func6(param0, param1);
+    TRACE("(%p, %p, %p, %p)\n", param0, param1, param2, param3);
+    return Unknown9_orig->func6(param0, param1, param2, param3);
 }
 
 static void* WINAPI Unknown9_func7_relay(void *param0, void *param1)
@@ -2112,11 +2125,25 @@ static void* WINAPI Unknown10_func1_relay(void *param0, void *param1)
     return Unknown10_orig->func1(param0, param1);
 }
 
+static void* WINAPI Unknown10_func2_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown10_orig->func2(param0);
+}
+
+static void* WINAPI Unknown10_func3_relay(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return Unknown10_orig->func3(param0);
+}
+
 static struct Unknown10_table Unknown10_Impl =
 {
     sizeof(struct Unknown10_table),
     Unknown10_func0_relay,
     Unknown10_func1_relay,
+    Unknown10_func2_relay,
+    Unknown10_func3_relay,
 };
 
 static BOOL cuda_check_table(const struct cuda_table *orig, struct cuda_table *impl, const char *name)
@@ -2129,6 +2156,7 @@ static BOOL cuda_check_table(const struct cuda_table *orig, struct cuda_table *i
     if (orig->size > impl->size)
     {
         FIXME("WARNING: Your CUDA version supports a newer interface for %s then the Wine implementation.\n", name);
+        FIXME("WARNING: Driver implementation size: %d, Wine implementation size: %d\n", orig->size, impl->size);
     }
     else if (orig->size < impl->size)
     {
