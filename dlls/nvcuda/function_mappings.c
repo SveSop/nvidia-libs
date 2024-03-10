@@ -482,6 +482,10 @@ extern void wine_cuStreamUpdateCaptureDependencies_v2_ptsz(void);
 extern void wine_cuGraphAddNode_v2(void);
 extern void wine_cuGraphConditionalHandleCreate(void);
 extern void wine_cuFuncGetModule(void);
+extern void wine_cuKernelGetParamInfo(void);
+extern void wine_cuFuncGetParamInfo(void);
+extern void wine_cuDeviceRegisterAsyncNotification(void);
+extern void wine_cuDeviceUnregisterAsyncNotification(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
@@ -489,9 +493,11 @@ const FunctionMapping mappings[] = {
     {"cuInit", 2000, 0, wine_cuInit},
     {"cuDeviceGet", 2000, 0, wine_cuDeviceGet},
     {"cuDeviceGet", 12020, 0, wine_cuDeviceGet},
+    {"cuDeviceGet", 12030, 0, wine_cuDeviceGet},
     {"cuDeviceGetCount", 2000, 0, wine_cuDeviceGetCount},
     {"cuDeviceGetName", 2000, 0, wine_cuDeviceGetName},
     {"cuDeviceGetName", 12020, 0, wine_cuDeviceGetName},
+    {"cuDeviceGetName", 12030, 0, wine_cuDeviceGetName},
     {"cuDeviceTotalMem", 2000, 0, wine_cuDeviceTotalMem},
     {"cuDeviceTotalMem", 3020, 0, wine_cuDeviceTotalMem_v2},
     {"cuDeviceGetAttribute", 2000, 0, wine_cuDeviceGetAttribute},
@@ -948,6 +954,10 @@ const FunctionMapping mappings[] = {
     {"cuStreamBeginCaptureToGraph", 12030, 2, wine_cuStreamBeginCaptureToGraph_ptsz},
     {"cuGraphConditionalHandleCreate", 12030, 0, wine_cuGraphConditionalHandleCreate},
     {"cuFuncGetModule", 11000, 0, wine_cuFuncGetModule},
+    {"cuKernelGetParamInfo", 12040, 0, wine_cuKernelGetParamInfo},
+    {"cuFuncGetParamInfo", 12040, 0, wine_cuFuncGetParamInfo},
+    {"cuDeviceRegisterAsyncNotification", 12040, 0, wine_cuDeviceRegisterAsyncNotification},
+    {"cuDeviceUnregisterAsyncNotification", 12040, 0, wine_cuDeviceUnregisterAsyncNotification},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);

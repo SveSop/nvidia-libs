@@ -685,6 +685,27 @@ static CUresult (*pcuStreamUpdateCaptureDependencies_v2)(CUstream hStream, CUgra
 static CUresult (*pcuStreamUpdateCaptureDependencies_v2_ptsz)(CUstream hStream, CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, unsigned int flags);
 static CUresult (*pcuGraphAddNode_v2)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, const void *dependencyData, size_t numDependencies, void *nodeParams);
 static CUresult (*pcuGraphConditionalHandleCreate)(void *pHandle_out, CUgraph hGraph, CUcontext ctx, unsigned int defaultLaunchValue, unsigned int flags);
+static CUresult (*pcuFuncGetParamInfo)(CUfunction func, size_t paramIndex, size_t *paramOffset, size_t *paramSize);
+static CUresult (*pcuFuncIsLoaded)(void *state, CUfunction hfunc);
+static CUresult (*pcuFuncLoad)(CUfunction hfunc);
+static CUresult (*pcuModuleGetFunctionCount)(unsigned int *count, CUmodule hmod);
+static CUresult (*pcuModuleEnumerateFunctions)(CUfunction *functions, unsigned int numFunctions, CUmodule mod);
+static CUresult (*pcuLibraryGetKernelCount)(unsigned int *count, void *lib);
+static CUresult (*pcuLibraryEnumerateKernels)(void *kernels, unsigned int numKernels, void *lib);
+static CUresult (*pcuKernelGetParamInfo)(void *kernel, size_t paramIndex, size_t *paramOffset, size_t *paramSize);
+static CUresult (*pcuDeviceRegisterAsyncNotification)(CUdevice device, void *callbackFunc, void *userData, void *callback);
+static CUresult (*pcuDeviceUnregisterAsyncNotification)(CUdevice device, void *callback);
+static CUresult (*pcuGreenCtxCreate)(void *phCtx, void *desc, CUdevice dev, unsigned int flags);
+static CUresult (*pcuGreenCtxDestroy)(void *hCtx);
+static CUresult (*pcuDeviceGetDevResource)(CUdevice dev, void *result, void *type);
+static CUresult (*pcuCtxGetDevResource)(CUcontext hCtx, void *result, void *type);
+static CUresult (*pcuGreenCtxGetDevResource)(void *hCtx, void *result, void *type);
+static CUresult (*pcuGreenCtxRecordEvent)(void *hCtx, CUevent hEvent);
+static CUresult (*pcuGreenCtxWaitEvent)(void *hCtx, CUevent hEvent);
+static CUresult (*pcuDevResourceGenerateDesc)(void *phDesc, void *resources, unsigned int nbResources);
+static CUresult (*pcuDevSmResourceSplitByCount)(void *result, unsigned int *nbGroups, const void *input, void *remaining, unsigned int useFlags, unsigned int minCount);
+static CUresult (*pcuStreamGetGreenCtx)(CUstream hStream, void *phCtx);
+static CUresult (*pcuCtxFromGreenCtx)(CUcontext *pContext, void *hCtx);
 
 static void *cuda_handle = NULL;
 
@@ -1275,6 +1296,27 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuStreamUpdateCaptureDependencies_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuGraphAddNode_v2);
     TRY_LOAD_FUNCPTR(cuGraphConditionalHandleCreate);
+    TRY_LOAD_FUNCPTR(cuFuncGetParamInfo);
+    TRY_LOAD_FUNCPTR(cuFuncIsLoaded);
+    TRY_LOAD_FUNCPTR(cuFuncLoad);
+    TRY_LOAD_FUNCPTR(cuModuleGetFunctionCount);
+    TRY_LOAD_FUNCPTR(cuModuleEnumerateFunctions);
+    TRY_LOAD_FUNCPTR(cuLibraryGetKernelCount);
+    TRY_LOAD_FUNCPTR(cuLibraryEnumerateKernels);
+    TRY_LOAD_FUNCPTR(cuKernelGetParamInfo);
+    TRY_LOAD_FUNCPTR(cuDeviceRegisterAsyncNotification);
+    TRY_LOAD_FUNCPTR(cuDeviceUnregisterAsyncNotification);
+    TRY_LOAD_FUNCPTR(cuGreenCtxCreate);
+    TRY_LOAD_FUNCPTR(cuGreenCtxDestroy);
+    TRY_LOAD_FUNCPTR(cuDeviceGetDevResource);
+    TRY_LOAD_FUNCPTR(cuCtxGetDevResource);
+    TRY_LOAD_FUNCPTR(cuGreenCtxGetDevResource);
+    TRY_LOAD_FUNCPTR(cuGreenCtxRecordEvent);
+    TRY_LOAD_FUNCPTR(cuGreenCtxWaitEvent);
+    TRY_LOAD_FUNCPTR(cuDevResourceGenerateDesc);
+    TRY_LOAD_FUNCPTR(cuDevSmResourceSplitByCount);
+    TRY_LOAD_FUNCPTR(cuStreamGetGreenCtx);
+    TRY_LOAD_FUNCPTR(cuCtxFromGreenCtx);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -5134,6 +5176,153 @@ CUresult WINAPI wine_cuGraphConditionalHandleCreate(void *pHandle_out, CUgraph h
     TRACE("(%p, %p, %p, %u, %u)\n", pHandle_out, hGraph, ctx, defaultLaunchValue, flags);
     CHECK_FUNCPTR(cuGraphConditionalHandleCreate);
     return pcuGraphConditionalHandleCreate(pHandle_out, hGraph, ctx, defaultLaunchValue, flags);
+}
+
+CUresult WINAPI wine_cuFuncGetParamInfo(CUfunction func, size_t paramIndex, size_t *paramOffset, size_t *paramSize)
+{
+    TRACE("(%p, %zu, %p, %p)\n", func, paramIndex, paramOffset, paramSize);
+    CHECK_FUNCPTR(cuFuncGetParamInfo);
+    return pcuFuncGetParamInfo(func, paramIndex, paramOffset, paramSize);
+}
+
+CUresult WINAPI wine_cuFuncIsLoaded(void *state, CUfunction func)
+{
+    TRACE("(%p, %p)\n", state, func);
+    CHECK_FUNCPTR(cuFuncIsLoaded);
+    return pcuFuncIsLoaded(state, func);
+}
+
+CUresult WINAPI wine_cuFuncLoad(CUfunction hfunc)
+{
+    TRACE("(%p)\n", hfunc);
+    CHECK_FUNCPTR(cuFuncLoad);
+    return pcuFuncLoad(hfunc);
+}
+
+CUresult WINAPI wine_cuModuleGetFunctionCount(unsigned int *count, CUmodule hmod)
+{
+    TRACE("(%p, %p)\n", count, hmod);
+    CHECK_FUNCPTR(cuModuleGetFunctionCount);
+    return pcuModuleGetFunctionCount(count, hmod);
+}
+
+CUresult WINAPI wine_cuModuleEnumerateFunctions(CUfunction *functions, unsigned int numFunctions, CUmodule mod)
+{
+    TRACE("(%p, %u, %p)\n", functions, numFunctions, mod);
+    CHECK_FUNCPTR(cuModuleEnumerateFunctions);
+    return pcuModuleEnumerateFunctions(functions, numFunctions, mod);
+}
+
+CUresult WINAPI wine_cuLibraryGetKernelCount(unsigned int *count, void *lib)
+{
+    TRACE("(%p, %p)\n", count, lib);
+    CHECK_FUNCPTR(cuLibraryGetKernelCount);
+    return pcuLibraryGetKernelCount(count, lib);
+}
+
+CUresult WINAPI wine_cuLibraryEnumerateKernels(void *kernels, unsigned int numKernels, void *lib)
+{
+    TRACE("(%p, %u, %p)\n", kernels, numKernels, lib);
+    CHECK_FUNCPTR(cuLibraryEnumerateKernels);
+    return pcuLibraryEnumerateKernels(kernels, numKernels, lib);
+}
+
+CUresult WINAPI wine_cuKernelGetParamInfo(void *kernel, size_t paramIndex, size_t *paramOffset, size_t *paramSize)
+{
+    TRACE("(%p, %zu, %p, %p)\n", kernel, paramIndex, paramOffset, paramSize);
+    CHECK_FUNCPTR(cuKernelGetParamInfo);
+    return pcuKernelGetParamInfo(kernel, paramIndex, paramOffset, paramSize);
+}
+
+CUresult WINAPI wine_cuDeviceRegisterAsyncNotification(CUdevice device, void *callbackFunc, void *userData, void *callback)
+{
+    TRACE("(%u, %p, %p, %p)\n", device, callbackFunc, userData, callback);
+    CHECK_FUNCPTR(cuDeviceRegisterAsyncNotification);
+    return pcuDeviceRegisterAsyncNotification(device, callbackFunc, userData, callback);
+}
+
+CUresult WINAPI wine_cuDeviceUnregisterAsyncNotification(CUdevice device, void *callback)
+{
+    TRACE("(%u, %p)\n", device, callback);
+    CHECK_FUNCPTR(cuDeviceUnregisterAsyncNotification);
+    return pcuDeviceUnregisterAsyncNotification(device, callback);
+}
+
+CUresult WINAPI wine_cuGreenCtxCreate(void *phCtx, void *desc, CUdevice dev, unsigned int flags)
+{
+    TRACE("(%p, %p, %u, %u)\n", phCtx, desc, dev, flags);
+    CHECK_FUNCPTR(cuGreenCtxCreate);
+    return pcuGreenCtxCreate(phCtx, desc, dev, flags);
+}
+
+CUresult WINAPI wine_cuGreenCtxDestroy(void *hCtx)
+{
+    TRACE("(%p)\n", hCtx);
+    CHECK_FUNCPTR(cuGreenCtxDestroy);
+    return pcuGreenCtxDestroy(hCtx);
+}
+
+CUresult WINAPI wine_cuDeviceGetDevResource(CUdevice dev, void *result, void *type)
+{
+    TRACE("(%u, %p, %p)\n", dev, result, type);
+    CHECK_FUNCPTR(cuDeviceGetDevResource);
+    return pcuDeviceGetDevResource(dev, result, type);
+}
+
+CUresult WINAPI wine_cuCtxGetDevResource(CUcontext hCtx, void *result, void *type)
+{
+    TRACE("(%p, %p, %p)\n", hCtx, result, type);
+    CHECK_FUNCPTR(cuCtxGetDevResource);
+    return pcuCtxGetDevResource(hCtx, result, type);
+}
+
+CUresult WINAPI wine_cuGreenCtxGetDevResource(void *hCtx, void *result, void *type)
+{
+    TRACE("(%p, %p, %p)\n", hCtx, result, type);
+    CHECK_FUNCPTR(cuGreenCtxGetDevResource);
+    return pcuGreenCtxGetDevResource(hCtx, result, type);
+}
+
+CUresult WINAPI wine_cuGreenCtxRecordEvent(void *hCtx, CUevent hEvent)
+{
+    TRACE("(%p, %p)\n", hCtx, hEvent);
+    CHECK_FUNCPTR(cuGreenCtxRecordEvent);
+    return pcuGreenCtxRecordEvent(hCtx, hEvent);
+}
+
+CUresult WINAPI wine_cuGreenCtxWaitEvent(void *hCtx, CUevent hEvent)
+{
+    TRACE("(%p, %p)\n", hCtx, hEvent);
+    CHECK_FUNCPTR(cuGreenCtxWaitEvent);
+    return pcuGreenCtxWaitEvent(hCtx, hEvent);
+}
+
+CUresult WINAPI wine_cuDevResourceGenerateDesc(void *phDesc, void *resources, unsigned int nbResources)
+{
+    TRACE("(%p, %p, %u)\n", phDesc, resources, nbResources);
+    CHECK_FUNCPTR(cuDevResourceGenerateDesc);
+    return pcuDevResourceGenerateDesc(phDesc, resources, nbResources);
+}
+
+CUresult WINAPI wine_cuDevSmResourceSplitByCount(void *result, unsigned int *nbGroups, const void *input, void *remaining, unsigned int useFlags, unsigned int minCount)
+{
+    TRACE("(%p, %p, %p, %p, %u, %u)\n", result, nbGroups, input, remaining, useFlags, minCount);
+    CHECK_FUNCPTR(cuDevSmResourceSplitByCount);
+    return pcuDevSmResourceSplitByCount(result, nbGroups, input, remaining, useFlags, minCount);
+}
+
+CUresult WINAPI wine_cuStreamGetGreenCtx(CUstream hStream, void *phCtx)
+{
+    TRACE("(%p, %p)\n", hStream, phCtx);
+    CHECK_FUNCPTR(cuStreamGetGreenCtx);
+    return pcuStreamGetGreenCtx(hStream, phCtx);
+}
+
+CUresult WINAPI wine_cuCtxFromGreenCtx(CUcontext *pContext, void *hCtx)
+{
+    TRACE("(%p, %p)\n", pContext, hCtx);
+    CHECK_FUNCPTR(cuCtxFromGreenCtx);
+    return pcuCtxFromGreenCtx(pContext, hCtx);
 }
 
 #undef CHECK_FUNCPTR

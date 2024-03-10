@@ -692,3 +692,24 @@
 @ stdcall cuStreamUpdateCaptureDependencies_v2_ptsz(ptr ptr ptr long long) wine_cuStreamUpdateCaptureDependencies_v2_ptsz
 @ stdcall cuGraphAddNode_v2(ptr ptr ptr ptr long ptr) wine_cuGraphAddNode_v2
 @ stdcall cuGraphConditionalHandleCreate(ptr ptr ptr long long) wine_cuGraphConditionalHandleCreate
+@ stdcall cuFuncGetParamInfo(ptr long ptr ptr) wine_cuFuncGetParamInfo
+@ stdcall cuFuncIsLoaded(ptr ptr) wine_cuFuncIsLoaded
+@ stdcall cuFuncLoad(ptr) wine_cuFuncLoad
+@ stdcall cuModuleGetFunctionCount(ptr ptr) wine_cuModuleGetFunctionCount
+@ stdcall cuModuleEnumerateFunctions(ptr long ptr) wine_cuModuleEnumerateFunctions
+@ stdcall cuLibraryGetKernelCount(ptr ptr) wine_cuLibraryGetKernelCount
+@ stdcall cuLibraryEnumerateKernels(ptr long ptr) wine_cuLibraryEnumerateKernels
+@ stdcall cuKernelGetParamInfo(ptr long ptr ptr) wine_cuKernelGetParamInfo
+@ stdcall cuDeviceRegisterAsyncNotification(long ptr ptr ptr) wine_cuDeviceRegisterAsyncNotification
+@ stdcall cuDeviceUnregisterAsyncNotification(long ptr) wine_cuDeviceUnregisterAsyncNotification
+@ stdcall cuGreenCtxCreate(ptr ptr long long) wine_cuGreenCtxCreate
+@ stdcall cuGreenCtxDestroy(ptr) wine_cuGreenCtxDestroy
+@ stdcall cuDeviceGetDevResource(long ptr ptr) wine_cuDeviceGetDevResource
+@ stdcall cuCtxGetDevResource(ptr ptr ptr) wine_cuCtxGetDevResource
+@ stdcall cuGreenCtxGetDevResource(ptr ptr ptr) wine_cuGreenCtxGetDevResource
+@ stdcall cuGreenCtxRecordEvent(ptr ptr) wine_cuGreenCtxRecordEvent
+@ stdcall cuGreenCtxWaitEvent(ptr ptr) wine_cuGreenCtxWaitEvent
+@ stdcall cuDevResourceGenerateDesc(ptr ptr long) wine_cuDevResourceGenerateDesc
+@ stdcall cuDevSmResourceSplitByCount(ptr ptr ptr ptr long long) wine_cuDevSmResourceSplitByCount
+@ stdcall cuStreamGetGreenCtx(ptr ptr) wine_cuStreamGetGreenCtx
+@ stdcall cuCtxFromGreenCtx(ptr ptr) wine_cuCtxFromGreenCtx
