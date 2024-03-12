@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2014-2015 Michael Müller
  * Copyright (C) 2014-2015 Sebastian Lackner
+ * Copyright (C) 2022-2024 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -82,7 +83,7 @@ void cuda_process_tls_callbacks(DWORD reason)
 
 static const CUuuid UUID_Unknown1                   = {{0x6B, 0xD5, 0xFB, 0x6C, 0x5B, 0xF4, 0xE7, 0x4A,
                                                         0x89, 0x87, 0xD9, 0x39, 0x12, 0xFD, 0x9D, 0xF9}};
-                                                    // {6Bd5fB6c-5Bf4-e74A-8987-d93912fd9df9}
+                                                    // {6bd5fb6c-5bf4-e74a-8987-d93912fd9df9}
 static const CUuuid UUID_Unknown2                   = {{0xA0, 0x94, 0x79, 0x8C, 0x2E, 0x74, 0x2E, 0x74,
                                                         0x93, 0xF2, 0x08, 0x00, 0x20, 0x0C, 0x0A, 0x66}};
                                                     // {a094798c-2e74-2e74-93f2-0800200c0a66}

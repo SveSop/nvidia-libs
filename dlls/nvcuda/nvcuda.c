@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014-2015 Michael Müller
  * Copyright (C) 2014-2015 Sebastian Lackner
- * Copyright (C) 2022-2023 Sveinar Søpler
+ * Copyright (C) 2022-2024 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -169,7 +169,7 @@ static CUresult (*pcuGraphicsSubResourceGetMappedArray)(CUarray *pArray, CUgraph
                                                         unsigned int arrayIndex, unsigned int mipLevel);
 static CUresult (*pcuGraphicsUnmapResources)(unsigned int count, CUgraphicsResource *resources, CUstream hStream);
 static CUresult (*pcuGraphicsUnregisterResource)(CUgraphicsResource resource);
-static CUresult (*pcuInit)(unsigned int);
+static CUresult (*pcuInit)(unsigned int flags);
 static CUresult (*pcuIpcCloseMemHandle)(CUdeviceptr_v2 dptr);
 static CUresult (*pcuIpcGetEventHandle)(CUipcEventHandle *pHandle, CUevent event);
 static CUresult (*pcuIpcGetMemHandle)(CUipcMemHandle *pHandle, CUdeviceptr_v2 dptr);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sveinar Søpler
+ * Copyright (C) 2023-2024 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

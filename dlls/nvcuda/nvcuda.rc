@@ -2,6 +2,7 @@
  * Top level resource file for nvcuda.dll
  *
  * Copyright (C) 2014-2015 Michael Müller
+ * Copyright (C) 2022-2024 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,12 +23,12 @@
 #include "winver.h"
 
 #define WINE_FILENAME_STR "nvcuda.dll"
-#define WINE_FILEDESCRIPTION_STR "NVIDIA CUDA Driver, Version 535.86"
+#define WINE_FILEDESCRIPTION_STR "NVIDIA CUDA Driver, Version 550.54"
 
-#define WINE_FILEVERSION      31,0,15,3586
-#define WINE_FILEVERSION_STR "31.0.15.3586"
+#define WINE_FILEVERSION      31,0,15,5054
+#define WINE_FILEVERSION_STR "31.0.15.5054"
 
-#define WINE_PRODUCTVERSION      31,0,15,3586
-#define WINE_PRODUCTVERSION_STR "31.0.15.3586"
+#define WINE_PRODUCTVERSION      31,0,15,5054
+#define WINE_PRODUCTVERSION_STR "31.0.15.5054"
 
 #include "wine/wine_common_ver.rc"
