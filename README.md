@@ -1,7 +1,7 @@
 # NVIDIA Libs
 
-Release: 0.7.13  
-Recommended nVidia proprietary driver branch 535+ for best compatibility with OptiX and CUDA.  
+Release: 0.7.14  
+Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK >11.5 should now mostly be supported. There can still be missing functions  
 
@@ -18,7 +18,7 @@ nvml (wine-nvml)
 nvoptix (wine-nvoptix)  
 
 ## Build requirements:  
-- [WINE] (version >= 8.0) [https://www.winehq.org/](https://www.winehq.org/)  
+- [WINE] (version >= 9.0) [https://www.winehq.org/](https://www.winehq.org/)  
 - [Meson] [http://mesonbuild.com/](http://mesonbuild.com/)  
 - [NINJA] [https://ninja-build.org/](https://ninja-build.org/)  
 - [MINGW] (version >= 9.0) [https://www.mingw-w64.org/](https://www.mingw-w64.org/)  
@@ -49,28 +49,23 @@ You can run tests of your adapter and functions by running the test case file:
 PS. You must install said libraryfile in your WINEPREFIX (see above)  
 
 ### Proton  
-You can drop-in the libraries in Proton7 - Experimental or GE-Proton-7 or newer like this:
+You can drop-in the libraries in Proton8 - Experimental or GE-Proton-8 or newer like this:
   
-`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-6.12-GE-1' ./proton_setup.sh`  
+`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-8.27-GE' ./proton_setup.sh`  
 
 This will replace or add the libs to Proton for use with games.  
 The installscript is no longer compatible with older Proton-6.3 or Proton-GE-6/7 versions.  
 
 OBS!  
-Remember to add:  
-   `"PROTON_ENABLE_NVAPI": "1",`  
+You can add:  
+   `"DXVK_ENABLE_NVAPI": "1",`  
+   `"PROTON_ENABLE_NVAPI": "1",`
 to your user_settings.py script in the proton folder eg:  
-`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-6.12-GE-1/user_settings.py'`  
+`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/GE-Proton-8.27/user_settings.py'`  
 
-Or you can run the game with `PROTON_ENABLE_NVAPI=1 %command%`  
+Or you can run the game with `PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 %command%`  
 
-You can also put a `dxvk.conf` file in the games binary folder with the setting:  
-`dxgi.hideNvidiaGpu = False`  
-
-Eg:  
-`$HOME/.steam/steam/steamapps/common/Batman Arkham Knight/Binaries/Win64/dxvk.conf`  
-or use DXVK setting:  
-`DXVK_CONFIG_FILE=$HOME/winesuff/dxvk.conf`  
+Some additional tweaks may be required depending on game used and version of Proton.  
 
 ## Info  
 
