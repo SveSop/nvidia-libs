@@ -1770,10 +1770,6 @@ CUresult WINAPI wine_cuGetExportTable(const void **table, const CUuuid *id)
 {
     const void* orig_table = NULL;
     CUresult ret;
-    char buffer[128];
-
-    TRACE("(%p, Table UUID: %s)\n", table, cuda_print_uuid(id, buffer, sizeof(buffer)));
-
     ret = pcuGetExportTable(&orig_table, id);
     return cuda_get_table(table, id, orig_table, ret);
 }

@@ -2298,6 +2298,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
 
     if (cuda_equal_uuid(uuid, &UUID_Unknown1))
     {
+        TRACE("(%p, UUID_Unknown1: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown1_Impl, "Unknown1"))
@@ -2309,6 +2310,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown2))
     {
+        TRACE("(%p, UUID_Unknown2: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown2_Impl, "Unknown2"))
@@ -2320,6 +2322,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown3))
     {
+        TRACE("(%p, UUID_Unknown3: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown3_Impl, "Unknown3"))
@@ -2331,6 +2334,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_ContextStorage))
     {
+        TRACE("(%p, UUID_ContextStorage: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!orig_table)
@@ -2342,6 +2346,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown5))
     {
+        TRACE("(%p, UUID_Unknown5: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown5_Impl, "Unknown5"))
@@ -2353,6 +2358,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_TlsNotifyInterface))
     {
+        TRACE("(%p, UUID_TlsNotifyInterface: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         /* the following interface is not implemented in the Linux
          * CUDA driver, we provide a replacement implementation */
         *table = (void *)&TlsNotifyInterface_Impl;
@@ -2360,6 +2366,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown7))
     {
+        TRACE("(%p, UUID_Unknown7: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown7_Impl, "Unknown7"))
@@ -2371,6 +2378,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown8))
     {
+        TRACE("(%p, UUID_Unknown8: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown8_Impl, "Unknown8"))
@@ -2382,6 +2390,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown9))
     {
+        TRACE("(%p, UUID_Unknown9: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown9_Impl, "Unknown9"))
@@ -2393,6 +2402,7 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown10))
     {
+        TRACE("(%p, UUID_Unknown10: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!cuda_check_table(orig_table, (void *)&Unknown10_Impl, "Unknown10"))
