@@ -23,6 +23,11 @@
 typedef uint32_t cuuint32_t;
 typedef uint64_t cuuint64_t;
 
+typedef struct {
+    cuuint64_t low;
+    cuuint64_t high;
+} cuuint128_t;
+
 #ifdef _WIN32
 #define CUDA_CB __stdcall
 #else

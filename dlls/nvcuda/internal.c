@@ -22,6 +22,7 @@
 #include <dlfcn.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "windef.h"
 #include "winbase.h"
@@ -99,7 +100,7 @@ static const CUuuid UUID_Unknown5                   = {{0x0C, 0xA5, 0x0B, 0x8C, 
 static const CUuuid UUID_TlsNotifyInterface         = {{0x19, 0x5B, 0xCB, 0xF4, 0xD6, 0x7D, 0x02, 0x4A,
                                                         0xAC, 0xC5, 0x1D, 0x29, 0xCE, 0xA6, 0x31, 0xAE}};
                                                     // {195bcbf4-d67d-024a-acc5-1d29cea631ae}
-static const CUuuid UUID_Unknown7                   = {{0xD4, 0x08, 0x20, 0x55, 0xBD, 0xE6, 0x70, 0x4B,
+static const CUuuid UUID_Encryption                 = {{0xD4, 0x08, 0x20, 0x55, 0xBD, 0xE6, 0x70, 0x4B,
                                                         0x8D, 0x34, 0xBA, 0x12, 0x3C, 0x66, 0xE1, 0xF2}};
                                                     // {d4082055-bde6-704b-8d34-ba123c66e1f2}
 static const CUuuid UUID_Unknown8                   = {{0x21, 0x31, 0x8C, 0x60, 0x97, 0x14, 0x32, 0x48,
@@ -234,20 +235,20 @@ struct TlsNotifyInterface_table
 };
 
 /*
- * Unknown7
+ * Encryption
  */
-struct Unknown7_table
+struct Encryption_table
 {
     int size;
-    void* (WINAPI *func0)(unsigned int cudaVersion, void *param1, void *param2);
+    void* (WINAPI *encrypt)(unsigned int cudaVersion, time_t timestamp, cuuint128_t *res);
     void* (WINAPI *func1)(void *param0);
 };
 static const struct
 {
     int size;
-    void* (*func0)(unsigned int cudaVersion, void *param1, void *param2);
+    void* (*encrypt)(unsigned int cudaVersion, time_t timestamp, cuuint128_t *res);
     void* (*func1)(void *param0);
-} *Unknown7_orig = NULL;
+} *Encryption_orig = NULL;
 
 /*
  * Unknown8
@@ -941,9 +942,9 @@ struct TlsNotifyInterface_table TlsNotifyInterface_Impl =
     TlsNotifyInterface_Remove,
 };
 
-static void* WINAPI Unknown7_func0_relay(unsigned int cudaVersion, void *param1, void *param2)
+static void* WINAPI Encryption_encrypt_relay(unsigned int cudaVersion, time_t timestamp, cuuint128_t *res)
 {
-    TRACE("(%u, %p, %p)\n", cudaVersion, param1, param2);
+    TRACE("%u, (%ld, %p)\n", cudaVersion, timestamp, res);
 
     // After CUDA SDK 11.6 some checks is done by the CudaRuntimeLibrary (CudaRT)
     // This fails for some reason when using wine, so this is somewhat of a hack
@@ -964,20 +965,20 @@ static void* WINAPI Unknown7_func0_relay(unsigned int cudaVersion, void *param1,
         FIXME("Cuda Version 11.6 detected! Workaround implemented\n");
         *((long int*)retAddr) += 0x1ca;
     }
-    return Unknown7_orig->func0(cudaVersion, param1, param2);
+    return Encryption_orig->encrypt(cudaVersion, timestamp, res);
 }
 
-static void* WINAPI Unknown7_func1_relay(void *param0)
+static void* WINAPI Encryption_func1_relay(void *param0)
 {
     TRACE("(%p)\n", param0);
-    return Unknown7_orig->func1(param0);
+    return Encryption_orig->func1(param0);
 }
 
-struct Unknown7_table Unknown7_Impl =
+struct Encryption_table Encryption_Impl =
 {
-    sizeof(struct Unknown7_table),
-    Unknown7_func0_relay,
-    Unknown7_func1_relay,
+    sizeof(struct Encryption_table),
+    Encryption_encrypt_relay,
+    Encryption_func1_relay,
 };
 
 static void* WINAPI Unknown8_func0_relay(void *param0, void *param1)
@@ -2364,16 +2365,16 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
         *table = (void *)&TlsNotifyInterface_Impl;
         return CUDA_SUCCESS;
     }
-    else if (cuda_equal_uuid(uuid, &UUID_Unknown7))
+    else if (cuda_equal_uuid(uuid, &UUID_Encryption))
     {
-        TRACE("(%p, UUID_Unknown7: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, UUID_Encryption: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown7_Impl, "Unknown7"))
+        if (!cuda_check_table(orig_table, (void *)&Encryption_Impl, "Encryption"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown7_orig = orig_table;
-        *table = (void *)&Unknown7_Impl;
+        Encryption_orig = orig_table;
+        *table = (void *)&Encryption_Impl;
         return CUDA_SUCCESS;
     }
     else if (cuda_equal_uuid(uuid, &UUID_Unknown8))
