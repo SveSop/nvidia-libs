@@ -127,7 +127,7 @@ static CUresult (*pcuDeviceGetPCIBusId)(char *pciBusId, int len, CUdevice dev);
 static CUresult (*pcuDeviceGetProperties)(CUdevprop *prop, CUdevice dev);
 static CUresult (*pcuDeviceTotalMem)(unsigned int *bytes, CUdevice dev);
 static CUresult (*pcuDeviceTotalMem_v2)(size_t *bytes, CUdevice dev);
-static CUresult (*pcuDriverGetVersion)(int *);
+static CUresult (*pcuDriverGetVersion)(int *version);
 static CUresult (*pcuEventCreate)(CUevent *phEvent, unsigned int Flags);
 static CUresult (*pcuEventDestroy)(CUevent hEvent);
 static CUresult (*pcuEventDestroy_v2)(CUevent hEvent);
