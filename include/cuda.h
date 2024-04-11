@@ -23,10 +23,17 @@
 typedef uint32_t cuuint32_t;
 typedef uint64_t cuuint64_t;
 
+#if defined(__i386)
 typedef struct {
-    cuuint64_t low;
-    cuuint64_t high;
-} cuuint128_t;
+    uint64_t low;
+    uint64_t high;
+} __uint128_t;
+
+typedef struct {
+    int64_t low;
+    int64_t high;
+} __int128_t;
+#endif
 
 #ifdef _WIN32
 #define CUDA_CB __stdcall
@@ -44,7 +51,10 @@ typedef struct {
 #define CUDA_ERROR_NOT_SUPPORTED     801
 #define CUDA_ERROR_UNKNOWN           999
 
-#define CU_IPC_HANDLE_SIZE           64
+#define CU_IPC_HANDLE_SIZE                 64
+#define CU_DEVICE_ATTRIBUTE_PCI_BUS_ID     33
+#define CU_DEVICE_ATTRIBUTE_PCI_DEVICE_ID  34
+#define CU_DEVICE_ATTRIBUTE_PCI_DOMAIN_ID  50
 
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64) || defined(__aarch64__)
 typedef unsigned long long CUdeviceptr_v2;

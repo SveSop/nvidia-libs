@@ -22,7 +22,13 @@
 #include <dlfcn.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <time.h>
+#include <inttypes.h>
+
+#ifdef HAVE_PTHREAD_H
+#include <pthread.h>
+#endif
 
 #include "windef.h"
 #include "winbase.h"
@@ -30,6 +36,7 @@
 #include "wine/list.h"
 #include "cuda.h"
 #include "nvcuda.h"
+#include "encryption.h"
 
 WINE_DEFAULT_DEBUG_CHANNEL(nvcuda);
 
@@ -240,15 +247,9 @@ struct TlsNotifyInterface_table
 struct Encryption_table
 {
     int size;
-    void* (WINAPI *encrypt)(unsigned int cudaVersion, time_t timestamp, cuuint128_t *res);
-    void* (WINAPI *func1)(void *param0);
+    CUresult (WINAPI *encrypt0)(unsigned int cudaVersion, time_t timestamp, __uint128_t *res);
+    CUresult (WINAPI *encrypt1)(void *param0);
 };
-static const struct
-{
-    int size;
-    void* (*encrypt)(unsigned int cudaVersion, time_t timestamp, cuuint128_t *res);
-    void* (*func1)(void *param0);
-} *Encryption_orig = NULL;
 
 /*
  * Unknown8
@@ -942,43 +943,40 @@ struct TlsNotifyInterface_table TlsNotifyInterface_Impl =
     TlsNotifyInterface_Remove,
 };
 
-static void* WINAPI Encryption_encrypt_relay(unsigned int cudaVersion, time_t timestamp, cuuint128_t *res)
+extern struct Encryption_table Encryption_Impl;
+static CUresult WINAPI Encryption_encrypt0(unsigned int cudaVersion, time_t timestamp, __uint128_t *res)
 {
     TRACE("%u, (%ld, %p)\n", cudaVersion, timestamp, res);
-
     // After CUDA SDK 11.6 some checks is done by the CudaRuntimeLibrary (CudaRT)
-    // This fails for some reason when using wine, so this is somewhat of a hack
-    // altering the return address to skip this check.
-    void *retAddr = (char *)__builtin_frame_address(0) + 0x8;
-    if(cudaVersion >= 12000)
-    {
-        FIXME("Cuda Version >= 12.x detected! Workaround implemented\n");
-        *((long int*)retAddr) += 0x76;
-    }
-    else if(cudaVersion >= 11070)
-    {
-        FIXME("Cuda Version 11.7 or 11.8 detected! Workaround implemented\n");
-        *((long int*)retAddr) += 0x1b7;
-    }
-    else if(cudaVersion >= 11060)
-    {
-        FIXME("Cuda Version 11.6 detected! Workaround implemented\n");
-        *((long int*)retAddr) += 0x1ca;
-    }
-    return Encryption_orig->encrypt(cudaVersion, timestamp, res);
+    // This fails, so implementing encryption function from ZLUDA for this
+
+    int version;
+    if (wine_cuDriverGetVersion(&version)) return CUDA_ERROR_UNKNOWN;
+
+    EncryptInput1 input1 = {
+        .driverVersion = (unsigned int)version,
+        .cudaVersion = cudaVersion,
+        .processID = (unsigned int)GetCurrentProcessId(),
+        .threadID = (unsigned int)GetCurrentThreadId(),
+        .exportTable1 = &Unknown1_Impl,
+        .exportTable2 = &Encryption_Impl,
+        .funcPtr = &Encryption_encrypt0,
+        .timestamp = timestamp,
+    };
+    return encrypt(&input1, res);
 }
 
-static void* WINAPI Encryption_func1_relay(void *param0)
+static CUresult WINAPI Encryption_encrypt1(void *param0)
 {
     TRACE("(%p)\n", param0);
-    return Encryption_orig->func1(param0);
+    return CUDA_ERROR_UNKNOWN;
 }
 
 struct Encryption_table Encryption_Impl =
 {
     sizeof(struct Encryption_table),
-    Encryption_encrypt_relay,
-    Encryption_func1_relay,
+    Encryption_encrypt0,
+    Encryption_encrypt1,
 };
 
 static void* WINAPI Unknown8_func0_relay(void *param0, void *param1)
@@ -2368,12 +2366,6 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     else if (cuda_equal_uuid(uuid, &UUID_Encryption))
     {
         TRACE("(%p, UUID_Encryption: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
-        if (orig_result)
-            return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Encryption_Impl, "Encryption"))
-            return CUDA_ERROR_UNKNOWN;
-
-        Encryption_orig = orig_table;
         *table = (void *)&Encryption_Impl;
         return CUDA_SUCCESS;
     }
