@@ -1,9 +1,10 @@
 # NVIDIA Libs
 
-Release: 0.7.14  
+Release: 0.7.15  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK >11.5 should now mostly be supported. There can still be missing functions  
+Running CUFFT samples with CUDA 12.3 or higher is known to crash.  
 
 Older drivers that does not support SDK 10 and older may also fail/crash. Report any crashes with  
 logs on the issue page. However these are highly outdated drivers in general and will probably not  
