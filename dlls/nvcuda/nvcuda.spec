@@ -410,7 +410,7 @@
 @ stdcall cuStreamGetCaptureInfo_v2(ptr ptr ptr ptr ptr ptr) wine_cuStreamGetCaptureInfo_v2
 @ stdcall cuStreamGetCaptureInfo_v2_ptsz(ptr ptr ptr ptr ptr ptr) wine_cuStreamGetCaptureInfo_v2_ptsz
 @ stdcall cuStreamGetCtx(ptr ptr) wine_cuStreamGetCtx
-@ stub cuStreamGetCtx_ptsz
+@ stdcall cuStreamGetCtx_ptsz(ptr ptr) wine_cuStreamGetCtx_ptsz
 @ stdcall cuStreamGetFlags(ptr ptr) wine_cuStreamGetFlags
 @ stdcall cuStreamGetFlags_ptsz(ptr ptr) wine_cuStreamGetFlags_ptsz
 @ stdcall cuStreamGetPriority(ptr ptr) wine_cuStreamGetPriority
@@ -480,7 +480,7 @@
 @ stdcall cuArrayGetSparseProperties(ptr ptr) wine_cuArrayGetSparseProperties
 @ stdcall cuCtxGetExecAffinity(ptr ptr) wine_cuCtxGetExecAffinity
 @ stdcall cuCtxResetPersistingL2Cache() wine_cuCtxResetPersistingL2Cache
-@ stub cuDeviceGetExecAffinitySupport
+@ stdcall cuDeviceGetExecAffinitySupport(ptr ptr ptr) wine_cuDeviceGetExecAffinitySupport
 @ stdcall cuDeviceGetMemPool(ptr long) wine_cuDeviceGetMemPool
 @ stdcall cuDeviceGetTexture1DLinearMaxWidth(long long long long) wine_cuDeviceGetTexture1DLinearMaxWidth
 @ stdcall cuDeviceGetUuid_v2(ptr long) wine_cuDeviceGetUuid_v2
@@ -614,18 +614,18 @@
 @ stub cudbgRpcEnabled
 @ stub cudbgSessionId
 @ stub cudbgUseExternalDebugger
-@ stub cuGraphAddBatchMemOpNode
-@ stub cuGraphBatchMemOpNodeGetParams
-@ stub cuGraphBatchMemOpNodeSetParams
-@ stub cuGraphExecBatchMemOpNodeSetParams
+@ stdcall cuGraphAddBatchMemOpNode(ptr ptr ptr long ptr) wine_cuGraphAddBatchMemOpNode
+@ stdcall cuGraphBatchMemOpNodeGetParams(ptr ptr) wine_cuGraphBatchMemOpNodeGetParams
+@ stdcall cuGraphBatchMemOpNodeSetParams(ptr ptr) wine_cuGraphBatchMemOpNodeSetParams
+@ stdcall cuGraphExecBatchMemOpNodeSetParams(ptr ptr ptr) wine_cuGraphExecBatchMemOpNodeSetParams
 @ stdcall cuStreamBatchMemOp_v2(ptr long ptr long) wine_cuStreamBatchMemOp_v2
-@ stub cuStreamBatchMemOp_v2_ptsz
+@ stdcall cuStreamBatchMemOp_v2_ptsz(ptr long ptr long) wine_cuStreamBatchMemOp_v2_ptsz
 @ stdcall cuStreamWaitValue32_v2(ptr long long long) wine_cuStreamWaitValue32_v2
 @ stdcall cuStreamWaitValue64_v2(ptr long long long) wine_cuStreamWaitValue64_v2
 @ stdcall cuStreamWriteValue32_v2(ptr long long long) wine_cuStreamWriteValue32_v2
 @ stdcall cuStreamWriteValue64_v2(ptr long long long) wine_cuStreamWriteValue64_v2
-@ stub cuStreamWaitValue32_v2_ptsz
-@ stub cuStreamWaitValue64_v2_ptsz
+@ stdcall cuStreamWaitValue32_v2_ptsz(ptr long long long) wine_cuStreamWaitValue32_v2_ptsz
+@ stdcall cuStreamWaitValue64_v2_ptsz(ptr long long long) wine_cuStreamWriteValue64_v2_ptsz
 @ stub cuStreamWriteValue32_v2_ptsz
 @ stub cuStreamWriteValue64_v2_ptsz
 @ stdcall cuCtxGetId(ptr ptr) wine_cuCtxGetId

@@ -268,20 +268,31 @@ extern void wine_cuEventDestroy_v2(void);
 extern void wine_cuEventElapsedTime(void);
 extern void wine_cuStreamWaitValue32(void);
 extern void wine_cuStreamWaitValue32_ptsz(void);
+extern void wine_cuStreamWaitValue32_v2(void);
+extern void wine_cuStreamWaitValue32_v2_ptsz(void);
 extern void wine_cuStreamWriteValue32(void);
 extern void wine_cuStreamWriteValue32_ptsz(void);
+extern void wine_cuStreamWriteValue32_v2(void);
+extern void wine_cuStreamWriteValue32_v2_ptsz(void);
 extern void wine_cuStreamWaitValue64(void);
 extern void wine_cuStreamWaitValue64_ptsz(void);
+extern void wine_cuStreamWaitValue64_v2(void);
+extern void wine_cuStreamWaitValue64_v2_ptsz(void);
 extern void wine_cuStreamWriteValue64(void);
 extern void wine_cuStreamWriteValue64_ptsz(void);
+extern void wine_cuStreamWriteValue64_v2(void);
+extern void wine_cuStreamWriteValue64_v2_ptsz(void);
 extern void wine_cuStreamBatchMemOp(void);
 extern void wine_cuStreamBatchMemOp_ptsz(void);
+extern void wine_cuStreamBatchMemOp_v2(void);
+extern void wine_cuStreamBatchMemOp_v2_ptsz(void);
 extern void wine_cuStreamCreate(void);
 extern void wine_cuStreamCreateWithPriority(void);
 extern void wine_cuStreamGetPriority(void);
 extern void wine_cuStreamGetPriority_ptsz(void);
 extern void wine_cuStreamGetFlags(void);
 extern void wine_cuStreamGetCtx(void);
+extern void wine_cuStreamGetCtx_ptsz(void);
 extern void wine_cuStreamGetFlags_ptsz(void);
 extern void wine_cuStreamGetId(void);
 extern void wine_cuStreamGetId_ptsz(void);
@@ -486,6 +497,11 @@ extern void wine_cuKernelGetParamInfo(void);
 extern void wine_cuFuncGetParamInfo(void);
 extern void wine_cuDeviceRegisterAsyncNotification(void);
 extern void wine_cuDeviceUnregisterAsyncNotification(void);
+extern void wine_cuDeviceGetExecAffinitySupport(void);
+extern void wine_cuGraphAddBatchMemOpNode(void);
+extern void wine_cuGraphBatchMemOpNodeGetParams(void);
+extern void wine_cuGraphBatchMemOpNodeSetParams(void);
+extern void wine_cuGraphExecBatchMemOpNodeSetParams(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
@@ -739,20 +755,31 @@ const FunctionMapping mappings[] = {
     {"cuEventElapsedTime", 2000, 0, wine_cuEventElapsedTime},
     {"cuStreamWaitValue32", 8000, 0, wine_cuStreamWaitValue32},
     {"cuStreamWaitValue32", 8000, 2, wine_cuStreamWaitValue32_ptsz},
+    {"cuStreamWaitValue32", 11070, 0, wine_cuStreamWaitValue32_v2},
+    {"cuStreamWaitValue32", 11070, 2, wine_cuStreamWaitValue32_v2_ptsz},
     {"cuStreamWriteValue32", 8000, 0, wine_cuStreamWriteValue32},
     {"cuStreamWriteValue32", 8000, 2, wine_cuStreamWriteValue32_ptsz},
+    {"cuStreamWriteValue32", 11070, 0, wine_cuStreamWriteValue32_v2},
+    {"cuStreamWriteValue32", 11070, 2, wine_cuStreamWriteValue32_v2_ptsz},
     {"cuStreamWaitValue64", 9000, 0, wine_cuStreamWaitValue64},
     {"cuStreamWaitValue64", 9000, 2, wine_cuStreamWaitValue64_ptsz},
+    {"cuStreamWaitValue64", 11070, 0, wine_cuStreamWaitValue64_v2},
+    {"cuStreamWaitValue64", 11070, 2, wine_cuStreamWaitValue64_v2_ptsz},
     {"cuStreamWriteValue64", 9000, 0, wine_cuStreamWriteValue64},
     {"cuStreamWriteValue64", 9000, 2, wine_cuStreamWriteValue64_ptsz},
+    {"cuStreamWriteValue64", 11070, 0, wine_cuStreamWriteValue64_v2},
+    {"cuStreamWriteValue64", 11070, 2, wine_cuStreamWriteValue64_v2_ptsz},
     {"cuStreamBatchMemOp", 8000, 0, wine_cuStreamBatchMemOp},
     {"cuStreamBatchMemOp", 8000, 2, wine_cuStreamBatchMemOp_ptsz},
+    {"cuStreamBatchMemOp", 11070, 0, wine_cuStreamBatchMemOp_v2},
+    {"cuStreamBatchMemOp", 11070, 2, wine_cuStreamBatchMemOp_v2_ptsz},
     {"cuStreamCreate", 2000, 0, wine_cuStreamCreate},
     {"cuStreamCreateWithPriority", 5050, 0, wine_cuStreamCreateWithPriority},
     {"cuStreamGetPriority", 5050, 0, wine_cuStreamGetPriority},
     {"cuStreamGetPriority", 7000, 2, wine_cuStreamGetPriority_ptsz},
     {"cuStreamGetFlags", 5050, 0, wine_cuStreamGetFlags},
     {"cuStreamGetCtx", 9020, 0, wine_cuStreamGetCtx},
+    {"cuStreamGetCtx", 9020, 2, wine_cuStreamGetCtx_ptsz},
     {"cuStreamGetFlags", 7000, 2, wine_cuStreamGetFlags_ptsz},
     {"cuStreamGetId", 12000, 0, wine_cuStreamGetId},
     {"cuStreamGetId", 12000, 2, wine_cuStreamGetId_ptsz},
@@ -958,6 +985,11 @@ const FunctionMapping mappings[] = {
     {"cuFuncGetParamInfo", 12040, 0, wine_cuFuncGetParamInfo},
     {"cuDeviceRegisterAsyncNotification", 12040, 0, wine_cuDeviceRegisterAsyncNotification},
     {"cuDeviceUnregisterAsyncNotification", 12040, 0, wine_cuDeviceUnregisterAsyncNotification},
+    {"cuDeviceGetExecAffinitySupport", 11040, 0, wine_cuDeviceGetExecAffinitySupport},
+    {"cuGraphAddBatchMemOpNode", 11070, 0, wine_cuGraphAddBatchMemOpNode},
+    {"cuGraphBatchMemOpNodeGetParams", 11070, 0, wine_cuGraphBatchMemOpNodeGetParams},
+    {"cuGraphBatchMemOpNodeSetParams", 11070, 0, wine_cuGraphBatchMemOpNodeSetParams},
+    {"cuGraphExecBatchMemOpNodeSetParams", 11070, 0, wine_cuGraphExecBatchMemOpNodeSetParams},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);

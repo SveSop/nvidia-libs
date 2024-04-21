@@ -444,6 +444,7 @@ static CUresult (*pcuLaunchCooperativeKernel_ptsz)(CUfunction f, unsigned int gr
                                               unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void **kernelParams);
 static CUresult (*pcuLaunchCooperativeKernelMultiDevice)(void *launchParamsList, unsigned int numDevices, unsigned int flags);
 static CUresult (*pcuStreamGetCtx)(CUstream hStream, CUcontext *pctx);
+static CUresult (*pcuStreamGetCtx_ptsz)(CUstream hStream, CUcontext *pctx);
 static CUresult (*pcuStreamWaitValue32_ptsz)(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags);
 static CUresult (*pcuStreamWriteValue32_ptsz)(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags);
 static CUresult (*pcuStreamWaitValue64_ptsz)(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags);
@@ -612,20 +613,30 @@ static CUresult (*pcuCtxGetExecAffinity)(void *pExecAffinity, void *type);
 static CUresult (*pcuArrayGetMemoryRequirements)(void *memoryRequirements, CUarray array, CUdevice device);
 static CUresult (*pcuMipmappedArrayGetMemoryRequirements)(void *memoryRequirements, void *mipmap, CUdevice device);
 static CUresult (*pcuStreamWaitValue32_v2)(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags);
+static CUresult (*pcuStreamWaitValue32_v2_ptsz)(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags);
 static CUresult (*pcuStreamWriteValue32_v2)(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags);
+static CUresult (*pcuStreamWriteValue32_v2_ptsz)(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags);
 static CUresult (*pcuStreamWaitValue64_v2)(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags);
+static CUresult (*pcuStreamWaitValue64_v2_ptsz)(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags);
 static CUresult (*pcuStreamWriteValue64_v2)(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags);
+static CUresult (*pcuStreamWriteValue64_v2_ptsz)(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags);
 static CUresult (*pcuGraphInstantiate_v2)(CUgraphExec *phGraphExec, CUgraph hGraph, CUgraphNode *phErrorNode, char *logBuffer, size_t bufferSize);
 static CUresult (*pcuGetProcAddress)(const char *symbol, void **pfn, int driverVersion, cuuint64_t flags);
 static CUresult (*pcuStreamBatchMemOp_v2)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
 static CUresult (*pcuIpcOpenMemHandle_v2)(CUdeviceptr_v2 *pdptr, CUipcMemHandle handle, unsigned int Flags);
 static CUresult (*pcuStreamBatchMemOp_ptsz)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
+static CUresult (*pcuStreamBatchMemOp_v2_ptsz)(CUstream stream, unsigned int count, void *paramArray, unsigned int flags);
 static CUresult (*pcuOccupancyMaxPotentialClusterSize)(int *clusterSize, CUfunction func, const CUlaunchConfig *config);
 static CUresult (*pcuDeviceGetUuid_v2)(CUuuid *uuid, CUdevice dev);
 static CUresult (*pcuFuncGetModule)(CUmodule *hmod, CUfunction hfunc);
 static CUresult (*pcuDevicePrimaryCtxSetFlags_v2)(CUdevice dev, unsigned int flags);
 static CUresult (*pcuDevicePrimaryCtxReset_v2)(CUdevice dev);
 static CUresult (*pcuDevicePrimaryCtxRelease_v2)(CUdevice dev);
+static CUresult (*pcuDeviceGetExecAffinitySupport)(int *pi, void *type, CUdevice dev);
+static CUresult (*pcuGraphAddBatchMemOpNode)(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const void *nodeParams);
+static CUresult (*pcuGraphBatchMemOpNodeGetParams)(CUgraphNode hNode, void *nodeParams_out);
+static CUresult (*pcuGraphBatchMemOpNodeSetParams)(CUgraphNode hNode, const void *nodeParams);
+static CUresult (*pcuGraphExecBatchMemOpNodeSetParams)(CUgraphExec graphExec, CUgraphNode node, const void *nodeParams);
 
 /* Cuda 12 */
 static CUresult (*pcuLibraryLoadData)(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
@@ -1062,6 +1073,7 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuLaunchCooperativeKernel_ptsz);
     LOAD_FUNCPTR(cuLaunchCooperativeKernelMultiDevice);
     LOAD_FUNCPTR(cuStreamGetCtx);
+    LOAD_FUNCPTR(cuStreamGetCtx_ptsz);
     LOAD_FUNCPTR(cuStreamWaitValue32_ptsz);
     LOAD_FUNCPTR(cuStreamWriteValue32_ptsz);
     LOAD_FUNCPTR(cuStreamWaitValue64_ptsz);
@@ -1228,14 +1240,19 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuArrayGetMemoryRequirements);
     TRY_LOAD_FUNCPTR(cuMipmappedArrayGetMemoryRequirements);
     TRY_LOAD_FUNCPTR(cuStreamWaitValue32_v2);
+    TRY_LOAD_FUNCPTR(cuStreamWaitValue32_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamWriteValue32_v2);
+    TRY_LOAD_FUNCPTR(cuStreamWriteValue32_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamWaitValue64_v2);
+    TRY_LOAD_FUNCPTR(cuStreamWaitValue64_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuStreamWriteValue64_v2);
+    TRY_LOAD_FUNCPTR(cuStreamWriteValue64_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuGraphInstantiate_v2);
     TRY_LOAD_FUNCPTR(cuGetProcAddress);
     TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_v2);
     TRY_LOAD_FUNCPTR(cuIpcOpenMemHandle_v2);
     TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_ptsz);
+    TRY_LOAD_FUNCPTR(cuStreamBatchMemOp_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuOccupancyMaxPotentialClusterSize);
     TRY_LOAD_FUNCPTR(cuGraphGetEdges_v2);
     TRY_LOAD_FUNCPTR(cuDeviceGetUuid_v2);
@@ -1243,6 +1260,11 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuDevicePrimaryCtxSetFlags_v2);
     TRY_LOAD_FUNCPTR(cuDevicePrimaryCtxReset_v2);
     TRY_LOAD_FUNCPTR(cuDevicePrimaryCtxRelease_v2);
+    TRY_LOAD_FUNCPTR(cuDeviceGetExecAffinitySupport);
+    TRY_LOAD_FUNCPTR(cuGraphAddBatchMemOpNode);
+    TRY_LOAD_FUNCPTR(cuGraphBatchMemOpNodeGetParams);
+    TRY_LOAD_FUNCPTR(cuGraphBatchMemOpNodeSetParams);
+    TRY_LOAD_FUNCPTR(cuGraphExecBatchMemOpNodeSetParams);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -3549,6 +3571,12 @@ CUresult WINAPI wine_cuStreamGetCtx(CUstream hStream, CUcontext *pctx)
     return pcuStreamGetCtx(hStream, pctx);
 }
 
+CUresult WINAPI wine_cuStreamGetCtx_ptsz(CUstream hStream, CUcontext *pctx)
+{
+    TRACE("(%p, %p)\n", hStream, pctx);
+    return pcuStreamGetCtx_ptsz(hStream, pctx);
+}
+
 CUresult WINAPI wine_cuStreamWaitValue32_ptsz(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags)
 {
     TRACE("(%p, " DEV_PTR ", %u, %u)\n", stream, addr, value, flags);
@@ -4648,11 +4676,25 @@ CUresult WINAPI wine_cuStreamWaitValue32_v2(CUstream stream, CUdeviceptr_v2 addr
     return pcuStreamWaitValue32_v2(stream, addr, value, flags);
 }
 
+CUresult WINAPI wine_cuStreamWaitValue32_v2_ptsz(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags)
+{
+    TRACE("(%p, " DEV_PTR ", %u, %u)\n", stream, addr, value, flags);
+    CHECK_FUNCPTR(cuStreamWaitValue32_v2_ptsz);
+    return pcuStreamWaitValue32_v2_ptsz(stream, addr, value, flags);
+}
+
 CUresult WINAPI wine_cuStreamWriteValue32_v2(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags)
 {
     TRACE("(%p, " DEV_PTR ", %u, %u)\n", stream, addr, value, flags);
     CHECK_FUNCPTR(cuStreamWriteValue32_v2);
     return pcuStreamWriteValue32_v2(stream, addr, value, flags);
+}
+
+CUresult WINAPI wine_cuStreamWriteValue32_v2_ptsz(CUstream stream, CUdeviceptr_v2 addr, cuuint32_t value, unsigned int flags)
+{
+    TRACE("(%p, " DEV_PTR ", %u, %u)\n", stream, addr, value, flags);
+    CHECK_FUNCPTR(cuStreamWriteValue32_v2_ptsz);
+    return pcuStreamWriteValue32_v2_ptsz(stream, addr, value, flags);
 }
 
 CUresult WINAPI wine_cuStreamWaitValue64_v2(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags)
@@ -4662,11 +4704,25 @@ CUresult WINAPI wine_cuStreamWaitValue64_v2(CUstream stream, CUdeviceptr_v2 addr
     return pcuStreamWaitValue64_v2(stream, addr, value, flags);
 }
 
+CUresult WINAPI wine_cuStreamWaitValue64_v2_ptsz(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags)
+{
+    TRACE("(%p, " DEV_PTR ", %lu, %u)\n", stream, addr, (SIZE_T)value, flags);
+    CHECK_FUNCPTR(cuStreamWaitValue64_v2_ptsz);
+    return pcuStreamWaitValue64_v2_ptsz(stream, addr, value, flags);
+}
+
 CUresult WINAPI wine_cuStreamWriteValue64_v2(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags)
 {
     TRACE("(%p, " DEV_PTR ", %lu, %u)\n", stream, addr, (SIZE_T)value, flags);
     CHECK_FUNCPTR(cuStreamWriteValue64_v2);
     return pcuStreamWriteValue64_v2(stream, addr, value, flags);
+}
+
+CUresult WINAPI wine_cuStreamWriteValue64_v2_ptsz(CUstream stream, CUdeviceptr_v2 addr, cuuint64_t value, unsigned int flags)
+{
+    TRACE("(%p, " DEV_PTR ", %lu, %u)\n", stream, addr, (SIZE_T)value, flags);
+    CHECK_FUNCPTR(cuStreamWriteValue64_v2_ptsz);
+    return pcuStreamWriteValue64_v2_ptsz(stream, addr, value, flags);
 }
 
 CUresult WINAPI wine_cuGraphInstantiate_v2(CUgraphExec *phGraphExec, CUgraph hGraph, CUgraphNode *phErrorNode, char *logBuffer, size_t bufferSize)
@@ -4710,6 +4766,13 @@ CUresult WINAPI wine_cuStreamBatchMemOp_ptsz(CUstream stream, unsigned int count
     return pcuStreamBatchMemOp_ptsz(stream, count, paramArray, flags);
 }
 
+CUresult WINAPI wine_cuStreamBatchMemOp_v2_ptsz(CUstream stream, unsigned int count, void *paramArray, unsigned int flags)
+{
+    TRACE("(%p, %u, %p, %u)\n", stream, count, paramArray, flags);
+    CHECK_FUNCPTR(cuStreamBatchMemOp_v2_ptsz);
+    return pcuStreamBatchMemOp_v2_ptsz(stream, count, paramArray, flags);
+}
+
 CUresult WINAPI wine_cuOccupancyMaxPotentialClusterSize(int *clusterSize, CUfunction func, const CUlaunchConfig *config)
 {
     TRACE("(%p, %p, %p)\n", clusterSize, func, config);
@@ -4741,19 +4804,57 @@ CUresult WINAPI wine_cuFuncGetModule(CUmodule *hmod, CUfunction hfunc)
 CUresult WINAPI wine_cuDevicePrimaryCtxSetFlags_v2(CUdevice dev, unsigned int flags)
 {
     TRACE("(%u, %u)\n", dev, flags);
+    CHECK_FUNCPTR(cuDevicePrimaryCtxSetFlags_v2);
     return pcuDevicePrimaryCtxSetFlags_v2(dev, flags);
 }
 
 CUresult WINAPI wine_cuDevicePrimaryCtxReset_v2(CUdevice dev)
 {
     TRACE("(%u)\n", dev);
+    CHECK_FUNCPTR(cuDevicePrimaryCtxReset_v2);
     return pcuDevicePrimaryCtxReset_v2(dev);
 }
 
 CUresult WINAPI wine_cuDevicePrimaryCtxRelease_v2(CUdevice dev)
 {
     TRACE("(%u)\n", dev);
+    CHECK_FUNCPTR(cuDevicePrimaryCtxRelease_v2);
     return pcuDevicePrimaryCtxRelease_v2(dev);
+}
+
+CUresult WINAPI wine_cuDeviceGetExecAffinitySupport(int *pi, void *type, CUdevice dev)
+{
+    TRACE("(%p, %p, %u)\n", pi, type, dev);
+    CHECK_FUNCPTR(cuDeviceGetExecAffinitySupport);
+    return pcuDeviceGetExecAffinitySupport(pi, type, dev);
+}
+
+CUresult WINAPI wine_cuGraphAddBatchMemOpNode(CUgraphNode *phGraphNode, CUgraph hGraph, const CUgraphNode *dependencies, size_t numDependencies, const void *nodeParams)
+{
+    TRACE("(%p, %p, %p, %lu, %p)\n", phGraphNode, hGraph, dependencies, (SIZE_T)numDependencies, nodeParams);
+    CHECK_FUNCPTR(cuGraphAddBatchMemOpNode);
+    return pcuGraphAddBatchMemOpNode(phGraphNode, hGraph, dependencies, numDependencies, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphBatchMemOpNodeGetParams(CUgraphNode hNode, void *nodeParams_out)
+{
+    TRACE("(%p, %p)\n", hNode, nodeParams_out);
+    CHECK_FUNCPTR(cuGraphBatchMemOpNodeGetParams);
+    return pcuGraphBatchMemOpNodeGetParams(hNode, nodeParams_out);
+}
+
+CUresult WINAPI wine_cuGraphBatchMemOpNodeSetParams(CUgraphNode hNode, const void *nodeParams)
+{
+    TRACE("(%p, %p)\n", hNode, nodeParams);
+    CHECK_FUNCPTR(cuGraphBatchMemOpNodeSetParams);
+    return pcuGraphBatchMemOpNodeSetParams(hNode, nodeParams);
+}
+
+CUresult WINAPI wine_cuGraphExecBatchMemOpNodeSetParams(CUgraphExec graphExec, CUgraphNode node, const void *nodeParams)
+{
+    TRACE("(%p, %p, %p)\n", graphExec, node, nodeParams);
+    CHECK_FUNCPTR(cuGraphExecBatchMemOpNodeSetParams);
+    return pcuGraphExecBatchMemOpNodeSetParams(graphExec, node, nodeParams);
 }
 
 /*
