@@ -40,11 +40,11 @@ struct EncryptInput2_st {
 };
 typedef struct EncryptInput2_st EncryptInput2;
 
-CUresult __attribute((visibility("hidden"))) WINAPI wine_cuDeviceGet(CUdevice *device, int ordinal);
-CUresult __attribute((visibility("hidden"))) WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice device);
-CUresult __attribute((visibility("hidden"))) WINAPI wine_cuDriverGetVersion(int *version);
-CUresult __attribute((visibility("hidden"))) WINAPI wine_cuDeviceGetCount(int *count);
-CUresult __attribute((visibility("hidden"))) WINAPI wine_cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice device);
-CUresult __attribute((visibility("hidden"))) WINAPI encrypt(EncryptInput1 *input1, __uint128_t *res);
+CUresult WINAPI wine_cuDeviceGet(CUdevice *device, int ordinal);
+CUresult WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice device);
+CUresult WINAPI wine_cuDriverGetVersion(int *version);
+CUresult WINAPI wine_cuDeviceGetCount(int *count);
+CUresult WINAPI wine_cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice device);
+CUresult WINAPI encrypt(EncryptInput1 *input1, __uint128_t *res);
 
 #endif /* ENCRYPTION_H */
