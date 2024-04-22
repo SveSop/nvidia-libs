@@ -635,7 +635,7 @@ struct Unknown10_table
     int size;
     void* (WINAPI *func0)(void *param0);
     void* (WINAPI *func1)(void *param0, void *param1);
-    void* (WINAPI *func2)(void *param0);
+    void* (WINAPI *func2)(void);
     void* (WINAPI *func3)(void *param0);
 };
 static const struct
@@ -643,7 +643,7 @@ static const struct
     int size;
     void* (*func0)(void *param0);
     void* (*func1)(void *param0, void *param1);
-    void* (*func2)(void *param0);
+    void* (*func2)(void);
     void* (*func3)(void *param0);
 } *Unknown10_orig = NULL;
 
@@ -2233,10 +2233,10 @@ static void* WINAPI Unknown10_func1_relay(void *param0, void *param1)
     return Unknown10_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown10_func2_relay(void *param0)
+static void* WINAPI Unknown10_func2_relay(void)
 {
-    TRACE("(%p)\n", param0);
-    return Unknown10_orig->func2(param0);
+    TRACE("()\n");
+    return Unknown10_orig->func2();
 }
 
 static void* WINAPI Unknown10_func3_relay(void *param0)
