@@ -5041,12 +5041,14 @@ CUresult WINAPI wine_cuStreamGetId_ptsz(CUstream hStream, unsigned long long *st
 CUresult WINAPI wine_cuGetProcAddress_v2(const char *symbol, void **pfn, int driverVersion, cuuint64_t flags, CUdriverProcAddressQueryResult *symbolFound)
 {
     CHECK_FUNCPTR(cuGetProcAddress_v2);
-    symbolFound = (CUdriverProcAddressQueryResult *)CU_GET_PROC_ADDRESS_SUCCESS;
+    if (!symbolFound) symbolFound = (CUdriverProcAddressQueryResult*)malloc(sizeof(CUdriverProcAddressQueryResult));
+
     get_addr(symbol, driverVersion, flags, pfn);
+    *symbolFound = CU_GET_PROC_ADDRESS_SUCCESS;
 
     if(*pfn == NULL) {
         FIXME("(%s, %d, %lu) The SYMBOL ADDRESS was NOT found! Returned CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND\n", symbol, driverVersion, (SIZE_T)flags);
-        symbolFound = (CUdriverProcAddressQueryResult *)CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND;
+        *symbolFound = CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND;
         return CUDA_SUCCESS;
     }
     TRACE("(%s, %d, %lu) returned address: (%p)\n", symbol, driverVersion, (SIZE_T)flags, *pfn);
