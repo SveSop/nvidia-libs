@@ -1564,8 +1564,7 @@ CUresult WINAPI wine_cuDeviceGet(CUdevice *device, int ordinal)
 
 CUresult WINAPI wine_cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice dev)
 {
-    CUresult ret;
-    ret = pcuDeviceGetAttribute(pi, attrib, dev);
+    CUresult ret = pcuDeviceGetAttribute(pi, attrib, dev);
     if(ret != CUDA_SUCCESS) TRACE("Attribute: %d, Returned error: %d\n", attrib, ret);
     else TRACE("(Device: %d, Attribute: %d) Value: (%d)\n", dev, attrib, *pi);
     return ret;
@@ -1791,8 +1790,7 @@ CUresult WINAPI wine_cuGetErrorString(CUresult error, const char **pStr)
 CUresult WINAPI wine_cuGetExportTable(const void **table, const CUuuid *id)
 {
     const void* orig_table = NULL;
-    CUresult ret;
-    ret = pcuGetExportTable(&orig_table, id);
+    CUresult ret = pcuGetExportTable(&orig_table, id);
     return cuda_get_table(table, id, orig_table, ret);
 }
 
@@ -2496,7 +2494,6 @@ CUresult WINAPI wine_cuModuleLoad(CUmodule *module, const char *fname)
 {
     WCHAR filenameW[MAX_PATH];
     char *unix_name;
-    CUresult ret;
 
     TRACE("(%p, %s)\n", module, fname);
 
@@ -2506,7 +2503,7 @@ CUresult WINAPI wine_cuModuleLoad(CUmodule *module, const char *fname)
     MultiByteToWideChar(CP_ACP, 0, fname, -1, filenameW, ARRAY_SIZE(filenameW));
     unix_name = wine_get_unix_file_name( filenameW );
 
-    ret = pcuModuleLoad(module, unix_name);
+    CUresult ret = pcuModuleLoad(module, unix_name);
     HeapFree(GetProcessHeap(), 0, unix_name);
     return ret;
 }
@@ -3016,11 +3013,10 @@ CUresult WINAPI wine_cuProfilerInitialize(const char *configFile, const char *ou
 CUresult WINAPI wine_cuWGLGetDevice(CUdevice_v1 *pDevice, void *hGpu)
 {
     // This function does not appear in the LINUX api version
-    CUresult ret;
     CUdevice dev;
 
     FIXME("(%p, %p) - semi-stub\n", pDevice, hGpu);
-    ret = pcuDeviceGet(&dev, 0);
+    CUresult ret = pcuDeviceGet(&dev, 0);
     if (ret) return ret;
 
     if (pDevice)
@@ -3607,10 +3603,9 @@ CUresult WINAPI wine_cuStreamWriteValue64_ptsz(CUstream stream, CUdeviceptr_v2 a
 
 CUresult WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice dev)
 {
-    CUresult ret;
     char buffer[128];
 
-    ret = pcuDeviceGetUuid(uuid, dev);
+    CUresult ret = pcuDeviceGetUuid(uuid, dev);
     if(ret == CUDA_SUCCESS){
         TRACE("(UUID: %s, Device: %d)\n", cuda_print_uuid(uuid, buffer, sizeof(buffer)), dev);
         return ret;
@@ -4783,10 +4778,9 @@ CUresult WINAPI wine_cuOccupancyMaxPotentialClusterSize(int *clusterSize, CUfunc
 CUresult WINAPI wine_cuDeviceGetUuid_v2(CUuuid *uuid, CUdevice dev)
 {
     CHECK_FUNCPTR(cuDeviceGetUuid_v2);
-    CUresult ret;
     char buffer[128];
 
-    ret = pcuDeviceGetUuid_v2(uuid, dev);
+    CUresult ret = pcuDeviceGetUuid_v2(uuid, dev);
     if(ret == CUDA_SUCCESS){
         TRACE("(UUID: %s, Device: %d)\n", cuda_print_uuid(uuid, buffer, sizeof(buffer)), dev);
         return ret;
@@ -5044,13 +5038,14 @@ CUresult WINAPI wine_cuGetProcAddress_v2(const char *symbol, void **pfn, int dri
     if (!symbolFound) symbolFound = (CUdriverProcAddressQueryResult*)malloc(sizeof(CUdriverProcAddressQueryResult));
 
     get_addr(symbol, driverVersion, flags, pfn);
-    *symbolFound = CU_GET_PROC_ADDRESS_SUCCESS;
 
-    if(*pfn == NULL) {
+    if(*pfn == NULL)
+    {
         FIXME("(%s, %d, %lu) The SYMBOL ADDRESS was NOT found! Returned CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND\n", symbol, driverVersion, (SIZE_T)flags);
         *symbolFound = CU_GET_PROC_ADDRESS_SYMBOL_NOT_FOUND;
         return CUDA_SUCCESS;
     }
+    *symbolFound = CU_GET_PROC_ADDRESS_SUCCESS;
     TRACE("(%s, %d, %lu) returned address: (%p)\n", symbol, driverVersion, (SIZE_T)flags, *pfn);
     return CUDA_SUCCESS;
 }

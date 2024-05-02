@@ -821,7 +821,6 @@ static void storage_destructor_callback(CUcontext ctx, void *key, void *value)
 static CUresult WINAPI ContextStorage_Set(CUcontext ctx, void *key, void *value, void *callback)
 {
     struct context_storage *storage;
-    CUresult ret;
 
     TRACE("(%p, %p, %p, %p)\n", ctx, key, value, callback);
 
@@ -832,7 +831,7 @@ static CUresult WINAPI ContextStorage_Set(CUcontext ctx, void *key, void *value,
     storage->callback = callback;
     storage->value = value;
 
-    ret = ContextStorage_orig->Set(ctx, key, storage, storage_destructor_callback);
+    CUresult ret = ContextStorage_orig->Set(ctx, key, storage, storage_destructor_callback);
     if (ret) HeapFree( GetProcessHeap(), 0, storage );
     return ret;
 }
@@ -855,11 +854,10 @@ static CUresult WINAPI ContextStorage_Remove(CUcontext ctx, void *key)
 static CUresult WINAPI ContextStorage_Get(void **value, CUcontext ctx, void *key)
 {
     struct context_storage *storage;
-    CUresult ret;
 
     TRACE("(%p, %p, %p)\n", value, ctx, key);
 
-    ret = ContextStorage_orig->Get((void **)&storage, ctx, key);
+    CUresult ret = ContextStorage_orig->Get((void **)&storage, ctx, key);
     if (!ret) *value = storage->value;
     return ret;
 }
