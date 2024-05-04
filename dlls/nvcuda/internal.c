@@ -89,19 +89,19 @@ void cuda_process_tls_callbacks(DWORD reason)
     LeaveCriticalSection( &tls_callback_section );
 }
 
-static const CUuuid UUID_Unknown1                   = {{0x6B, 0xD5, 0xFB, 0x6C, 0x5B, 0xF4, 0xE7, 0x4A,
+static const CUuuid UUID_Relay1                     = {{0x6B, 0xD5, 0xFB, 0x6C, 0x5B, 0xF4, 0xE7, 0x4A,
                                                         0x89, 0x87, 0xD9, 0x39, 0x12, 0xFD, 0x9D, 0xF9}};
                                                     // {6bd5fb6c-5bf4-e74a-8987-d93912fd9df9}
-static const CUuuid UUID_Unknown2                   = {{0xA0, 0x94, 0x79, 0x8C, 0x2E, 0x74, 0x2E, 0x74,
+static const CUuuid UUID_Relay2                     = {{0xA0, 0x94, 0x79, 0x8C, 0x2E, 0x74, 0x2E, 0x74,
                                                         0x93, 0xF2, 0x08, 0x00, 0x20, 0x0C, 0x0A, 0x66}};
                                                     // {a094798c-2e74-2e74-93f2-0800200c0a66}
-static const CUuuid UUID_Unknown3                   = {{0x42, 0xD8, 0x5A, 0x81, 0x23, 0xF6, 0xCB, 0x47,
+static const CUuuid UUID_Relay3                     = {{0x42, 0xD8, 0x5A, 0x81, 0x23, 0xF6, 0xCB, 0x47,
                                                         0x82, 0x98, 0xF6, 0xE7, 0x8A, 0x3A, 0xEC, 0xDC}};
                                                     // {42d85a81-23f6-cb47-8298-f6e78a3aecdc}
 static const CUuuid UUID_ContextStorage             = {{0xC6, 0x93, 0x33, 0x6E, 0x11, 0x21, 0xDF, 0x11,
                                                         0xA8, 0xC3, 0x68, 0xF3, 0x55, 0xD8, 0x95, 0x93}};
                                                     // {c693336e-1121-df11-a8c3-68f355d89593}
-static const CUuuid UUID_Unknown5                   = {{0x0C, 0xA5, 0x0B, 0x8C, 0x10, 0x04, 0x92, 0x9A,
+static const CUuuid UUID_Relay5                     = {{0x0C, 0xA5, 0x0B, 0x8C, 0x10, 0x04, 0x92, 0x9A,
                                                         0x89, 0xA7, 0xD0, 0xDF, 0x10, 0xE7, 0x72, 0x86}};
                                                     // {0ca50b8c-1004-929a-89a7-f0ff10e77286}
 static const CUuuid UUID_TlsNotifyInterface         = {{0x19, 0x5B, 0xCB, 0xF4, 0xD6, 0x7D, 0x02, 0x4A,
@@ -110,13 +110,13 @@ static const CUuuid UUID_TlsNotifyInterface         = {{0x19, 0x5B, 0xCB, 0xF4, 
 static const CUuuid UUID_Encryption                 = {{0xD4, 0x08, 0x20, 0x55, 0xBD, 0xE6, 0x70, 0x4B,
                                                         0x8D, 0x34, 0xBA, 0x12, 0x3C, 0x66, 0xE1, 0xF2}};
                                                     // {d4082055-bde6-704b-8d34-ba123c66e1f2}
-static const CUuuid UUID_Unknown8                   = {{0x21, 0x31, 0x8C, 0x60, 0x97, 0x14, 0x32, 0x48,
+static const CUuuid UUID_Relay8                     = {{0x21, 0x31, 0x8C, 0x60, 0x97, 0x14, 0x32, 0x48,
                                                         0x8C, 0xA6, 0x41, 0xFF, 0x73, 0x24, 0xC8, 0xF2}};
                                                     // {21318c60-9714-3248-8ca6-41ff7324c8f2}
-static const CUuuid UUID_Unknown9                   = {{0x6E, 0x16, 0x3F, 0xBE, 0xB9, 0x58, 0x44, 0x4D,
+static const CUuuid UUID_Relay9                     = {{0x6E, 0x16, 0x3F, 0xBE, 0xB9, 0x58, 0x44, 0x4D,
                                                         0x83, 0x5C, 0xE1, 0x82, 0xAF, 0xF1, 0x99, 0x1E}};
                                                     // {6e163fbe-b958-444d-835c-e182aff1991e}
-static const CUuuid UUID_Unknown10                  = {{0x26, 0x3E, 0x88, 0x60, 0x7C, 0xD2, 0x61, 0x43,
+static const CUuuid UUID_Relay10                    = {{0x26, 0x3E, 0x88, 0x60, 0x7C, 0xD2, 0x61, 0x43,
                                                         0x92, 0xF6, 0xBB, 0xD5, 0x00, 0x6D, 0xFA, 0x7E}};
                                                     // {263e8860-7cd2-6143-92f6-bbd5006dfa7e}
 
@@ -127,9 +127,9 @@ struct cuda_table
 };
 
 /*
- * Unknown1
+ * Relay1
  */
-struct Unknown1_table
+struct Relay1_table
 {
     int size;
     void* (WINAPI *func0)(void *param0, void *param1);
@@ -158,12 +158,12 @@ static const struct
     void* (*func8)(void *param0, void *param1);
     void* (*func9)(void *param0, void *param1);
     void* (*func10)(void *param0, void *param1);
-} *Unknown1_orig = NULL;
+} *Relay1_orig = NULL;
 
 /*
- * Unknown2
+ * Relay2
  */
-struct Unknown2_table
+struct Relay2_table
 {
     int size;
     void* (WINAPI *func0)(void *param0, void *param1);
@@ -182,12 +182,12 @@ static const struct
     void* (*func3)(void *param0, void *param1);
     void* (*func4)(void *param0, void *param1);
     void* (*func5)(void *param0, void *param1);
-} *Unknown2_orig = NULL;
+} *Relay2_orig = NULL;
 
 /*
- * Unknown3
+ * Relay3
  */
-struct Unknown3_table
+struct Relay3_table
 {
     int size;
     void* (WINAPI *func0)(void *param0);
@@ -198,7 +198,7 @@ static const struct
     int size;
     void* (*func0)(void *param0);
     void* (*func1)(void *param0);
-} *Unknown3_orig = NULL;
+} *Relay3_orig = NULL;
 
 /*
  * ContextStorage
@@ -217,9 +217,9 @@ static const struct
 } *ContextStorage_orig = NULL;
 
 /*
- * Unknown5
+ * Relay5
  */
-struct Unknown5_table
+struct Relay5_table
 {
     int size;
     void* (WINAPI *func0)(void *param0, void *param1, void *param2);
@@ -228,7 +228,7 @@ static const struct
 {
     int size;
     void* (*func0)(void *param0, void *param1, void *param2);
-} *Unknown5_orig = NULL;
+} *Relay5_orig = NULL;
 
 
 /*
@@ -252,9 +252,9 @@ struct Encryption_table
 };
 
 /*
- * Unknown8
+ * Relay8
  */
-struct Unknown8_table
+struct Relay8_table
 {
     int size;
     void* (WINAPI *func0)(void *param0, void *param1);
@@ -431,12 +431,12 @@ static const struct
     void* (*func82)(void *param0, void *param1);
     void* (*func83)(void *param0, void *param1);
     void* (*func84)(void *param0, void *param1);
-} *Unknown8_orig = NULL;
+} *Relay8_orig = NULL;
 
 /*
- * Unknown9
+ * Relay9
  */
-struct Unknown9_table
+struct Relay9_table
 {
     int size;
     void* (WINAPI *func0)(void *param0, void *param1);
@@ -625,12 +625,12 @@ static const struct
     void* (*func88)(void *param0, void *param1);
     void* (*func89)(void *param0, void *param1);
     void* (*func90)(void *param0, void *param1);
-} *Unknown9_orig = NULL;
+} *Relay9_orig = NULL;
 
 /*
- * Unknown10
+ * Relay10
  */
-struct Unknown10_table
+struct Relay10_table
 {
     int size;
     void* (WINAPI *func0)(void *param0);
@@ -645,154 +645,154 @@ static const struct
     void* (*func1)(void *param0, void *param1);
     void* (*func2)(void);
     void* (*func3)(void *param0);
-} *Unknown10_orig = NULL;
+} *Relay10_orig = NULL;
 
-static void* WINAPI Unknown1_func0_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func0(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func0(param0, param1);
+    return Relay1_orig->func0(param0, param1);
 }
 
-static void* WINAPI Unknown1_func1_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func1(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func1(param0, param1);
+    return Relay1_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown1_func2_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func2(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func2(param0, param1);
+    return Relay1_orig->func2(param0, param1);
 }
 
-static void* WINAPI Unknown1_func3_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func3(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func3(param0, param1);
+    return Relay1_orig->func3(param0, param1);
 }
 
-static void* WINAPI Unknown1_func4_relay(void *param0)
+static void* WINAPI Relay1_func4(void *param0)
 {
     TRACE("(%p)\n", param0);
-    return Unknown1_orig->func4(param0);
+    return Relay1_orig->func4(param0);
 }
 
-static void* WINAPI Unknown1_func5_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func5(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func5(param0, param1);
+    return Relay1_orig->func5(param0, param1);
 }
 
-static void* WINAPI Unknown1_func6_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func6(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func6(param0, param1);
+    return Relay1_orig->func6(param0, param1);
 }
 
-static void* WINAPI Unknown1_func7_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func7(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func7(param0, param1);
+    return Relay1_orig->func7(param0, param1);
 }
 
-static void* WINAPI Unknown1_func8_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func8(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func8(param0, param1);
+    return Relay1_orig->func8(param0, param1);
 }
 
-static void* WINAPI Unknown1_func9_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func9(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func9(param0, param1);
+    return Relay1_orig->func9(param0, param1);
 }
 
-static void* WINAPI Unknown1_func10_relay(void *param0, void *param1)
+static void* WINAPI Relay1_func10(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown1_orig->func10(param0, param1);
+    return Relay1_orig->func10(param0, param1);
 }
 
-struct Unknown1_table Unknown1_Impl =
+struct Relay1_table Relay1_Impl =
 {
-    sizeof(struct Unknown1_table),
-    Unknown1_func0_relay,
-    Unknown1_func1_relay,
-    Unknown1_func2_relay,
-    Unknown1_func3_relay,
-    Unknown1_func4_relay,
-    Unknown1_func5_relay,
-    Unknown1_func6_relay,
-    Unknown1_func7_relay,
-    Unknown1_func8_relay,
-    Unknown1_func9_relay,
-    Unknown1_func10_relay,
+    sizeof(struct Relay1_table),
+    Relay1_func0,
+    Relay1_func1,
+    Relay1_func2,
+    Relay1_func3,
+    Relay1_func4,
+    Relay1_func5,
+    Relay1_func6,
+    Relay1_func7,
+    Relay1_func8,
+    Relay1_func9,
+    Relay1_func10,
 };
 
-static void* WINAPI Unknown2_func0_relay(void *param0, void *param1)
+static void* WINAPI Relay2_func0(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown2_orig->func0(param0, param1);
+    return Relay2_orig->func0(param0, param1);
 }
 
-static void* WINAPI Unknown2_func1_relay(void *param0, void *param1)
+static void* WINAPI Relay2_func1(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown2_orig->func1(param0, param1);
+    return Relay2_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown2_func2_relay(void *param0, void *param1, void *param2)
+static void* WINAPI Relay2_func2(void *param0, void *param1, void *param2)
 {
     TRACE("(%p, %p, %p)\n", param0, param1, param2);
-    return Unknown2_orig->func2(param0, param1, param2);
+    return Relay2_orig->func2(param0, param1, param2);
 }
 
-static void* WINAPI Unknown2_func3_relay(void *param0, void *param1)
+static void* WINAPI Relay2_func3(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown2_orig->func3(param0, param1);
+    return Relay2_orig->func3(param0, param1);
 }
 
-static void* WINAPI Unknown2_func4_relay(void *param0, void *param1)
+static void* WINAPI Relay2_func4(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown2_orig->func4(param0, param1);
+    return Relay2_orig->func4(param0, param1);
 }
 
-static void* WINAPI Unknown2_func5_relay(void *param0, void *param1)
+static void* WINAPI Relay2_func5(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown2_orig->func5(param0, param1);
+    return Relay2_orig->func5(param0, param1);
 }
 
-struct Unknown2_table Unknown2_Impl =
+struct Relay2_table Relay2_Impl =
 {
-    sizeof(struct Unknown2_table),
-    Unknown2_func0_relay,
-    Unknown2_func1_relay,
-    Unknown2_func2_relay,
-    Unknown2_func3_relay,
-    Unknown2_func4_relay,
-    Unknown2_func5_relay,
+    sizeof(struct Relay2_table),
+    Relay2_func0,
+    Relay2_func1,
+    Relay2_func2,
+    Relay2_func3,
+    Relay2_func4,
+    Relay2_func5,
 };
 
-static void* WINAPI Unknown3_func0_relay(void *param0)
+static void* WINAPI Relay3_func0(void *param0)
 {
     TRACE("(%p)\n", param0);
-    return Unknown3_orig->func0(param0);
+    return Relay3_orig->func0(param0);
 }
 
-static void* WINAPI Unknown3_func1_relay(void *param0)
+static void* WINAPI Relay3_func1(void *param0)
 {
     TRACE("(%p)\n", param0);
-    return Unknown3_orig->func1(param0);
+    return Relay3_orig->func1(param0);
 }
 
-static struct Unknown3_table Unknown3_Impl =
+static struct Relay3_table Relay3_Impl =
 {
-    sizeof(struct Unknown3_table),
-    Unknown3_func0_relay,
-    Unknown3_func1_relay,
+    sizeof(struct Relay3_table),
+    Relay3_func0,
+    Relay3_func1,
 };
 
 struct context_storage
@@ -869,16 +869,16 @@ struct ContextStorage_table ContextStorage_Impl =
     ContextStorage_Get,
 };
 
-static void* WINAPI Unknown5_func0_relay(void *param0, void *param1, void *param2)
+static void* WINAPI Relay5_func0(void *param0, void *param1, void *param2)
 {
     TRACE("(%p, %p, %p)\n", param0, param1, param2);
-    return Unknown5_orig->func0(param0, param1, param2);
+    return Relay5_orig->func0(param0, param1, param2);
 }
 
-struct Unknown5_table Unknown5_Impl =
+struct Relay5_table Relay5_Impl =
 {
-    sizeof(struct Unknown5_table),
-    Unknown5_func0_relay,
+    sizeof(struct Relay5_table),
+    Relay5_func0,
 };
 
 static CUresult WINAPI TlsNotifyInterface_Set(void **handle, void *callback, void *userdata)
@@ -956,7 +956,7 @@ static CUresult WINAPI Encryption_encrypt0(unsigned int cudaVersion, time_t time
         .cudaVersion = cudaVersion,
         .processID = (unsigned int)GetCurrentProcessId(),
         .threadID = (unsigned int)GetCurrentThreadId(),
-        .exportTable1 = &Unknown1_Impl,
+        .exportTable1 = &Relay1_Impl,
         .exportTable2 = &Encryption_Impl,
         .funcPtr = &Encryption_encrypt0,
         .timestamp = timestamp,
@@ -977,1279 +977,1279 @@ struct Encryption_table Encryption_Impl =
     Encryption_encrypt1,
 };
 
-static void* WINAPI Unknown8_func0_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func0(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func0(param0, param1);
+    return Relay8_orig->func0(param0, param1);
 }
 
-static void* WINAPI Unknown8_func1_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func1(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func1(param0, param1);
+    return Relay8_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown8_func2_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func2(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func2(param0, param1);
+    return Relay8_orig->func2(param0, param1);
 }
 
-static void* WINAPI Unknown8_func3_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func3(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func3(param0, param1);
+    return Relay8_orig->func3(param0, param1);
 }
 
-static void* WINAPI Unknown8_func4_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func4(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func4(param0, param1);
+    return Relay8_orig->func4(param0, param1);
 }
 
-static void* WINAPI Unknown8_func5_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func5(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func5(param0, param1);
+    return Relay8_orig->func5(param0, param1);
 }
 
-static void* WINAPI Unknown8_func6_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func6(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func6(param0, param1);
+    return Relay8_orig->func6(param0, param1);
 }
 
-static void* WINAPI Unknown8_func7_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func7(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func7(param0, param1);
+    return Relay8_orig->func7(param0, param1);
 }
 
-static void* WINAPI Unknown8_func8_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func8(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func8(param0, param1);
+    return Relay8_orig->func8(param0, param1);
 }
 
-static void* WINAPI Unknown8_func9_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func9(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func9(param0, param1);
+    return Relay8_orig->func9(param0, param1);
 }
 
-static void* WINAPI Unknown8_func10_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func10(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func10(param0, param1);
+    return Relay8_orig->func10(param0, param1);
 }
 
-static void* WINAPI Unknown8_func11_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func11(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func11(param0, param1);
+    return Relay8_orig->func11(param0, param1);
 }
 
-static void* WINAPI Unknown8_func12_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func12(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func12(param0, param1);
+    return Relay8_orig->func12(param0, param1);
 }
 
-static void* WINAPI Unknown8_func13_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func13(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func13(param0, param1);
+    return Relay8_orig->func13(param0, param1);
 }
 
-static void* WINAPI Unknown8_func14_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func14(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func14(param0, param1);
+    return Relay8_orig->func14(param0, param1);
 }
 
-static void* WINAPI Unknown8_func15_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func15(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func15(param0, param1);
+    return Relay8_orig->func15(param0, param1);
 }
 
-static void* WINAPI Unknown8_func16_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func16(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func16(param0, param1);
+    return Relay8_orig->func16(param0, param1);
 }
 
-static void* WINAPI Unknown8_func17_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func17(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func17(param0, param1);
+    return Relay8_orig->func17(param0, param1);
 }
 
-static void* WINAPI Unknown8_func18_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func18(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func18(param0, param1);
+    return Relay8_orig->func18(param0, param1);
 }
 
-static void* WINAPI Unknown8_func19_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func19(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func19(param0, param1);
+    return Relay8_orig->func19(param0, param1);
 }
 
-static void* WINAPI Unknown8_func20_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func20(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func20(param0, param1);
+    return Relay8_orig->func20(param0, param1);
 }
 
-static void* WINAPI Unknown8_func21_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func21(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func21(param0, param1);
+    return Relay8_orig->func21(param0, param1);
 }
 
-static void* WINAPI Unknown8_func22_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func22(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func22(param0, param1);
+    return Relay8_orig->func22(param0, param1);
 }
 
-static void* WINAPI Unknown8_func23_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func23(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func23(param0, param1);
+    return Relay8_orig->func23(param0, param1);
 }
 
-static void* WINAPI Unknown8_func24_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func24(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func24(param0, param1);
+    return Relay8_orig->func24(param0, param1);
 }
 
-static void* WINAPI Unknown8_func25_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func25(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func25(param0, param1);
+    return Relay8_orig->func25(param0, param1);
 }
 
-static void* WINAPI Unknown8_func26_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func26(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func26(param0, param1);
+    return Relay8_orig->func26(param0, param1);
 }
 
-static void* WINAPI Unknown8_func27_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func27(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func27(param0, param1);
+    return Relay8_orig->func27(param0, param1);
 }
 
-static void* WINAPI Unknown8_func28_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func28(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func28(param0, param1);
+    return Relay8_orig->func28(param0, param1);
 }
 
-static void* WINAPI Unknown8_func29_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func29(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func29(param0, param1);
+    return Relay8_orig->func29(param0, param1);
 }
 
-static void* WINAPI Unknown8_func30_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func30(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func30(param0, param1);
+    return Relay8_orig->func30(param0, param1);
 }
 
-static void* WINAPI Unknown8_func31_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func31(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func31(param0, param1);
+    return Relay8_orig->func31(param0, param1);
 }
 
-static void* WINAPI Unknown8_func32_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func32(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func32(param0, param1);
+    return Relay8_orig->func32(param0, param1);
 }
 
-static void* WINAPI Unknown8_func33_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func33(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func33(param0, param1);
+    return Relay8_orig->func33(param0, param1);
 }
 
-static void* WINAPI Unknown8_func34_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func34(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func34(param0, param1);
+    return Relay8_orig->func34(param0, param1);
 }
 
-static void* WINAPI Unknown8_func35_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func35(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func35(param0, param1);
+    return Relay8_orig->func35(param0, param1);
 }
 
-static void* WINAPI Unknown8_func36_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func36(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func36(param0, param1);
+    return Relay8_orig->func36(param0, param1);
 }
 
-static void* WINAPI Unknown8_func37_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func37(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func37(param0, param1);
+    return Relay8_orig->func37(param0, param1);
 }
 
-static void* WINAPI Unknown8_func38_relay(void *param0, void *param1, void *param2)
-{
-    TRACE("(%p, %p, %p)\n", param0, param1, param2);
-    return Unknown8_orig->func38(param0, param1, param2);
-}
-
-static void* WINAPI Unknown8_func39_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func39(param0, param1);
-}
-
-static void* WINAPI Unknown8_func40_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func40(param0, param1);
-}
-
-static void* WINAPI Unknown8_func41_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func41(param0, param1);
-}
-
-static void* WINAPI Unknown8_func42_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func42(param0, param1);
-}
-
-static void* WINAPI Unknown8_func43_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func43(param0, param1);
-}
-
-static void* WINAPI Unknown8_func44_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func44(param0, param1);
-}
-
-static void* WINAPI Unknown8_func45_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func45(param0, param1);
-}
-
-static void* WINAPI Unknown8_func46_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func46(param0, param1);
-}
-
-static void* WINAPI Unknown8_func47_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func47(param0, param1);
-}
-
-static void* WINAPI Unknown8_func48_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func48(param0, param1);
-}
-
-static void* WINAPI Unknown8_func49_relay(void *param0, void *param1)
-{
-    TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func49(param0, param1);
-}
-
-static void* WINAPI Unknown8_func50_relay(void *param0, void *param1, void *param2)
+static void* WINAPI Relay8_func38(void *param0, void *param1, void *param2)
 {
     TRACE("(%p, %p, %p)\n", param0, param1, param2);
-    return Unknown8_orig->func50(param0, param1, param2);
+    return Relay8_orig->func38(param0, param1, param2);
 }
 
-static void* WINAPI Unknown8_func51_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func39(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func51(param0, param1);
+    return Relay8_orig->func39(param0, param1);
 }
 
-static void* WINAPI Unknown8_func52_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func40(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func52(param0, param1);
+    return Relay8_orig->func40(param0, param1);
 }
 
-static void* WINAPI Unknown8_func53_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func41(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func53(param0, param1);
+    return Relay8_orig->func41(param0, param1);
 }
 
-static void* WINAPI Unknown8_func54_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func42(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func54(param0, param1);
+    return Relay8_orig->func42(param0, param1);
 }
 
-static void* WINAPI Unknown8_func55_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func43(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func55(param0, param1);
+    return Relay8_orig->func43(param0, param1);
 }
 
-static void* WINAPI Unknown8_func56_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func44(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func56(param0, param1);
+    return Relay8_orig->func44(param0, param1);
 }
 
-static void* WINAPI Unknown8_func57_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func45(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func57(param0, param1);
+    return Relay8_orig->func45(param0, param1);
 }
 
-static void* WINAPI Unknown8_func58_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func46(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func58(param0, param1);
+    return Relay8_orig->func46(param0, param1);
 }
 
-static void* WINAPI Unknown8_func59_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func47(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func59(param0, param1);
+    return Relay8_orig->func47(param0, param1);
 }
 
-static void* WINAPI Unknown8_func60_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func48(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func60(param0, param1);
+    return Relay8_orig->func48(param0, param1);
 }
 
-static void* WINAPI Unknown8_func61_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func49(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func61(param0, param1);
+    return Relay8_orig->func49(param0, param1);
 }
 
-static void* WINAPI Unknown8_func62_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func50(void *param0, void *param1, void *param2)
+{
+    TRACE("(%p, %p, %p)\n", param0, param1, param2);
+    return Relay8_orig->func50(param0, param1, param2);
+}
+
+static void* WINAPI Relay8_func51(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func62(param0, param1);
+    return Relay8_orig->func51(param0, param1);
 }
 
-static void* WINAPI Unknown8_func63_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func52(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func63(param0, param1);
+    return Relay8_orig->func52(param0, param1);
 }
 
-static void* WINAPI Unknown8_func64_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func53(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func64(param0, param1);
+    return Relay8_orig->func53(param0, param1);
 }
 
-static void* WINAPI Unknown8_func65_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func54(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func65(param0, param1);
+    return Relay8_orig->func54(param0, param1);
 }
 
-static void* WINAPI Unknown8_func66_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func55(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func66(param0, param1);
+    return Relay8_orig->func55(param0, param1);
 }
 
-static void* WINAPI Unknown8_func67_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func56(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func67(param0, param1);
+    return Relay8_orig->func56(param0, param1);
 }
 
-static void* WINAPI Unknown8_func68_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func57(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func68(param0, param1);
+    return Relay8_orig->func57(param0, param1);
 }
 
-static void* WINAPI Unknown8_func69_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func58(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func69(param0, param1);
+    return Relay8_orig->func58(param0, param1);
 }
 
-static void* WINAPI Unknown8_func70_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func59(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func70(param0, param1);
+    return Relay8_orig->func59(param0, param1);
 }
 
-static void* WINAPI Unknown8_func71_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func60(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func71(param0, param1);
+    return Relay8_orig->func60(param0, param1);
 }
 
-static void* WINAPI Unknown8_func72_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func61(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func72(param0, param1);
+    return Relay8_orig->func61(param0, param1);
 }
 
-static void* WINAPI Unknown8_func73_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func62(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func73(param0, param1);
+    return Relay8_orig->func62(param0, param1);
 }
 
-static void* WINAPI Unknown8_func74_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func63(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func74(param0, param1);
+    return Relay8_orig->func63(param0, param1);
 }
 
-static void* WINAPI Unknown8_func75_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func64(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func75(param0, param1);
+    return Relay8_orig->func64(param0, param1);
 }
 
-static void* WINAPI Unknown8_func76_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func65(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func76(param0, param1);
+    return Relay8_orig->func65(param0, param1);
 }
 
-static void* WINAPI Unknown8_func77_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func66(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func77(param0, param1);
+    return Relay8_orig->func66(param0, param1);
 }
 
-static void* WINAPI Unknown8_func78_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func67(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func78(param0, param1);
+    return Relay8_orig->func67(param0, param1);
 }
 
-static void* WINAPI Unknown8_func79_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func68(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func79(param0, param1);
+    return Relay8_orig->func68(param0, param1);
 }
 
-static void* WINAPI Unknown8_func80_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func69(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func80(param0, param1);
+    return Relay8_orig->func69(param0, param1);
 }
 
-static void* WINAPI Unknown8_func81_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func70(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func81(param0, param1);
+    return Relay8_orig->func70(param0, param1);
 }
 
-static void* WINAPI Unknown8_func82_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func71(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func82(param0, param1);
+    return Relay8_orig->func71(param0, param1);
 }
 
-static void* WINAPI Unknown8_func83_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func72(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func83(param0, param1);
+    return Relay8_orig->func72(param0, param1);
 }
 
-static void* WINAPI Unknown8_func84_relay(void *param0, void *param1)
+static void* WINAPI Relay8_func73(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown8_orig->func84(param0, param1);
+    return Relay8_orig->func73(param0, param1);
 }
 
-static struct Unknown8_table Unknown8_Impl =
+static void* WINAPI Relay8_func74(void *param0, void *param1)
 {
-    sizeof(struct Unknown8_table),
-    Unknown8_func0_relay,
-    Unknown8_func1_relay,
-    Unknown8_func2_relay,
-    Unknown8_func3_relay,
-    Unknown8_func4_relay,
-    Unknown8_func5_relay,
-    Unknown8_func6_relay,
-    Unknown8_func7_relay,
-    Unknown8_func8_relay,
-    Unknown8_func9_relay,
-    Unknown8_func10_relay,
-    Unknown8_func11_relay,
-    Unknown8_func12_relay,
-    Unknown8_func13_relay,
-    Unknown8_func14_relay,
-    Unknown8_func15_relay,
-    Unknown8_func16_relay,
-    Unknown8_func17_relay,
-    Unknown8_func18_relay,
-    Unknown8_func19_relay,
-    Unknown8_func20_relay,
-    Unknown8_func21_relay,
-    Unknown8_func22_relay,
-    Unknown8_func23_relay,
-    Unknown8_func24_relay,
-    Unknown8_func25_relay,
-    Unknown8_func26_relay,
-    Unknown8_func27_relay,
-    Unknown8_func28_relay,
-    Unknown8_func29_relay,
-    Unknown8_func30_relay,
-    Unknown8_func31_relay,
-    Unknown8_func32_relay,
-    Unknown8_func33_relay,
-    Unknown8_func34_relay,
-    Unknown8_func35_relay,
-    Unknown8_func36_relay,
-    Unknown8_func37_relay,
-    Unknown8_func38_relay,
-    Unknown8_func39_relay,
-    Unknown8_func40_relay,
-    Unknown8_func41_relay,
-    Unknown8_func42_relay,
-    Unknown8_func43_relay,
-    Unknown8_func44_relay,
-    Unknown8_func45_relay,
-    Unknown8_func46_relay,
-    Unknown8_func47_relay,
-    Unknown8_func48_relay,
-    Unknown8_func49_relay,
-    Unknown8_func50_relay,
-    Unknown8_func51_relay,
-    Unknown8_func52_relay,
-    Unknown8_func53_relay,
-    Unknown8_func54_relay,
-    Unknown8_func55_relay,
-    Unknown8_func56_relay,
-    Unknown8_func57_relay,
-    Unknown8_func58_relay,
-    Unknown8_func59_relay,
-    Unknown8_func60_relay,
-    Unknown8_func61_relay,
-    Unknown8_func62_relay,
-    Unknown8_func63_relay,
-    Unknown8_func64_relay,
-    Unknown8_func65_relay,
-    Unknown8_func66_relay,
-    Unknown8_func67_relay,
-    Unknown8_func68_relay,
-    Unknown8_func69_relay,
-    Unknown8_func70_relay,
-    Unknown8_func71_relay,
-    Unknown8_func72_relay,
-    Unknown8_func73_relay,
-    Unknown8_func74_relay,
-    Unknown8_func75_relay,
-    Unknown8_func76_relay,
-    Unknown8_func77_relay,
-    Unknown8_func78_relay,
-    Unknown8_func79_relay,
-    Unknown8_func80_relay,
-    Unknown8_func81_relay,
-    Unknown8_func82_relay,
-    Unknown8_func83_relay,
-    Unknown8_func84_relay,
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func74(param0, param1);
+}
+
+static void* WINAPI Relay8_func75(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func75(param0, param1);
+}
+
+static void* WINAPI Relay8_func76(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func76(param0, param1);
+}
+
+static void* WINAPI Relay8_func77(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func77(param0, param1);
+}
+
+static void* WINAPI Relay8_func78(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func78(param0, param1);
+}
+
+static void* WINAPI Relay8_func79(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func79(param0, param1);
+}
+
+static void* WINAPI Relay8_func80(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func80(param0, param1);
+}
+
+static void* WINAPI Relay8_func81(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func81(param0, param1);
+}
+
+static void* WINAPI Relay8_func82(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func82(param0, param1);
+}
+
+static void* WINAPI Relay8_func83(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func83(param0, param1);
+}
+
+static void* WINAPI Relay8_func84(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return Relay8_orig->func84(param0, param1);
+}
+
+static struct Relay8_table Relay8_Impl =
+{
+    sizeof(struct Relay8_table),
+    Relay8_func0,
+    Relay8_func1,
+    Relay8_func2,
+    Relay8_func3,
+    Relay8_func4,
+    Relay8_func5,
+    Relay8_func6,
+    Relay8_func7,
+    Relay8_func8,
+    Relay8_func9,
+    Relay8_func10,
+    Relay8_func11,
+    Relay8_func12,
+    Relay8_func13,
+    Relay8_func14,
+    Relay8_func15,
+    Relay8_func16,
+    Relay8_func17,
+    Relay8_func18,
+    Relay8_func19,
+    Relay8_func20,
+    Relay8_func21,
+    Relay8_func22,
+    Relay8_func23,
+    Relay8_func24,
+    Relay8_func25,
+    Relay8_func26,
+    Relay8_func27,
+    Relay8_func28,
+    Relay8_func29,
+    Relay8_func30,
+    Relay8_func31,
+    Relay8_func32,
+    Relay8_func33,
+    Relay8_func34,
+    Relay8_func35,
+    Relay8_func36,
+    Relay8_func37,
+    Relay8_func38,
+    Relay8_func39,
+    Relay8_func40,
+    Relay8_func41,
+    Relay8_func42,
+    Relay8_func43,
+    Relay8_func44,
+    Relay8_func45,
+    Relay8_func46,
+    Relay8_func47,
+    Relay8_func48,
+    Relay8_func49,
+    Relay8_func50,
+    Relay8_func51,
+    Relay8_func52,
+    Relay8_func53,
+    Relay8_func54,
+    Relay8_func55,
+    Relay8_func56,
+    Relay8_func57,
+    Relay8_func58,
+    Relay8_func59,
+    Relay8_func60,
+    Relay8_func61,
+    Relay8_func62,
+    Relay8_func63,
+    Relay8_func64,
+    Relay8_func65,
+    Relay8_func66,
+    Relay8_func67,
+    Relay8_func68,
+    Relay8_func69,
+    Relay8_func70,
+    Relay8_func71,
+    Relay8_func72,
+    Relay8_func73,
+    Relay8_func74,
+    Relay8_func75,
+    Relay8_func76,
+    Relay8_func77,
+    Relay8_func78,
+    Relay8_func79,
+    Relay8_func80,
+    Relay8_func81,
+    Relay8_func82,
+    Relay8_func83,
+    Relay8_func84,
 };
 
-static void* WINAPI Unknown9_func0_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func0(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func0(param0, param1);
+    return Relay9_orig->func0(param0, param1);
 }
 
-static void* WINAPI Unknown9_func1_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func1(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func1(param0, param1);
+    return Relay9_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown9_func2_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func2(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func2(param0, param1);
+    return Relay9_orig->func2(param0, param1);
 }
 
-static void* WINAPI Unknown9_func3_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func3(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func3(param0, param1);
+    return Relay9_orig->func3(param0, param1);
 }
 
-static void* WINAPI Unknown9_func4_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func4(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func4(param0, param1);
+    return Relay9_orig->func4(param0, param1);
 }
 
-static void* WINAPI Unknown9_func5_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func5(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func5(param0, param1);
+    return Relay9_orig->func5(param0, param1);
 }
 
-static void* WINAPI Unknown9_func6_relay(void *param0, void *param1, void *param2, void *param3)
+static void* WINAPI Relay9_func6(void *param0, void *param1, void *param2, void *param3)
 {
     TRACE("(%p, %p, %p, %p)\n", param0, param1, param2, param3);
-    return Unknown9_orig->func6(param0, param1, param2, param3);
+    return Relay9_orig->func6(param0, param1, param2, param3);
 }
 
-static void* WINAPI Unknown9_func7_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func7(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func7(param0, param1);
+    return Relay9_orig->func7(param0, param1);
 }
 
-static void* WINAPI Unknown9_func8_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func8(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func8(param0, param1);
+    return Relay9_orig->func8(param0, param1);
 }
 
-static void* WINAPI Unknown9_func9_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func9(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func9(param0, param1);
+    return Relay9_orig->func9(param0, param1);
 }
 
-static void* WINAPI Unknown9_func10_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func10(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func10(param0, param1);
+    return Relay9_orig->func10(param0, param1);
 }
 
-static void* WINAPI Unknown9_func11_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func11(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func11(param0, param1);
+    return Relay9_orig->func11(param0, param1);
 }
 
-static void* WINAPI Unknown9_func12_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func12(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func12(param0, param1);
+    return Relay9_orig->func12(param0, param1);
 }
 
-static void* WINAPI Unknown9_func13_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func13(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func13(param0, param1);
+    return Relay9_orig->func13(param0, param1);
 }
 
-static void* WINAPI Unknown9_func14_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func14(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func14(param0, param1);
+    return Relay9_orig->func14(param0, param1);
 }
 
-static void* WINAPI Unknown9_func15_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func15(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func15(param0, param1);
+    return Relay9_orig->func15(param0, param1);
 }
 
-static void* WINAPI Unknown9_func16_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func16(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func16(param0, param1);
+    return Relay9_orig->func16(param0, param1);
 }
 
-static void* WINAPI Unknown9_func17_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func17(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func17(param0, param1);
+    return Relay9_orig->func17(param0, param1);
 }
 
-static void* WINAPI Unknown9_func18_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func18(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func18(param0, param1);
+    return Relay9_orig->func18(param0, param1);
 }
 
-static void* WINAPI Unknown9_func19_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func19(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func19(param0, param1);
+    return Relay9_orig->func19(param0, param1);
 }
 
-static void* WINAPI Unknown9_func20_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func20(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func20(param0, param1);
+    return Relay9_orig->func20(param0, param1);
 }
 
-static void* WINAPI Unknown9_func21_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func21(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func21(param0, param1);
+    return Relay9_orig->func21(param0, param1);
 }
 
-static void* WINAPI Unknown9_func22_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func22(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func22(param0, param1);
+    return Relay9_orig->func22(param0, param1);
 }
 
-static void* WINAPI Unknown9_func23_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func23(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func23(param0, param1);
+    return Relay9_orig->func23(param0, param1);
 }
 
-static void* WINAPI Unknown9_func24_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func24(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func24(param0, param1);
+    return Relay9_orig->func24(param0, param1);
 }
 
-static void* WINAPI Unknown9_func25_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func25(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func25(param0, param1);
+    return Relay9_orig->func25(param0, param1);
 }
 
-static void* WINAPI Unknown9_func26_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func26(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func26(param0, param1);
+    return Relay9_orig->func26(param0, param1);
 }
 
-static void* WINAPI Unknown9_func27_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func27(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func27(param0, param1);
+    return Relay9_orig->func27(param0, param1);
 }
 
-static void* WINAPI Unknown9_func28_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func28(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func28(param0, param1);
+    return Relay9_orig->func28(param0, param1);
 }
 
-static void* WINAPI Unknown9_func29_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func29(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func29(param0, param1);
+    return Relay9_orig->func29(param0, param1);
 }
 
-static void* WINAPI Unknown9_func30_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func30(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func30(param0, param1);
+    return Relay9_orig->func30(param0, param1);
 }
 
-static void* WINAPI Unknown9_func31_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func31(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func31(param0, param1);
+    return Relay9_orig->func31(param0, param1);
 }
 
-static void* WINAPI Unknown9_func32_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func32(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func32(param0, param1);
+    return Relay9_orig->func32(param0, param1);
 }
 
-static void* WINAPI Unknown9_func33_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func33(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func33(param0, param1);
+    return Relay9_orig->func33(param0, param1);
 }
 
-static void* WINAPI Unknown9_func34_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func34(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func34(param0, param1);
+    return Relay9_orig->func34(param0, param1);
 }
 
-static void* WINAPI Unknown9_func35_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func35(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func35(param0, param1);
+    return Relay9_orig->func35(param0, param1);
 }
 
-static void* WINAPI Unknown9_func36_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func36(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func36(param0, param1);
+    return Relay9_orig->func36(param0, param1);
 }
 
-static void* WINAPI Unknown9_func37_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func37(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func37(param0, param1);
+    return Relay9_orig->func37(param0, param1);
 }
 
-static void* WINAPI Unknown9_func38_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func38(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func38(param0, param1);
+    return Relay9_orig->func38(param0, param1);
 }
 
-static void* WINAPI Unknown9_func39_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func39(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func39(param0, param1);
+    return Relay9_orig->func39(param0, param1);
 }
 
-static void* WINAPI Unknown9_func40_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func40(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func40(param0, param1);
+    return Relay9_orig->func40(param0, param1);
 }
 
-static void* WINAPI Unknown9_func41_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func41(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func41(param0, param1);
+    return Relay9_orig->func41(param0, param1);
 }
 
-static void* WINAPI Unknown9_func42_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func42(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func42(param0, param1);
+    return Relay9_orig->func42(param0, param1);
 }
 
-static void* WINAPI Unknown9_func43_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func43(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func43(param0, param1);
+    return Relay9_orig->func43(param0, param1);
 }
 
-static void* WINAPI Unknown9_func44_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func44(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func44(param0, param1);
+    return Relay9_orig->func44(param0, param1);
 }
 
-static void* WINAPI Unknown9_func45_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func45(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func45(param0, param1);
+    return Relay9_orig->func45(param0, param1);
 }
 
-static void* WINAPI Unknown9_func46_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func46(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func46(param0, param1);
+    return Relay9_orig->func46(param0, param1);
 }
 
-static void* WINAPI Unknown9_func47_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func47(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func47(param0, param1);
+    return Relay9_orig->func47(param0, param1);
 }
 
-static void* WINAPI Unknown9_func48_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func48(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func48(param0, param1);
+    return Relay9_orig->func48(param0, param1);
 }
 
-static void* WINAPI Unknown9_func49_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func49(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func49(param0, param1);
+    return Relay9_orig->func49(param0, param1);
 }
 
-static void* WINAPI Unknown9_func50_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func50(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func50(param0, param1);
+    return Relay9_orig->func50(param0, param1);
 }
 
-static void* WINAPI Unknown9_func51_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func51(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func51(param0, param1);
+    return Relay9_orig->func51(param0, param1);
 }
 
-static void* WINAPI Unknown9_func52_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func52(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func52(param0, param1);
+    return Relay9_orig->func52(param0, param1);
 }
 
-static void* WINAPI Unknown9_func53_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func53(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func53(param0, param1);
+    return Relay9_orig->func53(param0, param1);
 }
 
-static void* WINAPI Unknown9_func54_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func54(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func54(param0, param1);
+    return Relay9_orig->func54(param0, param1);
 }
 
-static void* WINAPI Unknown9_func55_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func55(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func55(param0, param1);
+    return Relay9_orig->func55(param0, param1);
 }
 
-static void* WINAPI Unknown9_func56_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func56(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func56(param0, param1);
+    return Relay9_orig->func56(param0, param1);
 }
 
-static void* WINAPI Unknown9_func57_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func57(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func57(param0, param1);
+    return Relay9_orig->func57(param0, param1);
 }
 
-static void* WINAPI Unknown9_func58_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func58(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func58(param0, param1);
+    return Relay9_orig->func58(param0, param1);
 }
 
-static void* WINAPI Unknown9_func59_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func59(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func59(param0, param1);
+    return Relay9_orig->func59(param0, param1);
 }
 
-static void* WINAPI Unknown9_func60_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func60(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func60(param0, param1);
+    return Relay9_orig->func60(param0, param1);
 }
 
-static void* WINAPI Unknown9_func61_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func61(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func61(param0, param1);
+    return Relay9_orig->func61(param0, param1);
 }
 
-static void* WINAPI Unknown9_func62_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func62(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func62(param0, param1);
+    return Relay9_orig->func62(param0, param1);
 }
 
-static void* WINAPI Unknown9_func63_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func63(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func63(param0, param1);
+    return Relay9_orig->func63(param0, param1);
 }
 
-static void* WINAPI Unknown9_func64_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func64(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func64(param0, param1);
+    return Relay9_orig->func64(param0, param1);
 }
 
-static void* WINAPI Unknown9_func65_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func65(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func65(param0, param1);
+    return Relay9_orig->func65(param0, param1);
 }
 
-static void* WINAPI Unknown9_func66_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func66(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func66(param0, param1);
+    return Relay9_orig->func66(param0, param1);
 }
 
-static void* WINAPI Unknown9_func67_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func67(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func67(param0, param1);
+    return Relay9_orig->func67(param0, param1);
 }
 
-static void* WINAPI Unknown9_func68_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func68(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func68(param0, param1);
+    return Relay9_orig->func68(param0, param1);
 }
 
-static void* WINAPI Unknown9_func69_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func69(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func69(param0, param1);
+    return Relay9_orig->func69(param0, param1);
 }
 
-static void* WINAPI Unknown9_func70_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func70(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func70(param0, param1);
+    return Relay9_orig->func70(param0, param1);
 }
 
-static void* WINAPI Unknown9_func71_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func71(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func71(param0, param1);
+    return Relay9_orig->func71(param0, param1);
 }
 
-static void* WINAPI Unknown9_func72_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func72(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func72(param0, param1);
+    return Relay9_orig->func72(param0, param1);
 }
 
-static void* WINAPI Unknown9_func73_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func73(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func73(param0, param1);
+    return Relay9_orig->func73(param0, param1);
 }
 
-static void* WINAPI Unknown9_func74_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func74(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func74(param0, param1);
+    return Relay9_orig->func74(param0, param1);
 }
 
-static void* WINAPI Unknown9_func75_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func75(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func75(param0, param1);
+    return Relay9_orig->func75(param0, param1);
 }
 
-static void* WINAPI Unknown9_func76_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func76(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func76(param0, param1);
+    return Relay9_orig->func76(param0, param1);
 }
 
-static void* WINAPI Unknown9_func77_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func77(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func77(param0, param1);
+    return Relay9_orig->func77(param0, param1);
 }
 
-static void* WINAPI Unknown9_func78_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func78(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func78(param0, param1);
+    return Relay9_orig->func78(param0, param1);
 }
 
-static void* WINAPI Unknown9_func79_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func79(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func79(param0, param1);
+    return Relay9_orig->func79(param0, param1);
 }
 
-static void* WINAPI Unknown9_func80_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func80(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func80(param0, param1);
+    return Relay9_orig->func80(param0, param1);
 }
 
-static void* WINAPI Unknown9_func81_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func81(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func81(param0, param1);
+    return Relay9_orig->func81(param0, param1);
 }
 
-static void* WINAPI Unknown9_func82_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func82(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func82(param0, param1);
+    return Relay9_orig->func82(param0, param1);
 }
 
-static void* WINAPI Unknown9_func83_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func83(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func83(param0, param1);
+    return Relay9_orig->func83(param0, param1);
 }
 
-static void* WINAPI Unknown9_func84_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func84(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func84(param0, param1);
+    return Relay9_orig->func84(param0, param1);
 }
 
-static void* WINAPI Unknown9_func85_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func85(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func85(param0, param1);
+    return Relay9_orig->func85(param0, param1);
 }
 
-static void* WINAPI Unknown9_func86_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func86(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func86(param0, param1);
+    return Relay9_orig->func86(param0, param1);
 }
 
-static void* WINAPI Unknown9_func87_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func87(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func87(param0, param1);
+    return Relay9_orig->func87(param0, param1);
 }
 
-static void* WINAPI Unknown9_func88_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func88(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func88(param0, param1);
+    return Relay9_orig->func88(param0, param1);
 }
 
-static void* WINAPI Unknown9_func89_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func89(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func89(param0, param1);
+    return Relay9_orig->func89(param0, param1);
 }
 
-static void* WINAPI Unknown9_func90_relay(void *param0, void *param1)
+static void* WINAPI Relay9_func90(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown9_orig->func90(param0, param1);
+    return Relay9_orig->func90(param0, param1);
 }
 
-struct Unknown9_table Unknown9_Impl =
+struct Relay9_table Relay9_Impl =
 {
-    sizeof(struct Unknown9_table),
-    Unknown9_func0_relay,
-    Unknown9_func1_relay,
-    Unknown9_func2_relay,
-    Unknown9_func3_relay,
-    Unknown9_func4_relay,
-    Unknown9_func5_relay,
-    Unknown9_func6_relay,
-    Unknown9_func7_relay,
-    Unknown9_func8_relay,
-    Unknown9_func9_relay,
-    Unknown9_func10_relay,
-    Unknown9_func11_relay,
-    Unknown9_func12_relay,
-    Unknown9_func13_relay,
-    Unknown9_func14_relay,
-    Unknown9_func15_relay,
-    Unknown9_func16_relay,
-    Unknown9_func17_relay,
-    Unknown9_func18_relay,
-    Unknown9_func19_relay,
-    Unknown9_func20_relay,
-    Unknown9_func21_relay,
-    Unknown9_func22_relay,
-    Unknown9_func23_relay,
-    Unknown9_func24_relay,
-    Unknown9_func25_relay,
-    Unknown9_func26_relay,
-    Unknown9_func27_relay,
-    Unknown9_func28_relay,
-    Unknown9_func29_relay,
-    Unknown9_func30_relay,
-    Unknown9_func31_relay,
-    Unknown9_func32_relay,
-    Unknown9_func33_relay,
-    Unknown9_func34_relay,
-    Unknown9_func35_relay,
-    Unknown9_func36_relay,
-    Unknown9_func37_relay,
-    Unknown9_func38_relay,
-    Unknown9_func39_relay,
-    Unknown9_func40_relay,
-    Unknown9_func41_relay,
-    Unknown9_func42_relay,
-    Unknown9_func43_relay,
-    Unknown9_func44_relay,
-    Unknown9_func45_relay,
-    Unknown9_func46_relay,
-    Unknown9_func47_relay,
-    Unknown9_func48_relay,
-    Unknown9_func49_relay,
-    Unknown9_func50_relay,
-    Unknown9_func51_relay,
-    Unknown9_func52_relay,
-    Unknown9_func53_relay,
-    Unknown9_func54_relay,
-    Unknown9_func55_relay,
-    Unknown9_func56_relay,
-    Unknown9_func57_relay,
-    Unknown9_func58_relay,
-    Unknown9_func59_relay,
-    Unknown9_func60_relay,
-    Unknown9_func61_relay,
-    Unknown9_func62_relay,
-    Unknown9_func63_relay,
-    Unknown9_func64_relay,
-    Unknown9_func65_relay,
-    Unknown9_func66_relay,
-    Unknown9_func67_relay,
-    Unknown9_func68_relay,
-    Unknown9_func69_relay,
-    Unknown9_func70_relay,
-    Unknown9_func71_relay,
-    Unknown9_func72_relay,
-    Unknown9_func73_relay,
-    Unknown9_func74_relay,
-    Unknown9_func75_relay,
-    Unknown9_func76_relay,
-    Unknown9_func77_relay,
-    Unknown9_func78_relay,
-    Unknown9_func79_relay,
-    Unknown9_func80_relay,
-    Unknown9_func81_relay,
-    Unknown9_func82_relay,
-    Unknown9_func83_relay,
-    Unknown9_func84_relay,
-    Unknown9_func85_relay,
-    Unknown9_func86_relay,
-    Unknown9_func87_relay,
-    Unknown9_func88_relay,
-    Unknown9_func89_relay,
-    Unknown9_func90_relay,
+    sizeof(struct Relay9_table),
+    Relay9_func0,
+    Relay9_func1,
+    Relay9_func2,
+    Relay9_func3,
+    Relay9_func4,
+    Relay9_func5,
+    Relay9_func6,
+    Relay9_func7,
+    Relay9_func8,
+    Relay9_func9,
+    Relay9_func10,
+    Relay9_func11,
+    Relay9_func12,
+    Relay9_func13,
+    Relay9_func14,
+    Relay9_func15,
+    Relay9_func16,
+    Relay9_func17,
+    Relay9_func18,
+    Relay9_func19,
+    Relay9_func20,
+    Relay9_func21,
+    Relay9_func22,
+    Relay9_func23,
+    Relay9_func24,
+    Relay9_func25,
+    Relay9_func26,
+    Relay9_func27,
+    Relay9_func28,
+    Relay9_func29,
+    Relay9_func30,
+    Relay9_func31,
+    Relay9_func32,
+    Relay9_func33,
+    Relay9_func34,
+    Relay9_func35,
+    Relay9_func36,
+    Relay9_func37,
+    Relay9_func38,
+    Relay9_func39,
+    Relay9_func40,
+    Relay9_func41,
+    Relay9_func42,
+    Relay9_func43,
+    Relay9_func44,
+    Relay9_func45,
+    Relay9_func46,
+    Relay9_func47,
+    Relay9_func48,
+    Relay9_func49,
+    Relay9_func50,
+    Relay9_func51,
+    Relay9_func52,
+    Relay9_func53,
+    Relay9_func54,
+    Relay9_func55,
+    Relay9_func56,
+    Relay9_func57,
+    Relay9_func58,
+    Relay9_func59,
+    Relay9_func60,
+    Relay9_func61,
+    Relay9_func62,
+    Relay9_func63,
+    Relay9_func64,
+    Relay9_func65,
+    Relay9_func66,
+    Relay9_func67,
+    Relay9_func68,
+    Relay9_func69,
+    Relay9_func70,
+    Relay9_func71,
+    Relay9_func72,
+    Relay9_func73,
+    Relay9_func74,
+    Relay9_func75,
+    Relay9_func76,
+    Relay9_func77,
+    Relay9_func78,
+    Relay9_func79,
+    Relay9_func80,
+    Relay9_func81,
+    Relay9_func82,
+    Relay9_func83,
+    Relay9_func84,
+    Relay9_func85,
+    Relay9_func86,
+    Relay9_func87,
+    Relay9_func88,
+    Relay9_func89,
+    Relay9_func90,
 };
 
-static void* WINAPI Unknown10_func0_relay(void *param0)
+static void* WINAPI Relay10_func0(void *param0)
 {
     TRACE("(%p)\n", param0);
-    return Unknown10_orig->func0(param0);
+    return Relay10_orig->func0(param0);
 }
 
-static void* WINAPI Unknown10_func1_relay(void *param0, void *param1)
+static void* WINAPI Relay10_func1(void *param0, void *param1)
 {
     TRACE("(%p, %p)\n", param0, param1);
-    return Unknown10_orig->func1(param0, param1);
+    return Relay10_orig->func1(param0, param1);
 }
 
-static void* WINAPI Unknown10_func2_relay(void)
+static void* WINAPI Relay10_func2(void)
 {
     TRACE("()\n");
-    return Unknown10_orig->func2();
+    return Relay10_orig->func2();
 }
 
-static void* WINAPI Unknown10_func3_relay(void *param0)
+static void* WINAPI Relay10_func3(void *param0)
 {
     TRACE("(%p)\n", param0);
-    return Unknown10_orig->func3(param0);
+    return Relay10_orig->func3(param0);
 }
 
-static struct Unknown10_table Unknown10_Impl =
+static struct Relay10_table Relay10_Impl =
 {
-    sizeof(struct Unknown10_table),
-    Unknown10_func0_relay,
-    Unknown10_func1_relay,
-    Unknown10_func2_relay,
-    Unknown10_func3_relay,
+    sizeof(struct Relay10_table),
+    Relay10_func0,
+    Relay10_func1,
+    Relay10_func2,
+    Relay10_func3,
 };
 
 static BOOL cuda_check_table(const struct cuda_table *orig, struct cuda_table *impl, const char *name)
@@ -2293,45 +2293,45 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
 {
     char buffer[128];
 
-    if (cuda_equal_uuid(uuid, &UUID_Unknown1))
+    if (cuda_equal_uuid(uuid, &UUID_Relay1))
     {
-        TRACE("(%p, UUID_Unknown1: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Relay1_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown1_Impl, "Unknown1"))
+        if (!cuda_check_table(orig_table, (void *)&Relay1_Impl, "Relay1"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown1_orig = orig_table;
-        *table = (void *)&Unknown1_Impl;
+        Relay1_orig = orig_table;
+        *table = (void *)&Relay1_Impl;
         return CUDA_SUCCESS;
     }
-    else if (cuda_equal_uuid(uuid, &UUID_Unknown2))
+    else if (cuda_equal_uuid(uuid, &UUID_Relay2))
     {
-        TRACE("(%p, UUID_Unknown2: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Relay2_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown2_Impl, "Unknown2"))
+        if (!cuda_check_table(orig_table, (void *)&Relay2_Impl, "Relay2"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown2_orig = orig_table;
-        *table = (void *)&Unknown2_Impl;
+        Relay2_orig = orig_table;
+        *table = (void *)&Relay2_Impl;
         return CUDA_SUCCESS;
     }
-    else if (cuda_equal_uuid(uuid, &UUID_Unknown3))
+    else if (cuda_equal_uuid(uuid, &UUID_Relay3))
     {
-        TRACE("(%p, UUID_Unknown3: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Relay3_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown3_Impl, "Unknown3"))
+        if (!cuda_check_table(orig_table, (void *)&Relay3_Impl, "Relay3"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown3_orig = orig_table;
-        *table = (void *)&Unknown3_Impl;
+        Relay3_orig = orig_table;
+        *table = (void *)&Relay3_Impl;
         return CUDA_SUCCESS;
     }
     else if (cuda_equal_uuid(uuid, &UUID_ContextStorage))
     {
-        TRACE("(%p, UUID_ContextStorage: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, ContextStorage_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
         if (!orig_table)
@@ -2341,21 +2341,21 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
         *table = (void *)&ContextStorage_Impl;
         return CUDA_SUCCESS;
     }
-    else if (cuda_equal_uuid(uuid, &UUID_Unknown5))
+    else if (cuda_equal_uuid(uuid, &UUID_Relay5))
     {
-        TRACE("(%p, UUID_Unknown5: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Relay5_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown5_Impl, "Unknown5"))
+        if (!cuda_check_table(orig_table, (void *)&Relay5_Impl, "Relay5"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown5_orig = orig_table;
-        *table = (void *)&Unknown5_Impl;
+        Relay5_orig = orig_table;
+        *table = (void *)&Relay5_Impl;
         return CUDA_SUCCESS;
     }
     else if (cuda_equal_uuid(uuid, &UUID_TlsNotifyInterface))
     {
-        TRACE("(%p, UUID_TlsNotifyInterface: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, TlsNotifyInterface_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         /* the following interface is not implemented in the Linux
          * CUDA driver, we provide a replacement implementation */
         *table = (void *)&TlsNotifyInterface_Impl;
@@ -2363,44 +2363,44 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
     }
     else if (cuda_equal_uuid(uuid, &UUID_Encryption))
     {
-        TRACE("(%p, UUID_Encryption: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Encryption_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         *table = (void *)&Encryption_Impl;
         return CUDA_SUCCESS;
     }
-    else if (cuda_equal_uuid(uuid, &UUID_Unknown8))
+    else if (cuda_equal_uuid(uuid, &UUID_Relay8))
     {
-        TRACE("(%p, UUID_Unknown8: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Relay8_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown8_Impl, "Unknown8"))
+        if (!cuda_check_table(orig_table, (void *)&Relay8_Impl, "Relay8"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown8_orig = orig_table;
-        *table = (void *)&Unknown8_Impl;
+        Relay8_orig = orig_table;
+        *table = (void *)&Relay8_Impl;
         return CUDA_SUCCESS;
     }
-    else if (cuda_equal_uuid(uuid, &UUID_Unknown9))
+    else if (cuda_equal_uuid(uuid, &UUID_Relay9))
     {
-        TRACE("(%p, UUID_Unknown9: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Relay9_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown9_Impl, "Unknown9"))
+        if (!cuda_check_table(orig_table, (void *)&Relay9_Impl, "Relay9"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown9_orig = orig_table;
-        *table = (void *)&Unknown9_Impl;
+        Relay9_orig = orig_table;
+        *table = (void *)&Relay9_Impl;
         return CUDA_SUCCESS;
     }
-    else if (cuda_equal_uuid(uuid, &UUID_Unknown10))
+    else if (cuda_equal_uuid(uuid, &UUID_Relay10))
     {
-        TRACE("(%p, UUID_Unknown10: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        TRACE("(%p, Relay10_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
         if (orig_result)
             return orig_result;
-        if (!cuda_check_table(orig_table, (void *)&Unknown10_Impl, "Unknown10"))
+        if (!cuda_check_table(orig_table, (void *)&Relay10_Impl, "Relay10"))
             return CUDA_ERROR_UNKNOWN;
 
-        Unknown10_orig = orig_table;
-        *table = (void *)&Unknown10_Impl;
+        Relay10_orig = orig_table;
+        *table = (void *)&Relay10_Impl;
         return CUDA_SUCCESS;
     }
 
