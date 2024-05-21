@@ -2523,8 +2523,8 @@ CUresult WINAPI wine_cuModuleLoadDataEx(CUmodule *module, const void *image, uns
 
 CUresult WINAPI wine_cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin)
 {
-    TRACE("(%p, %p)\n", module, fatCubin);
-    return pcuModuleLoadFatBinary(module, fatCubin);
+    FIXME("(%p, %p)\n", module, fatCubin);
+    return CUDA_ERROR_NOT_SUPPORTED;
 }
 
 CUresult WINAPI wine_cuModuleUnload(CUmodule hmod)
