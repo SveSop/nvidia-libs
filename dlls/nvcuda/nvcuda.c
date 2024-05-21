@@ -639,9 +639,9 @@ static CUresult (*pcuGraphBatchMemOpNodeSetParams)(CUgraphNode hNode, const void
 static CUresult (*pcuGraphExecBatchMemOpNodeSetParams)(CUgraphExec graphExec, CUgraphNode node, const void *nodeParams);
 
 /* Cuda 12 */
-static CUresult (*pcuLibraryLoadData)(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
+static CUresult (*pcuLibraryLoadData)(CUlibrary *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
                                       void *libraryOptions, void** libraryOptionValues, unsigned int numLibraryOptions);
-static CUresult (*pcuLibraryLoadFromFile)(void *library, const char *fileName, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
+static CUresult (*pcuLibraryLoadFromFile)(CUlibrary *library, const char *fileName, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
                                           void *libraryOptions, void **libraryOptionValues, unsigned int numLibraryOptions);
 static CUresult (*pcuLibraryUnload)(void *library);
 static CUresult (*pcuLibraryGetKernel)(void *pKernel, void *library, const char *name);
@@ -2523,9 +2523,8 @@ CUresult WINAPI wine_cuModuleLoadDataEx(CUmodule *module, const void *image, uns
 
 CUresult WINAPI wine_cuModuleLoadFatBinary(CUmodule *module, const void *fatCubin)
 {
-    FIXME("(%p, %p)\n", module, fatCubin);
-    // There seems to be some issues with this causing crashes under wine.
-    return CUDA_ERROR_NO_BINARY_FOR_GPU;
+    TRACE("(%p, %p)\n", module, fatCubin);
+    return pcuModuleLoadFatBinary(module, fatCubin);
 }
 
 CUresult WINAPI wine_cuModuleUnload(CUmodule hmod)
@@ -4855,7 +4854,7 @@ CUresult WINAPI wine_cuGraphExecBatchMemOpNodeSetParams(CUgraphExec graphExec, C
  * Additions in CUDA 12
  */
 
-CUresult WINAPI wine_cuLibraryLoadData(void *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
+CUresult WINAPI wine_cuLibraryLoadData(CUlibrary *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
                                       void *libraryOptions, void** libraryOptionValues, unsigned int numLibraryOptions)
 {
     TRACE("(%p, %p, %p, %p, %u, %p, %p, %u)\n", library, code, jitOptions, jitOptionsValues, numJitOptions, libraryOptions, libraryOptionValues, numLibraryOptions);
@@ -4863,7 +4862,7 @@ CUresult WINAPI wine_cuLibraryLoadData(void *library, const void *code, CUjit_op
     return pcuLibraryLoadData(library, code, jitOptions, jitOptionsValues, numJitOptions, libraryOptions, libraryOptionValues, numLibraryOptions);
 }
 
-CUresult WINAPI wine_cuLibraryLoadFromFile(void *library, const char *fileName, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
+CUresult WINAPI wine_cuLibraryLoadFromFile(CUlibrary *library, const char *fileName, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
                                           void *libraryOptions, void **libraryOptionValues, unsigned int numLibraryOptions)
 {
     TRACE("(%p, %p, %p, %p, %u, %p, %p, %u)\n", library, fileName, jitOptions, jitOptionsValues, numJitOptions, libraryOptions, libraryOptionValues, numLibraryOptions);

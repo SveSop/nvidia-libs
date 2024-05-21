@@ -115,6 +115,7 @@ typedef void *CUgraphicsResource;
 typedef void *CUlinkState;
 typedef void *CUmipmappedArray;
 typedef void *CUmodule;
+typedef void *CUlibrary;
 typedef void *CUstream;
 typedef void *CUsurfref;
 typedef void *CUtexref;
