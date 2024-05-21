@@ -216,6 +216,7 @@ extern void wine_cuTexRefSetAddress_v2(void);
 extern void wine_cuTexRefSetAddress(void);
 extern void wine_cuTexRefSetAddress2D(void);
 extern void wine_cuTexRefSetAddress2D_v2(void);
+extern void wine_cuTexRefSetAddress2D_v3(void);
 extern void wine_cuTexRefSetFormat(void);
 extern void wine_cuTexRefSetAddressMode(void);
 extern void wine_cuTexRefSetFilterMode(void);
@@ -702,7 +703,8 @@ const FunctionMapping mappings[] = {
     {"cuTexRefSetAddress", 2000, 0, wine_cuTexRefSetAddress},
     {"cuTexRefSetAddress", 3020, 0, wine_cuTexRefSetAddress_v2},
     {"cuTexRefSetAddress2D", 2020, 0, wine_cuTexRefSetAddress2D},
-    {"cuTexRefSetAddress2D", 4010, 0, wine_cuTexRefSetAddress2D_v2},
+    {"cuTexRefSetAddress2D", 3020, 0, wine_cuTexRefSetAddress2D_v2},
+    {"cuTexRefSetAddress2D", 4010, 0, wine_cuTexRefSetAddress2D_v3},
     {"cuTexRefSetFormat", 2000, 0, wine_cuTexRefSetFormat},
     {"cuTexRefSetAddressMode", 2000, 0, wine_cuTexRefSetAddressMode},
     {"cuTexRefSetFilterMode", 2000, 0, wine_cuTexRefSetFilterMode},
