@@ -97,10 +97,7 @@ typedef int CUmemPool_attribute;
 typedef int CUmemAllocationGranularity_flags;
 typedef int CUmemRangeHandleType;
 
-typedef void *CUDA_ARRAY3D_DESCRIPTOR;
 typedef void *CUDA_ARRAY_DESCRIPTOR;
-typedef void *CUDA_MEMCPY2D;
-typedef void *CUDA_MEMCPY3D;
 typedef void *CUDA_MEMCPY3D_PEER;
 typedef void *CUDA_RESOURCE_DESC;
 typedef void *CUDA_RESOURCE_VIEW_DESC;
@@ -145,5 +142,65 @@ typedef struct CUuuid_st
 {
     char bytes[16];
 } CUuuid;
+
+typedef struct CUDA_MEMCPY2D_st {
+    size_t srcXInBytes;
+    size_t srcY;
+    CUmemorytype srcMemoryType;
+    const void *srcHost;
+    CUdeviceptr srcDevice;
+    CUarray srcArray;
+    size_t srcPitch;
+    size_t dstXInBytes;
+    size_t dstY;
+    CUmemorytype dstMemoryType;
+    void *dstHost;
+    CUdeviceptr dstDevice;
+    CUarray dstArray;
+    size_t dstPitch;
+    size_t WidthInBytes;
+    size_t Height;
+} CUDA_MEMCPY2D_v2;
+typedef CUDA_MEMCPY2D_v2 CUDA_MEMCPY2D;
+
+typedef struct CUDA_MEMCPY3D_st {
+    size_t srcXInBytes;
+    size_t srcY;
+    size_t srcZ;
+    size_t srcLOD;
+    CUmemorytype srcMemoryType;
+    const void *srcHost;
+    CUdeviceptr srcDevice;
+    CUarray srcArray;
+    void *reserved0;
+    size_t srcPitch;
+    size_t srcHeight;
+    size_t dstXInBytes;
+    size_t dstY;
+    size_t dstZ;
+    size_t dstLOD;
+    CUmemorytype dstMemoryType;
+    void *dstHost;
+    CUdeviceptr dstDevice;
+    CUarray dstArray;
+    void *reserved1;
+    size_t dstPitch;
+    size_t dstHeight;
+    size_t WidthInBytes;
+    size_t Height;
+    size_t Depth;
+} CUDA_MEMCPY3D_v2;
+typedef CUDA_MEMCPY3D_v2 CUDA_MEMCPY3D;
+
+typedef struct CUDA_ARRAY3D_DESCRIPTOR_st
+{
+    size_t Width;
+    size_t Height;
+    size_t Depth;
+    CUarray_format Format;
+    unsigned int NumChannels;
+    unsigned int Flags;
+} CUDA_ARRAY3D_DESCRIPTOR_v2;
+typedef CUDA_ARRAY3D_DESCRIPTOR_v2 CUDA_ARRAY3D_DESCRIPTOR;
 
 #endif /* __WINE_CUDA_H */
