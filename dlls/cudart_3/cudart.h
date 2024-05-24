@@ -128,10 +128,10 @@ typedef enum cudaError {
 } cudaError_t;
 
 typedef enum cudaChannelFormatKind {
-    cudaChannelFormatKindSigned   = 0,  // Signed channel format
-    cudaChannelFormatKindUnsigned = 1,  // Unsigned channel format
-    cudaChannelFormatKindFloat    = 2,  // Float channel format
-    cudaChannelFormatKindNone     = 3   // No channel format
+    cudaChannelFormatKindSigned   = 0,
+    cudaChannelFormatKindUnsigned = 1,
+    cudaChannelFormatKindFloat    = 2,
+    cudaChannelFormatKindNone     = 3
 } cudaChannelFormatKind;
 
 typedef struct cudaChannelFormatDesc {
@@ -143,11 +143,11 @@ typedef struct cudaChannelFormatDesc {
 } cudaChannelFormatDesc;
 
 typedef enum cudaMemcpyKind {
-    cudaMemcpyHostToHost     = 0,  // Host to Host
-    cudaMemcpyHostToDevice   = 1,  // Host to Device
-    cudaMemcpyDeviceToHost   = 2,  // Device to Host
-    cudaMemcpyDeviceToDevice = 3,  // Device to Device
-    cudaMemcpyDefault        = 4   // Default based on pointer values
+    cudaMemcpyHostToHost     = 0,
+    cudaMemcpyHostToDevice   = 1,
+    cudaMemcpyDeviceToHost   = 2,
+    cudaMemcpyDeviceToDevice = 3,
+    cudaMemcpyDefault        = 4
 } cudaMemcpyKind;
 
 typedef struct cudaExtent {
@@ -157,9 +157,9 @@ typedef struct cudaExtent {
 } cudaExtent;
 
 typedef struct cudaPos {
-  size_t x;
-  size_t y;
-  size_t z;
+    size_t x;
+    size_t y;
+    size_t z;
 } cudaPos;
 
 typedef struct cudaPitchedPtr {
@@ -170,14 +170,14 @@ typedef struct cudaPitchedPtr {
 } cudaPitchedPtr;
 
 typedef struct cudaMemcpy3DParms {
-  void*                 srcArray;
-  cudaPos               srcPos;
-  cudaPitchedPtr        srcPtr;
-  void*                 dstArray;
-  cudaPos               dstPos;
-  cudaPitchedPtr        dstPtr;
-  cudaExtent            extent;
-  cudaMemcpyKind        kind;
+    void*                 srcArray;
+    cudaPos               srcPos;
+    cudaPitchedPtr        srcPtr;
+    void*                 dstArray;
+    cudaPos               dstPos;
+    cudaPitchedPtr        dstPtr;
+    cudaExtent            extent;
+    cudaMemcpyKind        kind;
 } cudaMemcpy3DParms;
 
 #endif // __WINE_CUDART_H
