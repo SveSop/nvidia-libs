@@ -124,6 +124,9 @@ typedef void *CUmemAllocationProp;
 typedef void *CUmoduleLoadingMode;
 typedef void (CUDA_CB *CUhostFn)(void *userData);
 typedef void *CUlaunchConfig;
+typedef void *CUlaunchConfig;
+typedef void *CUkernel;
+typedef void *CUgreenCtx;
 
 typedef unsigned long long CUsurfObject;
 typedef unsigned long long CUtexObject;

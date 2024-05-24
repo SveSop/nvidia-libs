@@ -11,6 +11,7 @@
 @ stdcall cuCtxCreate(ptr long long) wine_cuCtxCreate
 @ stdcall cuCtxCreate_v2(ptr long long) wine_cuCtxCreate_v2
 @ stdcall cuCtxCreate_v3(ptr ptr long long long) wine_cuCtxCreate_v3
+@ stdcall cuCtxCreate_v4(ptr ptr long long) wine_cuCtxCreate_v4
 @ stdcall cuCtxDestroy(ptr) wine_cuCtxDestroy
 @ stdcall cuCtxDestroy_v2(ptr) wine_cuCtxDestroy_v2
 @ stdcall cuCtxDetach(ptr) wine_cuCtxDetach
@@ -411,6 +412,8 @@
 @ stdcall cuStreamGetCaptureInfo_v2_ptsz(ptr ptr ptr ptr ptr ptr) wine_cuStreamGetCaptureInfo_v2_ptsz
 @ stdcall cuStreamGetCtx(ptr ptr) wine_cuStreamGetCtx
 @ stdcall cuStreamGetCtx_ptsz(ptr ptr) wine_cuStreamGetCtx_ptsz
+@ stdcall cuStreamGetCtx_v2(ptr ptr ptr) wine_cuStreamGetCtx_v2
+@ stdcall cuStreamGetCtx_v2_ptsz(ptr ptr ptr) wine_cuStreamGetCtx_v2_ptsz
 @ stdcall cuStreamGetFlags(ptr ptr) wine_cuStreamGetFlags
 @ stdcall cuStreamGetFlags_ptsz(ptr ptr) wine_cuStreamGetFlags_ptsz
 @ stdcall cuStreamGetPriority(ptr ptr) wine_cuStreamGetPriority
@@ -713,3 +716,7 @@
 @ stdcall cuDevSmResourceSplitByCount(ptr ptr ptr ptr long long) wine_cuDevSmResourceSplitByCount
 @ stdcall cuStreamGetGreenCtx(ptr ptr) wine_cuStreamGetGreenCtx
 @ stdcall cuCtxFromGreenCtx(ptr ptr) wine_cuCtxFromGreenCtx
+@ stdcall cuKernelGetLibrary(ptr ptr) wine_cuKernelGetLibrary
+@ stdcall cuCtxRecordEvent(ptr ptr) wine_cuCtxRecordEvent
+@ stdcall cuCtxWaitEvent(ptr ptr) wine_cuCtxWaitEvent
+@ stdcall cuGreenCtxStreamCreate(ptr ptr long long) wine_cuGreenCtxStreamCreate

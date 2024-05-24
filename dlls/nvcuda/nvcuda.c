@@ -717,6 +717,13 @@ static CUresult (*pcuDevResourceGenerateDesc)(void *phDesc, void *resources, uns
 static CUresult (*pcuDevSmResourceSplitByCount)(void *result, unsigned int *nbGroups, const void *input, void *remaining, unsigned int useFlags, unsigned int minCount);
 static CUresult (*pcuStreamGetGreenCtx)(CUstream hStream, void *phCtx);
 static CUresult (*pcuCtxFromGreenCtx)(CUcontext *pContext, void *hCtx);
+static CUresult (*pcuKernelGetLibrary)(CUlibrary* pLib, CUkernel kernel);
+static CUresult (*pcuCtxRecordEvent)(CUcontext hCtx, CUevent hEvent);
+static CUresult (*pcuCtxWaitEvent)(CUcontext hCtx, CUevent hEvent);
+static CUresult (*pcuGreenCtxStreamCreate)(CUstream* phStream, CUgreenCtx greenCtx, unsigned int flags, int priority);
+static CUresult (*pcuStreamGetCtx_v2)(CUstream hStream, CUcontext* pctx, CUgreenCtx* pGreenCtx);
+static CUresult (*pcuStreamGetCtx_v2_ptsz)(CUstream hStream, CUcontext* pctx, CUgreenCtx* pGreenCtx);
+static CUresult (*pcuCtxCreate_v4)(CUcontext* pctx, void* ctxCreateParams, unsigned int flags, CUdevice dev);
 
 static void *cuda_handle = NULL;
 
@@ -1339,6 +1346,13 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuDevSmResourceSplitByCount);
     TRY_LOAD_FUNCPTR(cuStreamGetGreenCtx);
     TRY_LOAD_FUNCPTR(cuCtxFromGreenCtx);
+    TRY_LOAD_FUNCPTR(cuKernelGetLibrary);
+    TRY_LOAD_FUNCPTR(cuCtxRecordEvent);
+    TRY_LOAD_FUNCPTR(cuCtxWaitEvent);
+    TRY_LOAD_FUNCPTR(cuGreenCtxStreamCreate);
+    TRY_LOAD_FUNCPTR(cuStreamGetCtx_v2);
+    TRY_LOAD_FUNCPTR(cuStreamGetCtx_v2_ptsz);
+    TRY_LOAD_FUNCPTR(cuCtxCreate_v4);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -5376,6 +5390,55 @@ CUresult WINAPI wine_cuCtxFromGreenCtx(CUcontext *pContext, void *hCtx)
     TRACE("(%p, %p)\n", pContext, hCtx);
     CHECK_FUNCPTR(cuCtxFromGreenCtx);
     return pcuCtxFromGreenCtx(pContext, hCtx);
+}
+
+CUresult WINAPI wine_cuKernelGetLibrary(CUlibrary* pLib, CUkernel kernel)
+{
+    TRACE("(%p, %p)\n", pLib, kernel);
+    CHECK_FUNCPTR(cuKernelGetLibrary);
+    return pcuKernelGetLibrary(pLib, kernel);
+}
+
+CUresult WINAPI wine_cuCtxRecordEvent(CUcontext hCtx, CUevent hEvent)
+{
+    TRACE("(%p, %p)\n", hCtx, hEvent);
+    CHECK_FUNCPTR(cuCtxRecordEvent);
+    return pcuCtxRecordEvent(hCtx, hEvent);
+}
+
+CUresult WINAPI wine_cuCtxWaitEvent(CUcontext hCtx, CUevent hEvent)
+{
+    TRACE("(%p, %p)\n", hCtx, hEvent);
+    CHECK_FUNCPTR(cuCtxWaitEvent);
+    return pcuCtxWaitEvent(hCtx, hEvent);
+}
+
+CUresult WINAPI wine_cuGreenCtxStreamCreate(CUstream* phStream, CUgreenCtx greenCtx, unsigned int flags, int priority)
+{
+    TRACE("(%p, %p, %u, %d)\n", phStream, greenCtx, flags, priority);
+    CHECK_FUNCPTR(cuGreenCtxStreamCreate);
+    return pcuGreenCtxStreamCreate(phStream, greenCtx, flags, priority);
+}
+
+CUresult WINAPI wine_cuStreamGetCtx_v2(CUstream hStream, CUcontext* pctx, CUgreenCtx* pGreenCtx)
+{
+    TRACE("(%p, %p, %p)\n", hStream, pctx, pGreenCtx);
+    CHECK_FUNCPTR(cuStreamGetCtx_v2);
+    return pcuStreamGetCtx_v2(hStream, pctx, pGreenCtx);
+}
+
+CUresult WINAPI wine_cuStreamGetCtx_v2_ptsz(CUstream hStream, CUcontext* pctx, CUgreenCtx* pGreenCtx)
+{
+    TRACE("(%p, %p, %p)\n", hStream, pctx, pGreenCtx);
+    CHECK_FUNCPTR(cuStreamGetCtx_v2_ptsz);
+    return pcuStreamGetCtx_v2_ptsz(hStream, pctx, pGreenCtx);
+}
+
+CUresult WINAPI wine_cuCtxCreate_v4(CUcontext* pctx, void* ctxCreateParams, unsigned int flags, CUdevice dev)
+{
+    TRACE("(%p, %p, %u, %d)\n", pctx, ctxCreateParams, flags, dev);
+    CHECK_FUNCPTR(cuCtxCreate_v4);
+    return pcuCtxCreate_v4(pctx, ctxCreateParams, flags, dev);
 }
 
 #undef CHECK_FUNCPTR

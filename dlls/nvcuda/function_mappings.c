@@ -503,6 +503,13 @@ extern void wine_cuGraphAddBatchMemOpNode(void);
 extern void wine_cuGraphBatchMemOpNodeGetParams(void);
 extern void wine_cuGraphBatchMemOpNodeSetParams(void);
 extern void wine_cuGraphExecBatchMemOpNodeSetParams(void);
+extern void wine_cuKernelGetLibrary(void);
+extern void wine_cuCtxRecordEvent(void);
+extern void wine_cuCtxWaitEvent(void);
+extern void wine_cuGreenCtxStreamCreate(void);
+extern void wine_cuStreamGetCtx_v2(void);
+extern void wine_cuStreamGetCtx_v2_ptsz(void);
+extern void wine_cuCtxCreate_v4(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
@@ -540,6 +547,7 @@ const FunctionMapping mappings[] = {
     {"cuCtxCreate", 2000, 0, wine_cuCtxCreate},
     {"cuCtxCreate", 3020, 0, wine_cuCtxCreate_v2},
     {"cuCtxCreate", 11040, 0, wine_cuCtxCreate_v3},
+    {"cuCtxCreate", 12050, 0, wine_cuCtxCreate_v4},
     {"cuCtxGetFlags", 7000, 0, wine_cuCtxGetFlags},
     {"cuCtxSetCurrent", 4000, 0, wine_cuCtxSetCurrent},
     {"cuCtxGetCurrent", 4000, 0, wine_cuCtxGetCurrent},
@@ -782,6 +790,8 @@ const FunctionMapping mappings[] = {
     {"cuStreamGetFlags", 5050, 0, wine_cuStreamGetFlags},
     {"cuStreamGetCtx", 9020, 0, wine_cuStreamGetCtx},
     {"cuStreamGetCtx", 9020, 2, wine_cuStreamGetCtx_ptsz},
+    {"cuStreamGetCtx", 12050, 0, wine_cuStreamGetCtx_v2},
+    {"cuStreamGetCtx", 12050, 2, wine_cuStreamGetCtx_v2_ptsz},
     {"cuStreamGetFlags", 7000, 2, wine_cuStreamGetFlags_ptsz},
     {"cuStreamGetId", 12000, 0, wine_cuStreamGetId},
     {"cuStreamGetId", 12000, 2, wine_cuStreamGetId_ptsz},
@@ -992,6 +1002,10 @@ const FunctionMapping mappings[] = {
     {"cuGraphBatchMemOpNodeGetParams", 11070, 0, wine_cuGraphBatchMemOpNodeGetParams},
     {"cuGraphBatchMemOpNodeSetParams", 11070, 0, wine_cuGraphBatchMemOpNodeSetParams},
     {"cuGraphExecBatchMemOpNodeSetParams", 11070, 0, wine_cuGraphExecBatchMemOpNodeSetParams},
+    {"cuKernelGetLibrary", 12050, 0, wine_cuKernelGetLibrary},
+    {"cuCtxRecordEvent", 12050, 0, wine_cuCtxRecordEvent},
+    {"cuCtxWaitEvent", 12050, 0, wine_cuCtxWaitEvent},
+    {"cuGreenCtxStreamCreate", 12050, 0, wine_cuGreenCtxStreamCreate},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);
