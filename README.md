@@ -38,6 +38,14 @@ You can install symlinks and dll-overrides to the libraries in your wineprefix l
 To uninstall:  
 `WINEPREFIX=/your/wine/prefix ./setup_nvlibs.sh uninstall`  
 
+### DXVK-NVAPI
+Check out README file usage of DXVK-NVAPI.  
+[https://github.com/SveSop/dxvk-nvapi/blob/master/README.md](https://github.com/SveSop/dxvk-nvapi/blob/master/README.md)  
+Typical log level usage:  
+`DXVK_NVAPI_LOG_LEVEL=none` (Default) No output.  
+`DXVK_NVAPI_LOG_LEVEL=info` Informational output of function calls.  
+`DXVK_NVAPI_LOG_LEVEL=trace` Detailed debug information.  
+
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  
