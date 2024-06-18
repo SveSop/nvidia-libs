@@ -46,6 +46,23 @@ Typical log level usage:
 `DXVK_NVAPI_LOG_LEVEL=info` Informational output of function calls.  
 `DXVK_NVAPI_LOG_LEVEL=trace` Detailed debug information.  
 
+For misbehaving games that do not work too well with DLSS or otherwise do not work with  
+the detected architecture, you can override detected architecture like this:  
+`DXVK_NVAPI_GPU_ARCH=` with one of the following options:  
+
+`GK100` (Kepler)  
+`GM200` (Maxwell)  
+`GP100` (Pascal)  
+`GV100` (Volta)  
+`TU100` (Turing)  
+`GA100` (Ampere)  
+`AD100` (Ada)  
+
+Known games that needs override:  
+Monster Hunter World : `DXVK_NVAPI_GPU_ARCH=GP100`  
+War Thunder : `DXVK_NVAPI_GPU_ARCH=GP100`  
+Ghost of Tsushima : `DXVK_NVAPI_GPU_ARCH=GA100`  
+
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  
