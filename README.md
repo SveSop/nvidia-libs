@@ -21,9 +21,10 @@ nvoptix (wine-nvoptix)
 
 ## Build requirements:  
 - [WINE] (version >= 9.0) [https://www.winehq.org/](https://www.winehq.org/)  
-- [Meson] [http://mesonbuild.com/](http://mesonbuild.com/)  
+- [Meson] (version >= 0.61) [http://mesonbuild.com/](http://mesonbuild.com/)  
 - [NINJA] [https://ninja-build.org/](https://ninja-build.org/)  
-- [MINGW] (version >= 9.0) [https://www.mingw-w64.org/](https://www.mingw-w64.org/)  
+- [MINGW] (version >= 10.0) [https://www.mingw-w64.org/](https://www.mingw-w64.org/)  
+- [GCC/G++] (version >= 10.0) [https://gcc.gnu.org/](https://gcc.gnu.org/)  
 
 ## How to build  
 
