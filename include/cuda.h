@@ -71,6 +71,7 @@ typedef enum CUdriverProcAddressQueryResult_enum {
 
 typedef unsigned long long CUmemGenericAllocationHandle_v1;
 typedef CUmemGenericAllocationHandle_v1 CUmemGenericAllocationHandle;
+typedef unsigned int CUdeviceptr_v1;
 typedef int CUGLDeviceList;
 typedef int CUaddress_mode;
 typedef int CUarray_format;
@@ -123,7 +124,6 @@ typedef void *CUmemoryPool;
 typedef void *CUmemAllocationProp;
 typedef void *CUmoduleLoadingMode;
 typedef void (CUDA_CB *CUhostFn)(void *userData);
-typedef void *CUlaunchConfig;
 typedef void *CUlaunchConfig;
 typedef void *CUkernel;
 typedef void *CUgreenCtx;
