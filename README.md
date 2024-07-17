@@ -102,22 +102,16 @@ symlink the binary to the same folder where the executable you are running like 
 NB. You should probably make a backup of the original `cufft64_11.dll` in that folder.  
 This however requires CUDA SDK 12.3 or newer to be installed on your system!  
 
-To use CUDART 3.0 helper library `cudart32_30_14.dll` when running old SDK 3.0 samples  
-or demos like NVIDIA SuperSonic Sled Demo, do the same as above:  
-`ln -sf nvidia-libs-release\lib\wine\i386-unix\cudart32_30_14.dll.so cudart32_30_14.dll`  
-This is ONLY for 32-bit and requires the 32-bit version of the CUDA SDK 3.0 toolkit  
-installed/extracted on your system (see below).  
-
 Newest CUDA SDK toolkit can be downloaded here:  
 https://developer.nvidia.com/cuda-downloads  
 
-The CUDA SDK 3.0 toolkit can be downloaded here:  
-https://developer.download.nvidia.com/compute/cuda/3_0/toolkit/cudatoolkit_3.0_linux_32_ubuntu9.04.run  
+Some older SDK samples can be run by specifying LD_LIBRARY_PATH to the system folder  
+where libcuda.so.1 and other libnvidia-xxx.so libraries reside. This varies depending  
+on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit and  
+`/lib/i386-linux-gnu/` for 32-bit.  
 
-PS. Yes, it is quite a bit quirky to get SDK 3.0 installed like this, but you should be able to  
-extract the lib* files, and you can load them with `LD_LIBRARY_PATH` to get it working on newer  
-distros. Due to this somewhat troublesome exercise, these helper binaries are built but not  
-installed into the WINEPREFIX with the installscript as this is mostly for "specially interested".  
+For instance to get the NVIDIA SuperSonic Sled demo to run on Ubuntu you can load wine  
+with using `LD_LIBRARY_PATH=/lib/i386-linux-gnu:$LD_LIBRARY_PATH`  
 
 ## Info  
 
