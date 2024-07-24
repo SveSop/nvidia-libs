@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.7.17  
+Release: 0.7.18  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK >11.5 should now mostly be supported. There can still be missing functions  
@@ -11,7 +11,8 @@ Older drivers that does not support SDK 10 and older may also fail/crash. Report
 logs on the issue page. However these are highly outdated drivers in general and will probably not  
 see too much attention in that regard.  
 
-Create logs typically with: `WINEDEBUG=-all,+nvcuda wine ./yourapp.exe > yourapp.log 2>&1`  
+Create logs typically with: `WINEDEBUG=-all,+nvcuda,+nvml wine ./yourapp.exe > yourapp.log 2>&1`  
+Also see notes about DXVK-NVAPI below for logging.  
 
 Library contains:  
 nvapi (dxvk-nvapi)  
@@ -113,6 +114,14 @@ on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit and
 For instance to get the NVIDIA SuperSonic Sled demo to run on Ubuntu you can load wine  
 with using `LD_LIBRARY_PATH=/lib/i386-linux-gnu:$LD_LIBRARY_PATH`  
 
+## DAZ Studio
+
+In case you do NOT use nvml (wine-nvml) library to emulate nvml.dll, DAZ Studio will  
+show 2 "adapters" for rending. Choose the one that show your GPU name, and NOT the other.  
+
+NVML can be installed by using the `setup_nvml.sh` script included in the package and for  
+DAZ Studio is recommended.  
+ 
 ## Info  
 
 Loads of reference info here:  

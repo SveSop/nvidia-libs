@@ -130,6 +130,6 @@ if [ "$fun" = removeOverride ]; then
    echo "All done!"
 else
    echo "Symlinks created in $WINEPREFIX. Do NOT remove this source folder!"
-   echo "OBS! NVML is NOT enabled. See Readme_nvml.txt for info"
+   echo "OBS! NVML is NOT enabled by default. See Readme_nvml.txt for info or run nvml_setup.sh"
    echo "You need to REMOVE old overrides if older version of nvml have been used in $WINEPREFIX"
 fi
