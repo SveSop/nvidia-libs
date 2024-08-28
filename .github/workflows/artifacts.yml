@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
@@ -34,7 +34,7 @@ jobs:
         echo "ARTIFACT=nvidia-libs-${VERSION}.tar.gz" >> $GITHUB_ENV
 
     - name: Setup problem matcher
-      uses: Joshua-Ashton/gcc-problem-matcher@v2
+      uses: Joshua-Ashton/gcc-problem-matcher@v3
 
     - name: Build
       uses: Joshua-Ashton/arch-mingw-github-action@9cdb815264bce7a6346927521b176f578982679d
@@ -47,7 +47,7 @@ jobs:
       run: tar cvfz "nvidia-libs-${{ env.VERSION }}.tar.gz" -C "./build/nvidia-libs-${{ env.VERSION }}" .
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nvidia-libs-${{ env.VERSION }}
         path: ${{ env.ARTIFACT }}
