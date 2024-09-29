@@ -31,7 +31,7 @@ jobs:
       run: |
         export VERSION=$(git describe --always --tags --dirty=+)
         echo "VERSION=${VERSION}" >> $GITHUB_ENV
-        echo "ARTIFACT=nvidia-libs-${VERSION}.tar.gz" >> $GITHUB_ENV
+        echo "ARTIFACT=build/nvidia-libs-${VERSION}" >> $GITHUB_ENV
 
     - name: Setup problem matcher
       uses: Joshua-Ashton/gcc-problem-matcher@v3
@@ -41,10 +41,6 @@ jobs:
       with:
         command: |
           ./package-release.sh "${{ env.VERSION }}" build
-
-    - name: Create tarball
-      if: github.ref_type == 'tag'
-      run: tar cvfz "nvidia-libs-${{ env.VERSION }}.tar.gz" -C "./build/nvidia-libs-${{ env.VERSION }}" .
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
