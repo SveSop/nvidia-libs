@@ -31,6 +31,7 @@ cp -f "$nvlibs_dir/$lib/$arch-unix/nvoptix.dll.so" "$PROTON_LIBS/files/$lib/$arc
 cp -f "$nvlibs_dir/$lib/$arch-unix/nvml.so" "$PROTON_LIBS/files/$lib/$arch-unix"
 cp -f "$nvlibs_dir/$lib/$arch-windows/nvml.dll" "$PROTON_LIBS/files/$lib/$arch-windows"
 cp -f "$nvlibs_dir/$lib/$arch-windows/nvapi64.dll" "$PROTON_LIBS/files/$lib/nvapi"
+cp -f "$nvlibs_dir/$lib/$arch-windows/nvofapi64.dll" "$PROTON_LIBS/files/$lib/nvapi"
 cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32"
 ln -sf "../../../../../lib64/wine/$arch-windows/nvml.dll" "nvml.dll"
 ln -sf "../../../../../lib64/wine/$arch-windows/nvoptix.dll" "nvoptix.dll"
