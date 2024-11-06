@@ -1,4 +1,4 @@
-project('nvidia-libs', ['c'], version: 'v0.7.19', license: 'mixed')
+project('nvidia-libs', ['c'], version: 'v0.7.20', license: 'mixed')
 
 include_path = include_directories('./include')
 
