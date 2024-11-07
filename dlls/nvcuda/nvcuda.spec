@@ -238,6 +238,8 @@
 @ stdcall cuMemAllocPitch(ptr ptr long long long) wine_cuMemAllocPitch
 @ stdcall cuMemAllocPitch_v2(ptr ptr long long long) wine_cuMemAllocPitch_v2
 @ stdcall cuMemAlloc_v2(ptr long) wine_cuMemAlloc_v2
+@ stub cuMemBatchDecompressAsync
+@ stub cuMemBatchDecompressAsync_ptsz
 @ stdcall cuMemFree(long) wine_cuMemFree
 @ stdcall cuMemGetAllocationGranularity(ptr ptr long) wine_cuMemGetAllocationGranularity
 @ stdcall cuMemFreeAsync(double ptr) wine_cuMemFreeAsync
