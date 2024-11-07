@@ -62,8 +62,8 @@ extern void wine_cuCtxSetLimit(void);
 extern void wine_cuCtxGetCacheConfig(void);
 extern void wine_cuCtxSetCacheConfig(void);
 extern void wine_cuCtxGetSharedMemConfig(void);
-extern void wine_cuCtxGetStreamPriorityRange(void);
 extern void wine_cuCtxSetSharedMemConfig(void);
+extern void wine_cuCtxGetStreamPriorityRange(void);
 extern void wine_cuCtxSynchronize(void);
 extern void wine_cuCtxResetPersistingL2Cache(void);
 extern void wine_cuCtxPopCurrent(void);
@@ -96,6 +96,7 @@ extern void wine_cuLinkCreate_v2(void);
 extern void wine_cuLinkAddData(void);
 extern void wine_cuLinkAddData_v2(void);
 extern void wine_cuLinkAddFile(void);
+extern void wine_cuLinkAddFile_v2(void);
 extern void wine_cuLinkComplete(void);
 extern void wine_cuLinkDestroy(void);
 extern void wine_cuMemGetInfo(void);
@@ -162,6 +163,9 @@ extern void wine_cuMemcpyDtoD_v2_ptds(void);
 extern void wine_cuMemcpyDtoDAsync(void);
 extern void wine_cuMemcpyDtoDAsync_v2(void);
 extern void wine_cuMemcpyDtoDAsync_v2_ptsz(void);
+extern void wine_cuMemcpy2D(void);
+extern void wine_cuMemcpy2D_v2(void);
+extern void wine_cuMemcpy2D_v2_ptds(void);
 extern void wine_cuMemcpy2DUnaligned(void);
 extern void wine_cuMemcpy2DUnaligned_v2(void);
 extern void wine_cuMemcpy2DUnaligned_v2_ptds(void);
@@ -294,10 +298,13 @@ extern void wine_cuStreamGetPriority_ptsz(void);
 extern void wine_cuStreamGetFlags(void);
 extern void wine_cuStreamGetCtx(void);
 extern void wine_cuStreamGetCtx_ptsz(void);
+extern void wine_cuStreamGetCtx_v2(void);
+extern void wine_cuStreamGetCtx_v2_ptsz(void);
 extern void wine_cuStreamGetFlags_ptsz(void);
 extern void wine_cuStreamGetId(void);
 extern void wine_cuStreamGetId_ptsz(void);
 extern void wine_cuStreamDestroy(void);
+extern void wine_cuStreamDestroy_v2(void);
 extern void wine_cuStreamWaitEvent(void);
 extern void wine_cuStreamWaitEvent_ptsz(void);
 extern void wine_cuStreamAddCallback(void);
@@ -327,6 +334,7 @@ extern void wine_cuGLCtxCreate(void);
 extern void wine_cuGLCtxCreate_v2(void);
 extern void wine_cuGLInit(void);
 extern void wine_cuGLGetDevices(void);
+extern void wine_cuGLGetDevices_v2(void);
 extern void wine_cuGLRegisterBufferObject(void);
 extern void wine_cuGLMapBufferObject(void);
 extern void wine_cuGLMapBufferObject_v2(void);
@@ -362,11 +370,13 @@ extern void wine_cuGraphicsD3D10RegisterResource(void);
 extern void wine_cuD3D9GetDevice(void);
 extern void wine_cuGraphicsD3D9RegisterResource(void);
 extern void wine_cuGetExportTable(void);
+extern void wine_cuOccupancyMaxActiveBlocksPerMultiprocessor(void);
 extern void wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags(void);
 extern void wine_cuOccupancyAvailableDynamicSMemPerBlock(void);
 extern void wine_cuOccupancyMaxPotentialClusterSize(void);
 extern void wine_cuOccupancyMaxActiveClusters(void);
 extern void wine_cuMemAdvise(void);
+extern void wine_cuMemAdvise_v2(void);
 extern void wine_cuMemPrefetchAsync(void);
 extern void wine_cuMemPrefetchAsync_ptsz(void);
 extern void wine_cuMemRangeGetAttribute(void);
@@ -419,10 +429,13 @@ extern void wine_cuGraphNodeGetType(void);
 extern void wine_cuGraphGetNodes(void);
 extern void wine_cuGraphGetRootNodes(void);
 extern void wine_cuGraphGetEdges(void);
+extern void wine_cuGraphGetEdges_v2(void);
 extern void wine_cuGraphNodeGetDependencies(void);
 extern void wine_cuGraphNodeGetDependentNodes(void);
 extern void wine_cuGraphAddDependencies(void);
+extern void wine_cuGraphAddDependencies_v2(void);
 extern void wine_cuGraphRemoveDependencies(void);
+extern void wine_cuGraphRemoveDependencies_v2(void);
 extern void wine_cuGraphDestroyNode(void);
 extern void wine_cuGraphInstantiate(void);
 extern void wine_cuGraphInstantiate_v2(void);
@@ -445,8 +458,12 @@ extern void wine_cuStreamGetCaptureInfo(void);
 extern void wine_cuStreamGetCaptureInfo_ptsz(void);
 extern void wine_cuStreamGetCaptureInfo_v2(void);
 extern void wine_cuStreamGetCaptureInfo_v2_ptsz(void);
+extern void wine_cuStreamGetCaptureInfo_v3(void);
+extern void wine_cuStreamGetCaptureInfo_v3_ptsz(void);
 extern void wine_cuStreamUpdateCaptureDependencies(void);
 extern void wine_cuStreamUpdateCaptureDependencies_ptsz(void);
+extern void wine_cuStreamUpdateCaptureDependencies_v2(void);
+extern void wine_cuStreamUpdateCaptureDependencies_v2_ptsz(void);
 extern void wine_cuGraphExecKernelNodeSetParams(void);
 extern void wine_cuGraphExecKernelNodeSetParams_v2(void);
 extern void wine_cuGraphExecMemcpyNodeSetParams(void);
@@ -472,26 +489,18 @@ extern void wine_cuGraphNodeGetEnabled(void);
 extern void wine_cuGraphInstantiateWithParams(void);
 extern void wine_cuGraphInstantiateWithParams_ptsz(void);
 extern void wine_cuGraphExecGetFlags(void);
-extern void wine_cuMemAdvise_v2(void);
 extern void wine_cuMemPrefetchAsync_v2(void);
 extern void wine_cuMemPrefetchAsync_v2_ptsz(void);
 extern void wine_cuGraphAddNode(void);
+extern void wine_cuGraphAddNode_v2(void);
 extern void wine_cuGraphNodeSetParams(void);
 extern void wine_cuGraphExecNodeSetParams(void);
 extern void wine_cuKernelGetName(void);
 extern void wine_cuFuncGetName(void);
-extern void wine_cuGraphGetEdges_v2(void);
 extern void wine_cuGraphNodeGetDependencies_v2(void);
 extern void wine_cuGraphNodeGetDependentNodes_v2(void);
-extern void wine_cuGraphAddDependencies_v2(void);
-extern void wine_cuGraphRemoveDependencies_v2(void);
 extern void wine_cuStreamBeginCaptureToGraph(void);
 extern void wine_cuStreamBeginCaptureToGraph_ptsz(void);
-extern void wine_cuStreamGetCaptureInfo_v3(void);
-extern void wine_cuStreamGetCaptureInfo_v3_ptsz(void);
-extern void wine_cuStreamUpdateCaptureDependencies_v2(void);
-extern void wine_cuStreamUpdateCaptureDependencies_v2_ptsz(void);
-extern void wine_cuGraphAddNode_v2(void);
 extern void wine_cuGraphConditionalHandleCreate(void);
 extern void wine_cuFuncGetModule(void);
 extern void wine_cuKernelGetParamInfo(void);
@@ -507,8 +516,6 @@ extern void wine_cuKernelGetLibrary(void);
 extern void wine_cuCtxRecordEvent(void);
 extern void wine_cuCtxWaitEvent(void);
 extern void wine_cuGreenCtxStreamCreate(void);
-extern void wine_cuStreamGetCtx_v2(void);
-extern void wine_cuStreamGetCtx_v2_ptsz(void);
 extern void wine_cuCtxCreate_v4(void);
 extern void wine_cuMemExportToShareableHandle(void);
 extern void wine_cuMemMapArrayAsync(void);
@@ -519,6 +526,111 @@ extern void wine_cuTensorMapReplaceAddress(void);
 extern void wine_cuMemGetAllocationPropertiesFromHandle(void);
 extern void wine_cuMemImportFromShareableHandle(void);
 extern void wine_cuMemRetainAllocationHandle(void);
+extern void wine_cuCtxDestroy(void);
+extern void wine_cuCtxDestroy_v2(void);
+extern void wine_cuMemCreate(void);
+extern void wine_cuMemAddressReserve(void);
+extern void wine_cuMemUnmap(void);
+extern void wine_cuMemSetAccess(void);
+extern void wine_cuMemGetAccess(void);
+extern void wine_cuMemAddressFree(void);
+extern void wine_cuMemMap(void);
+extern void wine_cuMemRelease(void);
+extern void wine_cuMemGetAllocationGranularity(void);
+extern void wine_cuDeviceGetProperties(void);
+extern void wine_cuLaunch(void);
+extern void wine_cuLaunchGrid(void);
+extern void wine_cuMemAllocHost(void);
+extern void wine_cuMemAllocHost_v2(void);
+extern void wine_cuMemcpyAtoA(void);
+extern void wine_cuMemcpyAtoA_v2(void);
+extern void wine_cuMemcpyAtoA_v2_ptds(void);
+extern void wine_cuMemcpyAtoD(void);
+extern void wine_cuMemcpyAtoD_v2(void);
+extern void wine_cuMemcpyAtoD_v2_ptds(void);
+extern void wine_cuMemcpyAtoH(void);
+extern void wine_cuMemcpyAtoH_v2(void);
+extern void wine_cuMemcpyAtoH_v2_ptds(void);
+extern void wine_cuMemcpyAtoHAsync(void);
+extern void wine_cuMemcpyAtoHAsync_v2(void);
+extern void wine_cuMemcpyAtoHAsync_v2_ptsz(void);
+extern void wine_cuMemcpyDtoA(void);
+extern void wine_cuMemcpyDtoA_v2(void);
+extern void wine_cuMemcpyDtoA_v2_ptds(void);
+extern void wine_cuMemcpyHtoA(void);
+extern void wine_cuMemcpyHtoA_v2(void);
+extern void wine_cuMemcpyHtoA_v2_ptds(void);
+extern void wine_cuMemcpyHtoAAsync(void);
+extern void wine_cuMemcpyHtoAAsync_v2(void);
+extern void wine_cuMemcpyHtoAAsync_v2_ptsz(void);
+extern void wine_cuMemsetD16(void);
+extern void wine_cuMemsetD16_v2(void);
+extern void wine_cuMemsetD16_v2_ptds(void);
+extern void wine_cuMemsetD16Async(void);
+extern void wine_cuMemsetD16Async_ptsz(void);
+extern void wine_cuMemsetD2D16(void);
+extern void wine_cuMemsetD2D16_v2(void);
+extern void wine_cuMemsetD2D16_v2_ptds(void);
+extern void wine_cuMemsetD2D16Async(void);
+extern void wine_cuMemsetD2D16Async_ptsz(void);
+extern void wine_cuMemsetD2D32(void);
+extern void wine_cuMemsetD2D32_v2(void);
+extern void wine_cuMemsetD2D32_v2_ptds(void);
+extern void wine_cuMemsetD2D32Async(void);
+extern void wine_cuMemsetD2D32Async_ptsz(void);
+extern void wine_cuMemsetD32(void);
+extern void wine_cuMemsetD32_v2(void);
+extern void wine_cuMemsetD32_v2_ptds(void);
+extern void wine_cuMemsetD32Async(void);
+extern void wine_cuMemsetD32Async_ptsz(void);
+extern void wine_cuParamSetTexRef(void);
+extern void wine_cuParamSetf(void);
+extern void wine_cuParamSeti(void);
+extern void wine_cuParamSetv(void);
+extern void wine_cuPointerSetAttribute(void);
+extern void wine_cuSurfRefGetArray(void);
+extern void wine_cuTexRefGetAddress(void);
+extern void wine_cuTexRefGetAddress_v2(void);
+extern void wine_cuTexRefGetAddressMode(void);
+extern void wine_cuTexRefGetArray(void);
+extern void wine_cuTexRefGetFilterMode(void);
+extern void wine_cuTexRefGetFlags(void);
+extern void wine_cuTexRefGetFormat(void);
+extern void wine_cuTexRefGetMaxAnisotropy(void);
+extern void wine_cuTexRefGetMipmapFilterMode(void);
+extern void wine_cuTexRefGetMipmapLevelBias(void);
+extern void wine_cuTexRefGetMipmapLevelClamp(void);
+extern void wine_cuTexRefGetMipmappedArray(void);
+extern void wine_cuOccupancyMaxPotentialBlockSize(void);
+extern void wine_cuOccupancyMaxPotentialBlockSizeWithFlags(void);
+extern void wine_cuCtxFromGreenCtx(void);
+extern void wine_cuCtxGetDevResource(void);
+extern void wine_cuCtxGetExecAffinity(void);
+extern void wine_cuCtxGetId(void);
+extern void wine_cuCtxSetFlags(void);
+extern void wine_cuDevResourceGenerateDesc(void);
+extern void wine_cuDevSmResourceSplitByCount(void);
+extern void wine_cuDeviceGetDevResource(void);
+extern void wine_cuFuncIsLoaded(void);
+extern void wine_cuFuncLoad(void);
+extern void wine_cuGreenCtxCreate(void);
+extern void wine_cuGreenCtxDestroy(void);
+extern void wine_cuGreenCtxGetDevResource(void);
+extern void wine_cuGreenCtxRecordEvent(void);
+extern void wine_cuGreenCtxWaitEvent(void);
+extern void wine_cuLibraryEnumerateKernels(void);
+extern void wine_cuLibraryGetKernelCount(void);
+extern void wine_cuLibraryGetUnifiedFunction(void);
+extern void wine_cuMemGetHandleForAddressRange(void);
+extern void wine_cuModuleEnumerateFunctions(void);
+extern void wine_cuModuleGetFunctionCount(void);
+extern void wine_cuMulticastAddDevice(void);
+extern void wine_cuMulticastBindAddr(void);
+extern void wine_cuMulticastBindMem(void);
+extern void wine_cuMulticastCreate(void);
+extern void wine_cuMulticastGetGranularity(void);
+extern void wine_cuMulticastUnbind(void);
+extern void wine_cuStreamGetGreenCtx(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
@@ -602,6 +714,7 @@ const FunctionMapping mappings[] = {
     {"cuLinkAddData", 5050, 0, wine_cuLinkAddData},
     {"cuLinkAddData", 6050, 0, wine_cuLinkAddData_v2},
     {"cuLinkAddFile", 5050, 0, wine_cuLinkAddFile},
+    {"cuLinkAddFile", 6050, 0, wine_cuLinkAddFile_v2},
     {"cuLinkComplete", 5050, 0, wine_cuLinkComplete},
     {"cuLinkDestroy", 5050, 0, wine_cuLinkDestroy},
     {"cuMemGetInfo", 2000, 0, wine_cuMemGetInfo},
@@ -668,6 +781,9 @@ const FunctionMapping mappings[] = {
     {"cuMemcpyDtoDAsync", 3000, 0, wine_cuMemcpyDtoDAsync},
     {"cuMemcpyDtoDAsync", 3020, 0, wine_cuMemcpyDtoDAsync_v2},
     {"cuMemcpyDtoDAsync", 7000, 2, wine_cuMemcpyDtoDAsync_v2_ptsz},
+    {"cuMemcpy2D", 2000, 0, wine_cuMemcpy2D},
+    {"cuMemcpy2D", 3020, 0, wine_cuMemcpy2D_v2},
+    {"cuMemcpy2D", 7000, 2, wine_cuMemcpy2D_v2_ptds},
     {"cuMemcpy2DUnaligned", 2000, 0, wine_cuMemcpy2DUnaligned},
     {"cuMemcpy2DUnaligned", 3020, 0, wine_cuMemcpy2DUnaligned_v2},
     {"cuMemcpy2DUnaligned", 7000, 2, wine_cuMemcpy2DUnaligned_v2_ptds},
@@ -797,14 +913,15 @@ const FunctionMapping mappings[] = {
     {"cuStreamGetPriority", 5050, 0, wine_cuStreamGetPriority},
     {"cuStreamGetPriority", 7000, 2, wine_cuStreamGetPriority_ptsz},
     {"cuStreamGetFlags", 5050, 0, wine_cuStreamGetFlags},
+    {"cuStreamGetFlags", 7000, 2, wine_cuStreamGetFlags_ptsz},
     {"cuStreamGetCtx", 9020, 0, wine_cuStreamGetCtx},
     {"cuStreamGetCtx", 9020, 2, wine_cuStreamGetCtx_ptsz},
     {"cuStreamGetCtx", 12050, 0, wine_cuStreamGetCtx_v2},
     {"cuStreamGetCtx", 12050, 2, wine_cuStreamGetCtx_v2_ptsz},
-    {"cuStreamGetFlags", 7000, 2, wine_cuStreamGetFlags_ptsz},
     {"cuStreamGetId", 12000, 0, wine_cuStreamGetId},
     {"cuStreamGetId", 12000, 2, wine_cuStreamGetId_ptsz},
-    {"cuStreamDestroy", 4000, 0, wine_cuStreamDestroy},
+    {"cuStreamDestroy", 2000, 0, wine_cuStreamDestroy},
+    {"cuStreamDestroy", 4000, 0, wine_cuStreamDestroy_v2},
     {"cuStreamWaitEvent", 3020, 0, wine_cuStreamWaitEvent},
     {"cuStreamWaitEvent", 7000, 2, wine_cuStreamWaitEvent_ptsz},
     {"cuStreamAddCallback", 5000, 0, wine_cuStreamAddCallback},
@@ -834,6 +951,7 @@ const FunctionMapping mappings[] = {
     {"cuGLCtxCreate", 3020, 0, wine_cuGLCtxCreate_v2},
     {"cuGLInit", 2000, 0, wine_cuGLInit},
     {"cuGLGetDevices", 4010, 0, wine_cuGLGetDevices},
+    {"cuGLGetDevices", 6050, 0, wine_cuGLGetDevices_v2},
     {"cuGLRegisterBufferObject", 2000, 0, wine_cuGLRegisterBufferObject},
     {"cuGLMapBufferObject", 2000, 0, wine_cuGLMapBufferObject},
     {"cuGLMapBufferObject", 3020, 0, wine_cuGLMapBufferObject_v2},
@@ -869,11 +987,13 @@ const FunctionMapping mappings[] = {
     {"cuD3D9GetDevice", 2000, 0, wine_cuD3D9GetDevice},
     {"cuGraphicsD3D9RegisterResource", 3000, 0, wine_cuGraphicsD3D9RegisterResource},
     {"cuGetExportTable", 3000, 0, wine_cuGetExportTable},
+    {"cuOccupancyMaxActiveBlocksPerMultiprocessor", 6050, 0, wine_cuOccupancyMaxActiveBlocksPerMultiprocessor},
     {"cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags", 7000, 0, wine_cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags},
     {"cuOccupancyAvailableDynamicSMemPerBlock", 10020, 0, wine_cuOccupancyAvailableDynamicSMemPerBlock},
     {"cuOccupancyMaxPotentialClusterSize", 11070, 0, wine_cuOccupancyMaxPotentialClusterSize},
     {"cuOccupancyMaxActiveClusters", 11070, 0, wine_cuOccupancyMaxActiveClusters},
     {"cuMemAdvise", 8000, 0, wine_cuMemAdvise},
+    {"cuMemAdvise", 12020, 0, wine_cuMemAdvise_v2},
     {"cuMemPrefetchAsync", 8000, 0, wine_cuMemPrefetchAsync},
     {"cuMemPrefetchAsync", 8000, 2, wine_cuMemPrefetchAsync_ptsz},
     {"cuMemRangeGetAttribute", 8000, 0, wine_cuMemRangeGetAttribute},
@@ -989,7 +1109,6 @@ const FunctionMapping mappings[] = {
     {"cuGraphInstantiateWithParams", 12000, 2, wine_cuGraphInstantiateWithParams_ptsz},
     {"cuGraphInstantiateWithParams_ptsz", 12000, 2, wine_cuGraphInstantiateWithParams_ptsz},
     {"cuGraphExecGetFlags", 12000, 0, wine_cuGraphExecGetFlags},
-    {"cuMemAdvise", 12020, 0, wine_cuMemAdvise_v2},
     {"cuMemPrefetchAsync", 12020, 0, wine_cuMemPrefetchAsync_v2},
     {"cuMemPrefetchAsync", 12020, 2, wine_cuMemPrefetchAsync_v2_ptsz},
     {"cuGraphAddNode", 12020, 0, wine_cuGraphAddNode},
@@ -1024,6 +1143,111 @@ const FunctionMapping mappings[] = {
     {"cuMemGetAllocationPropertiesFromHandle", 10020, 0, wine_cuMemGetAllocationPropertiesFromHandle},
     {"cuMemImportFromShareableHandle", 10020, 0, wine_cuMemImportFromShareableHandle},
     {"cuMemRetainAllocationHandle", 11000, 0, wine_cuMemRetainAllocationHandle},
+    {"cuCtxDestroy", 2000, 0, wine_cuCtxDestroy},
+    {"cuCtxDestroy", 4000, 0, wine_cuCtxDestroy_v2},
+    {"cuMemCreate", 10020, 0, wine_cuMemCreate},
+    {"cuMemAddressReserve", 10020, 0, wine_cuMemAddressReserve},
+    {"cuMemUnmap", 10020, 0, wine_cuMemUnmap},
+    {"cuMemSetAccess", 10020, 0, wine_cuMemSetAccess},
+    {"cuMemGetAccess", 10020, 0, wine_cuMemGetAccess},
+    {"cuMemAddressFree", 10020, 0, wine_cuMemAddressFree},
+    {"cuMemMap", 10020, 0, wine_cuMemMap},
+    {"cuMemRelease", 10020, 0, wine_cuMemRelease},
+    {"cuMemGetAllocationGranularity", 10020, 0, wine_cuMemGetAllocationGranularity},
+    {"cuDeviceGetProperties", 2000, 0, wine_cuDeviceGetProperties},
+    {"cuLaunch", 2000, 0, wine_cuLaunch},
+    {"cuLaunchGrid", 2000, 0, wine_cuLaunchGrid},
+    {"cuMemAllocHost", 2000, 0, wine_cuMemAllocHost},
+    {"cuMemAllocHost", 3020, 0, wine_cuMemAllocHost_v2},
+    {"cuMemcpyAtoA", 2000, 0, wine_cuMemcpyAtoA},
+    {"cuMemcpyAtoA", 3020, 0, wine_cuMemcpyAtoA_v2},
+    {"cuMemcpyAtoA", 7000, 2, wine_cuMemcpyAtoA_v2_ptds},
+    {"cuMemcpyAtoD", 2000, 0, wine_cuMemcpyAtoD},
+    {"cuMemcpyAtoD", 3020, 0, wine_cuMemcpyAtoD_v2},
+    {"cuMemcpyAtoD", 7000, 2, wine_cuMemcpyAtoD_v2_ptds},
+    {"cuMemcpyAtoH", 2000, 0, wine_cuMemcpyAtoH},
+    {"cuMemcpyAtoH", 3020, 0, wine_cuMemcpyAtoH_v2},
+    {"cuMemcpyAtoH", 7000, 2, wine_cuMemcpyAtoH_v2_ptds},
+    {"cuMemcpyAtoHAsync", 2000, 0, wine_cuMemcpyAtoHAsync},
+    {"cuMemcpyAtoHAsync", 3020, 0, wine_cuMemcpyAtoHAsync_v2},
+    {"cuMemcpyAtoHAsync", 7000, 2, wine_cuMemcpyAtoHAsync_v2_ptsz},
+    {"cuMemcpyDtoA", 2000, 0, wine_cuMemcpyDtoA},
+    {"cuMemcpyDtoA", 3020, 0, wine_cuMemcpyDtoA_v2},
+    {"cuMemcpyDtoA", 7000, 2, wine_cuMemcpyDtoA_v2_ptds},
+    {"cuMemcpyHtoA", 2000, 0, wine_cuMemcpyHtoA},
+    {"cuMemcpyHtoA", 3020, 0, wine_cuMemcpyHtoA_v2},
+    {"cuMemcpyHtoA", 7000, 2, wine_cuMemcpyHtoA_v2_ptds},
+    {"cuMemcpyHtoAAsync", 2000, 0, wine_cuMemcpyHtoAAsync},
+    {"cuMemcpyHtoAAsync", 3020, 0, wine_cuMemcpyHtoAAsync_v2},
+    {"cuMemcpyHtoAAsync", 7000, 2, wine_cuMemcpyHtoAAsync_v2_ptsz},
+    {"cuMemsetD16", 2000, 0, wine_cuMemsetD16},
+    {"cuMemsetD16", 3020, 0, wine_cuMemsetD16_v2},
+    {"cuMemsetD16", 7000, 2, wine_cuMemsetD16_v2_ptds},
+    {"cuMemsetD16Async", 3020, 0, wine_cuMemsetD16Async},
+    {"cuMemsetD16Async", 7000, 2, wine_cuMemsetD16Async_ptsz},
+    {"cuMemsetD2D16", 2000, 0, wine_cuMemsetD2D16},
+    {"cuMemsetD2D16", 3020, 0, wine_cuMemsetD2D16_v2},
+    {"cuMemsetD2D16", 7000, 2, wine_cuMemsetD2D16_v2_ptds},
+    {"cuMemsetD2D16Async", 3020, 0, wine_cuMemsetD2D16Async},
+    {"cuMemsetD2D16Async", 7000, 2, wine_cuMemsetD2D16Async_ptsz},
+    {"cuMemsetD2D32", 2000, 0, wine_cuMemsetD2D32},
+    {"cuMemsetD2D32", 3020, 0, wine_cuMemsetD2D32_v2},
+    {"cuMemsetD2D32", 7000, 2, wine_cuMemsetD2D32_v2_ptds},
+    {"cuMemsetD2D32Async", 3020, 0, wine_cuMemsetD2D32Async},
+    {"cuMemsetD2D32Async", 7000, 2, wine_cuMemsetD2D32Async_ptsz},
+    {"cuMemsetD32", 2000, 0, wine_cuMemsetD32},
+    {"cuMemsetD32", 3020, 0, wine_cuMemsetD32_v2},
+    {"cuMemsetD32", 7000, 2, wine_cuMemsetD32_v2_ptds},
+    {"cuMemsetD32Async", 3020, 0, wine_cuMemsetD32Async},
+    {"cuMemsetD32Async", 7000, 2, wine_cuMemsetD32Async_ptsz},
+    {"cuParamSetTexRef", 2000, 0, wine_cuParamSetTexRef},
+    {"cuParamSetf", 2000, 0, wine_cuParamSetf},
+    {"cuParamSeti", 2000, 0, wine_cuParamSeti},
+    {"cuParamSetv", 2000, 0, wine_cuParamSetv},
+    {"cuPointerSetAttribute", 6000, 0, wine_cuPointerSetAttribute},
+    {"cuSurfRefGetArray", 3000, 0, wine_cuSurfRefGetArray},
+    {"cuTexRefGetAddress", 2000, 0, wine_cuTexRefGetAddress},
+    {"cuTexRefGetAddress", 3020, 0, wine_cuTexRefGetAddress_v2},
+    {"cuTexRefGetAddressMode", 2000, 0, wine_cuTexRefGetAddressMode},
+    {"cuTexRefGetArray", 2000, 0, wine_cuTexRefGetArray},
+    {"cuTexRefGetFilterMode", 2000, 0, wine_cuTexRefGetFilterMode},
+    {"cuTexRefGetFlags", 2000, 0, wine_cuTexRefGetFlags},
+    {"cuTexRefGetFormat", 2000, 0, wine_cuTexRefGetFormat},
+    {"cuTexRefGetMaxAnisotropy", 5000, 0, wine_cuTexRefGetMaxAnisotropy},
+    {"cuTexRefGetMipmapFilterMode", 5000, 0, wine_cuTexRefGetMipmapFilterMode},
+    {"cuTexRefGetMipmapLevelBias", 5000, 0, wine_cuTexRefGetMipmapLevelBias},
+    {"cuTexRefGetMipmapLevelClamp", 5000, 0, wine_cuTexRefGetMipmapLevelClamp},
+    {"cuTexRefGetMipmappedArray", 5000, 0, wine_cuTexRefGetMipmappedArray},
+    {"cuOccupancyMaxPotentialBlockSize", 6050, 0, wine_cuOccupancyMaxPotentialBlockSize},
+    {"cuOccupancyMaxPotentialBlockSizeWithFlags", 7000, 0, wine_cuOccupancyMaxPotentialBlockSizeWithFlags},
+    {"cuCtxFromGreenCtx", 12040, 0, wine_cuCtxFromGreenCtx},
+    {"cuCtxGetDevResource", 12040, 0, wine_cuCtxGetDevResource},
+    {"cuCtxGetExecAffinity", 11040, 0, wine_cuCtxGetExecAffinity},
+    {"cuCtxGetId", 12000, 0, wine_cuCtxGetId},
+    {"cuCtxSetFlags", 12010, 0, wine_cuCtxSetFlags},
+    {"cuDevResourceGenerateDesc", 12040, 0, wine_cuDevResourceGenerateDesc},
+    {"cuDevSmResourceSplitByCount", 12040, 0, wine_cuDevSmResourceSplitByCount},
+    {"cuDeviceGetDevResource", 12040, 0, wine_cuDeviceGetDevResource},
+    {"cuFuncIsLoaded", 12040, 0, wine_cuFuncIsLoaded},
+    {"cuFuncLoad", 12040, 0, wine_cuFuncLoad},
+    {"cuGreenCtxCreate", 12040, 0, wine_cuGreenCtxCreate},
+    {"cuGreenCtxDestroy", 12040, 0, wine_cuGreenCtxDestroy},
+    {"cuGreenCtxGetDevResource", 12040, 0, wine_cuGreenCtxGetDevResource},
+    {"cuGreenCtxRecordEvent", 12040, 0, wine_cuGreenCtxRecordEvent},
+    {"cuGreenCtxWaitEvent", 12040, 0, wine_cuGreenCtxWaitEvent},
+    {"cuLibraryEnumerateKernels", 12040, 0, wine_cuLibraryEnumerateKernels},
+    {"cuLibraryGetKernelCount", 12040, 0, wine_cuLibraryGetKernelCount},
+    {"cuLibraryGetUnifiedFunction", 12000, 0, wine_cuLibraryGetUnifiedFunction},
+    {"cuMemGetHandleForAddressRange", 11070, 0, wine_cuMemGetHandleForAddressRange},
+    {"cuModuleEnumerateFunctions", 12040, 0, wine_cuModuleEnumerateFunctions},
+    {"cuModuleGetFunctionCount", 12040, 0, wine_cuModuleGetFunctionCount},
+    {"cuMulticastAddDevice", 12010, 0, wine_cuMulticastAddDevice},
+    {"cuMulticastBindAddr", 12010, 0, wine_cuMulticastBindAddr},
+    {"cuMulticastBindMem", 12010, 0, wine_cuMulticastBindMem},
+    {"cuMulticastCreate", 12010, 0, wine_cuMulticastCreate},
+    {"cuMulticastGetGranularity", 12010, 0, wine_cuMulticastGetGranularity},
+    {"cuMulticastUnbind", 12010, 0, wine_cuMulticastUnbind},
+    {"cuStreamGetGreenCtx", 12040, 0, wine_cuStreamGetGreenCtx},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);
