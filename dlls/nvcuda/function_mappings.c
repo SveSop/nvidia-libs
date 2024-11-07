@@ -510,6 +510,15 @@ extern void wine_cuGreenCtxStreamCreate(void);
 extern void wine_cuStreamGetCtx_v2(void);
 extern void wine_cuStreamGetCtx_v2_ptsz(void);
 extern void wine_cuCtxCreate_v4(void);
+extern void wine_cuMemExportToShareableHandle(void);
+extern void wine_cuMemMapArrayAsync(void);
+extern void wine_cuMemMapArrayAsync_ptsz(void);
+extern void wine_cuTensorMapEncodeTiled(void);
+extern void wine_cuTensorMapEncodeIm2col(void);
+extern void wine_cuTensorMapReplaceAddress(void);
+extern void wine_cuMemGetAllocationPropertiesFromHandle(void);
+extern void wine_cuMemImportFromShareableHandle(void);
+extern void wine_cuMemRetainAllocationHandle(void);
 
 const FunctionMapping mappings[] = {
     {"cuGetProcAddress", 11030, 0, wine_cuGetProcAddress},
@@ -1006,6 +1015,15 @@ const FunctionMapping mappings[] = {
     {"cuCtxRecordEvent", 12050, 0, wine_cuCtxRecordEvent},
     {"cuCtxWaitEvent", 12050, 0, wine_cuCtxWaitEvent},
     {"cuGreenCtxStreamCreate", 12050, 0, wine_cuGreenCtxStreamCreate},
+    {"cuMemExportToShareableHandle", 10020, 0, wine_cuMemExportToShareableHandle},
+    {"cuMemMapArrayAsync", 11010, 0, wine_cuMemMapArrayAsync},
+    {"cuMemMapArrayAsync", 11010, 2, wine_cuMemMapArrayAsync_ptsz},
+    {"cuTensorMapEncodeTiled", 12000, 0, wine_cuTensorMapEncodeTiled},
+    {"cuTensorMapEncodeIm2col", 12000, 0, wine_cuTensorMapEncodeIm2col},
+    {"cuTensorMapReplaceAddress", 12000, 0, wine_cuTensorMapReplaceAddress},
+    {"cuMemGetAllocationPropertiesFromHandle", 10020, 0, wine_cuMemGetAllocationPropertiesFromHandle},
+    {"cuMemImportFromShareableHandle", 10020, 0, wine_cuMemImportFromShareableHandle},
+    {"cuMemRetainAllocationHandle", 11000, 0, wine_cuMemRetainAllocationHandle},
 };
 
 const size_t mappings_count = sizeof(mappings) / sizeof(mappings[0]);

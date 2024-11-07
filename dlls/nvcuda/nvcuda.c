@@ -523,6 +523,9 @@ static CUresult (*pcuMemUnmap)(CUdeviceptr_v2 ptr, size_t size);
 static CUresult (*pcuStreamGetCaptureInfo)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out);
 static CUresult (*pcuStreamGetCaptureInfo_ptsz)(CUstream hStream, CUstreamCaptureStatus *captureStatus_out, cuuint64_t *id_out);
 static CUresult (*pcuMemAddressReserve)(CUdeviceptr_v2 *ptr, size_t size, size_t alignment, CUdeviceptr_v2 addr, unsigned long long flags);
+static CUresult (*pcuMemExportToShareableHandle)(void* shareableHandle, void* handle, void* handleType, unsigned long long flags);
+static CUresult (*pcuMemGetAllocationPropertiesFromHandle)(void* prop, CUmemGenericAllocationHandle_v1 handle);
+static CUresult (*pcuMemImportFromShareableHandle)(void* handle, void* osHandle, void* shHandleType);
 
 /* Cuda 11 */
 static CUresult (*pcuMemAllocAsync)(CUdeviceptr_v2 *dptr, size_t bytesize, CUstream hStream);
@@ -637,6 +640,9 @@ static CUresult (*pcuGraphAddBatchMemOpNode)(CUgraphNode *phGraphNode, CUgraph h
 static CUresult (*pcuGraphBatchMemOpNodeGetParams)(CUgraphNode hNode, void *nodeParams_out);
 static CUresult (*pcuGraphBatchMemOpNodeSetParams)(CUgraphNode hNode, const void *nodeParams);
 static CUresult (*pcuGraphExecBatchMemOpNodeSetParams)(CUgraphExec graphExec, CUgraphNode node, const void *nodeParams);
+static CUresult (*pcuMemMapArrayAsync)(void* mapInfoList, unsigned int count, CUstream hStream);
+static CUresult (*pcuMemMapArrayAsync_ptsz)(void* mapInfoList, unsigned int count, CUstream hStream);
+static CUresult (*pcuMemRetainAllocationHandle)(CUmemGenericAllocationHandle_v1* handle, void* addr);
 
 /* Cuda 12 */
 static CUresult (*pcuLibraryLoadData)(CUlibrary *library, const void *code, CUjit_option *jitOptions, void **jitOptionsValues, unsigned int numJitOptions,
@@ -724,6 +730,12 @@ static CUresult (*pcuGreenCtxStreamCreate)(CUstream* phStream, CUgreenCtx greenC
 static CUresult (*pcuStreamGetCtx_v2)(CUstream hStream, CUcontext* pctx, CUgreenCtx* pGreenCtx);
 static CUresult (*pcuStreamGetCtx_v2_ptsz)(CUstream hStream, CUcontext* pctx, CUgreenCtx* pGreenCtx);
 static CUresult (*pcuCtxCreate_v4)(CUcontext* pctx, void* ctxCreateParams, unsigned int flags, CUdevice dev);
+static CUresult (*pcuTensorMapEncodeTiled)(void** tensorMap, void* tensorDataType, cuuint32_t tensorRank, void* globalAddress, const cuuint64_t* globalDim, const cuuint64_t* globalStrides, const cuuint32_t* boxDim,
+                                           const cuuint32_t* elementStrides, void* interleave, void* swizzle, void* l2Promotion, void* oobFill);
+static CUresult (*pcuTensorMapEncodeIm2col)(void** tensorMap, void* tensorDataType, cuuint32_t tensorRank, void* globalAddress, const cuuint64_t* globalDim, const cuuint64_t* globalStrides,
+                                                   const int* pixelBoxLowerCorner, const int* pixelBoxUpperCorner, cuuint32_t channelsPerPixel, cuuint32_t pixelsPerColumn, const cuuint32_t* elementStrides,
+                                                   void* interleave, void* swizzle, void* l2Promotion, void* oobFill);
+static CUresult (*pcuTensorMapReplaceAddress)(void** tensorMap, void* globalAddress);
 
 static void *cuda_handle = NULL;
 
@@ -1159,6 +1171,9 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuStreamGetCaptureInfo);
     LOAD_FUNCPTR(cuStreamGetCaptureInfo_ptsz);
     LOAD_FUNCPTR(cuMemAddressReserve);
+    LOAD_FUNCPTR(cuMemExportToShareableHandle);
+    LOAD_FUNCPTR(cuMemGetAllocationPropertiesFromHandle);
+    LOAD_FUNCPTR(cuMemImportFromShareableHandle);
 
     /* CUDA 11 */
     TRY_LOAD_FUNCPTR(cuMemAllocAsync);
@@ -1272,6 +1287,9 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuGraphBatchMemOpNodeGetParams);
     TRY_LOAD_FUNCPTR(cuGraphBatchMemOpNodeSetParams);
     TRY_LOAD_FUNCPTR(cuGraphExecBatchMemOpNodeSetParams);
+    TRY_LOAD_FUNCPTR(cuMemMapArrayAsync);
+    TRY_LOAD_FUNCPTR(cuMemMapArrayAsync_ptsz);
+    TRY_LOAD_FUNCPTR(cuMemRetainAllocationHandle);
 
     /* CUDA 12 */
     TRY_LOAD_FUNCPTR(cuLibraryLoadData);
@@ -1353,6 +1371,9 @@ static BOOL load_functions(void)
     TRY_LOAD_FUNCPTR(cuStreamGetCtx_v2);
     TRY_LOAD_FUNCPTR(cuStreamGetCtx_v2_ptsz);
     TRY_LOAD_FUNCPTR(cuCtxCreate_v4);
+    TRY_LOAD_FUNCPTR(cuTensorMapEncodeTiled);
+    TRY_LOAD_FUNCPTR(cuTensorMapEncodeIm2col);
+    TRY_LOAD_FUNCPTR(cuTensorMapReplaceAddress);
 
     #undef LOAD_FUNCPTR
     #undef TRY_LOAD_FUNCPTR
@@ -4065,6 +4086,24 @@ CUresult WINAPI wine_cuMemAddressReserve(CUdeviceptr_v2 *ptr, size_t size, size_
     return pcuMemAddressReserve(ptr, size, alignment, addr, flags);
 }
 
+CUresult WINAPI wine_cuMemExportToShareableHandle(void* shareableHandle, void* handle, void* handleType, unsigned long long flags)
+{
+    TRACE("(%p, %p, %p, %llu)\n", shareableHandle, handle, handleType, flags);
+    return pcuMemExportToShareableHandle(shareableHandle, handle, handleType, flags);
+}
+
+CUresult WINAPI wine_cuMemGetAllocationPropertiesFromHandle(void* prop, CUmemGenericAllocationHandle_v1 handle)
+{
+    TRACE("(%p, %llu)\n", prop, handle);
+    return pcuMemGetAllocationPropertiesFromHandle(prop, handle);
+}
+
+CUresult WINAPI wine_cuMemImportFromShareableHandle(void* handle, void* osHandle, void* shHandleType)
+{
+    TRACE("(%p, %p, %p)\n", handle, osHandle, shHandleType);
+    return pcuMemImportFromShareableHandle(handle, osHandle, shHandleType);
+}
+
 #define CHECK_FUNCPTR(f) \
     do \
     { \
@@ -4864,6 +4903,27 @@ CUresult WINAPI wine_cuGraphExecBatchMemOpNodeSetParams(CUgraphExec graphExec, C
     return pcuGraphExecBatchMemOpNodeSetParams(graphExec, node, nodeParams);
 }
 
+CUresult WINAPI wine_cuMemMapArrayAsync(void* mapInfoList, unsigned int count, CUstream hStream)
+{
+    TRACE("(%p, %u, %p)\n", mapInfoList, count, hStream);
+    CHECK_FUNCPTR(cuMemMapArrayAsync);
+    return pcuMemMapArrayAsync(mapInfoList, count, hStream);
+}
+
+CUresult WINAPI wine_cuMemMapArrayAsync_ptsz(void* mapInfoList, unsigned int count, CUstream hStream)
+{
+    TRACE("(%p, %u, %p)\n", mapInfoList, count, hStream);
+    CHECK_FUNCPTR(cuMemMapArrayAsync_ptsz);
+    return pcuMemMapArrayAsync_ptsz(mapInfoList, count, hStream);
+}
+
+CUresult WINAPI wine_cuMemRetainAllocationHandle(CUmemGenericAllocationHandle_v1* handle, void* addr)
+{
+    TRACE("(%p, %p)\n", handle, addr);
+    CHECK_FUNCPTR(cuMemRetainAllocationHandle);
+    return pcuMemRetainAllocationHandle(handle, addr);
+}
+
 /*
  * Additions in CUDA 12
  */
@@ -5439,6 +5499,30 @@ CUresult WINAPI wine_cuCtxCreate_v4(CUcontext* pctx, void* ctxCreateParams, unsi
     TRACE("(%p, %p, %u, %d)\n", pctx, ctxCreateParams, flags, dev);
     CHECK_FUNCPTR(cuCtxCreate_v4);
     return pcuCtxCreate_v4(pctx, ctxCreateParams, flags, dev);
+}
+
+CUresult WINAPI wine_cuTensorMapEncodeTiled(void** tensorMap, void* tensorDataType, cuuint32_t tensorRank, void* globalAddress, const cuuint64_t* globalDim, const cuuint64_t* globalStrides, const cuuint32_t* boxDim,
+                                         const cuuint32_t* elementStrides, void* interleave, void* swizzle, void* l2Promotion, void* oobFill)
+{
+    TRACE("(%p, %p, %u, %p, %p, %p, %p, %p, %p, %p, %p, %p)\n", tensorMap, tensorDataType, tensorRank, globalAddress, globalDim, globalStrides, boxDim, elementStrides, interleave, swizzle, l2Promotion, oobFill);
+    CHECK_FUNCPTR(cuTensorMapEncodeTiled);
+    return pcuTensorMapEncodeTiled(tensorMap, tensorDataType, tensorRank, globalAddress, globalDim, globalStrides, boxDim, elementStrides, interleave, swizzle, l2Promotion, oobFill);
+}
+
+CUresult WINAPI wine_cuTensorMapEncodeIm2col(void** tensorMap, void* tensorDataType, cuuint32_t tensorRank, void* globalAddress, const cuuint64_t* globalDim, const cuuint64_t* globalStrides,
+                                             const int* pixelBoxLowerCorner, const int* pixelBoxUpperCorner, cuuint32_t channelsPerPixel, cuuint32_t pixelsPerColumn, const cuuint32_t* elementStrides,
+                                             void* interleave, void* swizzle, void* l2Promotion, void* oobFill)
+{
+    TRACE("(%p, %p, %u, %p, %p, %p, %p, %p, %u, %u, %p, %p, %p, %p, %p)\n", tensorMap, tensorDataType, tensorRank, globalAddress, globalDim, globalStrides, pixelBoxLowerCorner, pixelBoxUpperCorner, channelsPerPixel,
+                                                                            pixelsPerColumn, elementStrides, interleave, swizzle, l2Promotion, oobFill);
+    return pcuTensorMapEncodeIm2col(tensorMap, tensorDataType, tensorRank, globalAddress, globalDim, globalStrides, pixelBoxLowerCorner, pixelBoxUpperCorner,
+                                    channelsPerPixel, pixelsPerColumn, elementStrides, interleave, swizzle, l2Promotion, oobFill);
+}
+
+CUresult WINAPI wine_cuTensorMapReplaceAddress(void** tensorMap, void* globalAddress)
+{
+    TRACE("(%p, %p)\n", tensorMap, globalAddress);
+    return pcuTensorMapReplaceAddress(tensorMap, globalAddress);
 }
 
 #undef CHECK_FUNCPTR

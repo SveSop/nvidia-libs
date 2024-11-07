@@ -535,13 +535,13 @@
 @ stdcall cuMemAllocFromPoolAsync(ptr long ptr ptr) wine_cuMemAllocFromPoolAsync
 @ stdcall cuMemAllocFromPoolAsync_ptsz(ptr long ptr ptr) wine_cuMemAllocFromPoolAsync_ptsz
 @ stdcall cuMemCreate(ptr long ptr long) wine_cuMemCreate
-@ stub cuMemExportToShareableHandle
+@ stdcall cuMemExportToShareableHandle(ptr ptr ptr double) wine_cuMemExportToShareableHandle
 @ stdcall cuMemGetAccess(ptr ptr double) wine_cuMemGetAccess
-@ stub cuMemGetAllocationPropertiesFromHandle
-@ stub cuMemImportFromShareableHandle
+@ stdcall cuMemGetAllocationPropertiesFromHandle(ptr double) wine_cuMemGetAllocationPropertiesFromHandle
+@ stdcall cuMemImportFromShareableHandle(ptr ptr ptr) wine_cuMemImportFromShareableHandle
 @ stdcall cuMemMap(double long long double double) wine_cuMemMap
-@ stub cuMemMapArrayAsync
-@ stub cuMemMapArrayAsync_ptsz
+@ stdcall cuMemMapArrayAsync(ptr long ptr) wine_cuMemMapArrayAsync
+@ stdcall cuMemMapArrayAsync_ptsz(ptr long ptr) wine_cuMemMapArrayAsync_ptsz
 @ stdcall cuMemPoolCreate(ptr ptr) wine_cuMemPoolCreate
 @ stdcall cuMemPoolDestroy(ptr) wine_cuMemPoolDestroy
 @ stdcall cuMemPoolExportPointer(ptr double) wine_cuMemPoolExportPointer
@@ -553,7 +553,7 @@
 @ stdcall cuMemPoolSetAccess(ptr ptr long) wine_cuMemPoolSetAccess
 @ stdcall cuMemPoolTrimTo(ptr long) wine_cuMemPoolTrimTo
 @ stdcall cuMemRelease(double) wine_cuMemRelease
-@ stub cuMemRetainAllocationHandle
+@ stdcall cuMemRetainAllocationHandle(ptr ptr) wine_cuMemRetainAllocationHandle
 @ stdcall cuMemSetAccess(double long ptr long) wine_cuMemSetAccess
 @ stdcall cuMemUnmap(double long) wine_cuMemUnmap
 @ stdcall cuMipmappedArrayGetSparseProperties(ptr ptr) wine_cuMipmappedArrayGetSparseProperties
@@ -637,9 +637,9 @@
 @ stdcall cuStreamGetId_ptsz(ptr ptr) wine_cuStreamGetId_ptsz
 @ stub cuGraphAddKernelnNode
 @ stdcall cuGraphExecGetFlags(ptr ptr) wine_cuGraphExecGetFlags
-@ stub cuTensorMapEncodeTiled
-@ stub cuTensorMapEncodeIm2col
-@ stub cuTensorMapReplaceAddress
+@ stdcall cuTensorMapEncodeTiled(ptr ptr long ptr ptr ptr ptr ptr ptr ptr ptr ptr) wine_cuTensorMapEncodeTiled
+@ stdcall cuTensorMapEncodeIm2col(ptr ptr long ptr ptr ptr ptr ptr long long ptr ptr ptr ptr ptr) wine_cuTensorMapEncodeIm2col
+@ stdcall cuTensorMapReplaceAddress(ptr ptr) wine_cuTensorMapReplaceAddress
 @ stdcall cuLibraryLoadData(ptr ptr ptr ptr long ptr ptr long) wine_cuLibraryLoadData
 @ stdcall cuLibraryLoadFromFile(ptr ptr ptr ptr long ptr ptr long) wine_cuLibraryLoadFromFile
 @ stdcall cuLibraryUnload(ptr) wine_cuLibraryUnload
