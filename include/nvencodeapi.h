@@ -23,7 +23,7 @@
 #ifndef __WINE_NVENCODEAPI_H
 #define __WINE_NVENCODEAPI_H
 
-#define NVENCAPI_MAJOR_VERSION 9
+#define NVENCAPI_MAJOR_VERSION 10
 #define NVENCAPI_MINOR_VERSION 0
 
 #define NVENCAPI_VERSION (NVENCAPI_MAJOR_VERSION | (NVENCAPI_MINOR_VERSION << 24))
@@ -38,6 +38,7 @@
 typedef void *NV_ENC_INPUT_PTR;
 typedef void *NV_ENC_OUTPUT_PTR;
 typedef void *NV_ENC_REGISTERED_PTR;
+typedef void *NV_ENC_CUSTREAM_PTR;
 
 typedef struct _NV_ENC_CREATE_INPUT_BUFFER NV_ENC_CREATE_INPUT_BUFFER;
 typedef struct _NV_ENC_CREATE_BITSTREAM_BUFFER NV_ENC_CREATE_BITSTREAM_BUFFER;
@@ -82,6 +83,16 @@ typedef struct _NVENC_EXTERNAL_ME_HINT_COUNTS_PER_BLOCKTYPE
     uint32_t reserved1[3];
 } NVENC_EXTERNAL_ME_HINT_COUNTS_PER_BLOCKTYPE;
 
+typedef enum NV_ENC_TUNING_INFO
+{
+    NV_ENC_TUNING_INFO_UNDEFINED         = 0,
+    NV_ENC_TUNING_INFO_HIGH_QUALITY      = 1,
+    NV_ENC_TUNING_INFO_LOW_LATENCY       = 2,
+    NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY = 3,
+    NV_ENC_TUNING_INFO_LOSSLESS          = 4,
+    NV_ENC_TUNING_INFO_COUNT
+}NV_ENC_TUNING_INFO;
+
 typedef struct _NV_ENC_INITIALIZE_PARAMS
 {
     uint32_t version;
@@ -108,9 +119,27 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
     uint32_t maxEncodeWidth;
     uint32_t maxEncodeHeight;
     NVENC_EXTERNAL_ME_HINT_COUNTS_PER_BLOCKTYPE maxMEHintCountsPerBlock[2];
-    uint32_t reserved[289];
+    NV_ENC_TUNING_INFO tuningInfo;
+    uint32_t reserved[288];
     void *reserved2[64];
 } NV_ENC_INITIALIZE_PARAMS;
+
+typedef struct _NV_ENC_PIC_PARAMS_MVC
+{
+    uint32_t version;
+    uint32_t viewID;
+    uint32_t temporalID;
+    uint32_t priorityID;
+    uint32_t reserved1[12];
+    void*    reserved2[8];
+}NV_ENC_PIC_PARAMS_MVC;
+#define NV_ENC_PIC_PARAMS_MVC_VER NVENCAPI_STRUCT_VERSION(1)
+
+typedef union _NV_ENC_PIC_PARAMS_H264_EXT
+{
+    NV_ENC_PIC_PARAMS_MVC mvcPicParams;
+    uint32_t reserved1[32];
+}NV_ENC_PIC_PARAMS_H264_EXT;
 
 typedef struct _NV_ENC_PIC_PARAMS_H264
 {
@@ -135,7 +164,8 @@ typedef struct _NV_ENC_PIC_PARAMS_H264
     uint32_t ltrUsageMode;
     uint32_t forceIntraSliceCount;
     uint32_t *forceIntraSliceIdx;
-    uint32_t reserved[242];
+    NV_ENC_PIC_PARAMS_H264_EXT h264ExtPicParams;
+    uint32_t reserved[210];
     void *reserved2[61];
 } NV_ENC_PIC_PARAMS_H264;
 
@@ -254,7 +284,11 @@ typedef struct __NV_ENCODE_API_FUNCTION_LIST
     NVENCSTATUS (WINAPI *nvEncCreateMVBuffer)(void *encoder, NV_ENC_CREATE_MV_BUFFER *createMVBufferParams);
     NVENCSTATUS (WINAPI *nvEncDestroyMVBuffer)(void *encoder, NV_ENC_OUTPUT_PTR MVBuffer);
     NVENCSTATUS (WINAPI *nvEncRunMotionEstimationOnly)(void *encoder, NV_ENC_MEONLY_PARAMS *MEOnlyParams);
-    void *reserved2[281];
+    const char *(WINAPI *nvEncGetLastErrorString)(void* encoder);
+    NVENCSTATUS (WINAPI *nvEncSetIOCudaStreams)(void* encoder, NV_ENC_CUSTREAM_PTR inputStream, NV_ENC_CUSTREAM_PTR outputStream);
+    NVENCSTATUS (WINAPI *nvEncGetEncodePresetConfigEx)(void* encoder, GUID encodeGUID, GUID  presetGUID, NV_ENC_TUNING_INFO tuningInfo, NV_ENC_PRESET_CONFIG* presetConfig);
+    NVENCSTATUS (WINAPI *nvEncGetSequenceParamEx)(void* encoder, NV_ENC_INITIALIZE_PARAMS* encInitParams, NV_ENC_SEQUENCE_PARAM_PAYLOAD* sequenceParamPayload);
+    void *reserved2[277];
 } NV_ENCODE_API_FUNCTION_LIST;
 #define NV_ENCODE_API_FUNCTION_LIST_VER NVENCAPI_STRUCT_VERSION(2)
 
@@ -302,7 +336,11 @@ typedef struct __LINUX_NV_ENCODE_API_FUNCTION_LIST
     NVENCSTATUS (*nvEncCreateMVBuffer)(void *encoder, NV_ENC_CREATE_MV_BUFFER *createMVBufferParams);
     NVENCSTATUS (*nvEncDestroyMVBuffer)(void *encoder, NV_ENC_OUTPUT_PTR MVBuffer);
     NVENCSTATUS (*nvEncRunMotionEstimationOnly)(void *encoder, NV_ENC_MEONLY_PARAMS *MEOnlyParams);
-    void *reserved2[281];
+    const char *(*nvEncGetLastErrorString)(void* encoder);
+    NVENCSTATUS (*nvEncSetIOCudaStreams)(void* encoder, NV_ENC_CUSTREAM_PTR inputStream, NV_ENC_CUSTREAM_PTR outputStream);
+    NVENCSTATUS (*nvEncGetEncodePresetConfigEx)(void* encoder, GUID encodeGUID, GUID  presetGUID, NV_ENC_TUNING_INFO tuningInfo, NV_ENC_PRESET_CONFIG* presetConfig);
+    NVENCSTATUS (*nvEncGetSequenceParamEx)(void* encoder, NV_ENC_INITIALIZE_PARAMS* encInitParams, NV_ENC_SEQUENCE_PARAM_PAYLOAD* sequenceParamPayload);
+    void *reserved2[277];
 } LINUX_NV_ENCODE_API_FUNCTION_LIST;
 
 #endif /* __WINE_NVENCODEAPI_H */

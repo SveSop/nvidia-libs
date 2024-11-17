@@ -283,6 +283,30 @@ static NVENCSTATUS WINAPI NvEncRunMotionEstimationOnly(void *encoder, NV_ENC_MEO
     return origFunctions.nvEncRunMotionEstimationOnly(encoder, MEOnlyParams);
 }
 
+static const char *WINAPI NvEncGetLastErrorString(void* encoder)
+{
+    TRACE("(%p)\n", encoder);
+    return origFunctions.nvEncGetLastErrorString(encoder);
+}
+
+static NVENCSTATUS WINAPI NvEncSetIOCudaStreams(void* encoder, NV_ENC_CUSTREAM_PTR inputStream, NV_ENC_CUSTREAM_PTR outputStream)
+{
+    TRACE("(%p, %p, %p)\n", encoder, inputStream, outputStream);
+    return origFunctions.nvEncSetIOCudaStreams(encoder, inputStream, outputStream);
+}
+
+static NVENCSTATUS WINAPI NvEncGetEncodePresetConfigEx(void* encoder, GUID encodeGUID, GUID presetGUID, NV_ENC_TUNING_INFO tuningInfo, NV_ENC_PRESET_CONFIG* presetConfig)
+{
+    TRACE("(%p, %s, %s, %u, %p)\n", encoder, debugstr_guid(&encodeGUID), debugstr_guid(&presetGUID), tuningInfo, presetConfig);
+    return origFunctions.nvEncGetEncodePresetConfigEx(encoder, encodeGUID, presetGUID, tuningInfo, presetConfig);
+}
+
+static NVENCSTATUS WINAPI NvEncGetSequenceParamEx(void* encoder, NV_ENC_INITIALIZE_PARAMS* encInitParams, NV_ENC_SEQUENCE_PARAM_PAYLOAD* sequenceParamPayload)
+{
+    TRACE("(%p, %p, %p)\n", encoder, encInitParams, sequenceParamPayload);
+    return origFunctions.nvEncGetSequenceParamEx(encoder, encInitParams, sequenceParamPayload);
+}
+
 NVENCSTATUS WINAPI NvEncodeAPIGetMaxSupportedVersion(uint32_t* version)
 {
     TRACE("(%p)\n", version);
@@ -349,6 +373,10 @@ NVENCSTATUS WINAPI NvEncodeAPICreateInstance(NV_ENCODE_API_FUNCTION_LIST *functi
     SET_FUNCPTR(EncCreateMVBuffer);             /* available since 6.0 */
     SET_FUNCPTR(EncDestroyMVBuffer);            /* available since 6.0 */
     SET_FUNCPTR(EncRunMotionEstimationOnly);    /* available since 6.0 */
+    SET_FUNCPTR(EncGetLastErrorString);         /* 10.0 */
+    SET_FUNCPTR(EncSetIOCudaStreams);           /* 10.0 */
+    SET_FUNCPTR(EncGetEncodePresetConfigEx);    /* 10.0 */
+    SET_FUNCPTR(EncGetSequenceParamEx);         /* 10.0 */
 
     #undef SET_FUNCPTR
 
