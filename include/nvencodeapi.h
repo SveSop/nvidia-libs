@@ -23,8 +23,7 @@
 #ifndef __WINE_NVENCODEAPI_H
 #define __WINE_NVENCODEAPI_H
 
-/* Support 8.0 */
-#define NVENCAPI_MAJOR_VERSION 8
+#define NVENCAPI_MAJOR_VERSION 9
 #define NVENCAPI_MINOR_VERSION 0
 
 #define NVENCAPI_VERSION (NVENCAPI_MAJOR_VERSION | (NVENCAPI_MINOR_VERSION << 24))
@@ -101,7 +100,8 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
     uint32_t enableExternalMEHints    : 1;
     uint32_t enableMEOnlyMode         : 1;
     uint32_t enableWeightedPrediction : 1;
-    uint32_t reservedBitFields        : 27;
+    uint32_t enableOutputInVidmem     : 1;
+    uint32_t reservedBitFields        : 26;
     uint32_t privDataSize;
     void *privData;
     void *encodeConfig;
@@ -133,8 +133,10 @@ typedef struct _NV_ENC_PIC_PARAMS_H264
     uint32_t ltrMarkFrameIdx;
     uint32_t ltrUseFrameBitmap;
     uint32_t ltrUsageMode;
-    uint32_t reserved[243];
-    void *reserved2[62];
+    uint32_t forceIntraSliceCount;
+    uint32_t *forceIntraSliceIdx;
+    uint32_t reserved[242];
+    void *reserved2[61];
 } NV_ENC_PIC_PARAMS_H264;
 
 typedef struct _NV_ENC_PIC_PARAMS_HEVC
