@@ -1,5 +1,5 @@
 @ stdcall NvEncodeAPICreateInstance(ptr)
-@ stub NvEncodeAPIGetMaxSupportedVersion
+@ stdcall NvEncodeAPIGetMaxSupportedVersion(long)
 @ stub NvToolCreateInterface
 @ stub NvToolDestroyInterface
 @ stub NvToolGetApiFunctionCount

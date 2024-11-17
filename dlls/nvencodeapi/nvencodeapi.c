@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 Michael Müller
+ * Copyright (C) 2024 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,6 +34,7 @@ static void *libnvidia_encode_handle = NULL;
 static LINUX_NV_ENCODE_API_FUNCTION_LIST origFunctions;
 
 static NVENCSTATUS (*pNvEncodeAPICreateInstance)(LINUX_NV_ENCODE_API_FUNCTION_LIST *functionList);
+static NVENCSTATUS (*pNvEncodeAPIGetMaxSupportedVersion)(uint32_t* version);
 
 static NVENCSTATUS WINAPI NvEncOpenEncodeSession(void *device, uint32_t deviceType, void **encoder)
 {
@@ -281,6 +283,12 @@ static NVENCSTATUS WINAPI NvEncRunMotionEstimationOnly(void *encoder, NV_ENC_MEO
     return origFunctions.nvEncRunMotionEstimationOnly(encoder, MEOnlyParams);
 }
 
+NVENCSTATUS WINAPI NvEncodeAPIGetMaxSupportedVersion(uint32_t* version)
+{
+    TRACE("(%p)\n", version);
+    return pNvEncodeAPIGetMaxSupportedVersion(version);
+}
+
 NVENCSTATUS WINAPI NvEncodeAPICreateInstance(NV_ENCODE_API_FUNCTION_LIST *functionList)
 {
     NVENCSTATUS status;
@@ -385,6 +393,13 @@ static BOOL load_nvencode(void)
     if (!pNvEncodeAPICreateInstance)
     {
         FIXME("Can't find symbol NvEncodeAPICreateInstance.\n");
+        return FALSE;
+    }
+
+    pNvEncodeAPIGetMaxSupportedVersion = dlsym(libnvidia_encode_handle, "NvEncodeAPIGetMaxSupportedVersion");
+    if (!pNvEncodeAPIGetMaxSupportedVersion)
+    {
+        FIXME("Can't find symbol NvEncodeAPIGetMaxSupportedVersion.\n");
         return FALSE;
     }
 
