@@ -298,16 +298,6 @@ NVENCSTATUS WINAPI NvEncodeAPICreateInstance(NV_ENCODE_API_FUNCTION_LIST *functi
     if (!functionList)
         return NV_ENC_ERR_INVALID_PTR;
 
-    /* we currently support 5.0 and 6.0 */
-    if (functionList->version != NV_ENCODE_API_FUNCTION_LIST_VER &&
-        functionList->version != NV_ENCODE_API_FUNCTION_LIST_VER_6_0 &&
-        functionList->version != NV_ENCODE_API_FUNCTION_LIST_VER_7_1)
-    {
-        FIXME("Application requested nvencodeapi version %x which is not supported yet\n",
-              functionList->version);
-        return NV_ENC_ERR_INVALID_VERSION;
-    }
-
     memset(&origFunctions, 0, sizeof(origFunctions));
     origFunctions.version = functionList->version;
     status = pNvEncodeAPICreateInstance(&origFunctions);

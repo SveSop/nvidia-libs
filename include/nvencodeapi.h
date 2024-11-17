@@ -23,22 +23,12 @@
 #ifndef __WINE_NVENCODEAPI_H
 #define __WINE_NVENCODEAPI_H
 
-#define NVENCAPI_MAJOR_VERSION 5
+/* Support 8.0 */
+#define NVENCAPI_MAJOR_VERSION 8
 #define NVENCAPI_MINOR_VERSION 0
-#define NVENCAPI_VERSION ((NVENCAPI_MAJOR_VERSION << 4) | (NVENCAPI_MINOR_VERSION))
-#define NVENCAPI_STRUCT_VERSION(type, version) (uint32_t)(sizeof(type) | ((version)<<16) | (NVENCAPI_VERSION << 24))
 
-/* the version scheme changed between 5.0 and 6.0 */
-#define NVENCAPI_MAJOR_VERSION_6 6
-#define NVENCAPI_MINOR_VERSION_0 0
-#define NVENCAPI_VERSION_6_0 (NVENCAPI_MAJOR_VERSION_6 | (NVENCAPI_MINOR_VERSION_0 << 24))
-#define NVENCAPI_STRUCT_VERSION_6_0(ver) ((uint32_t)NVENCAPI_VERSION_6_0 | ((ver)<<16) | (0x7 << 28))
-
-/* Support 7.1 */
-#define NVENCAPI_MAJOR_VERSION_7 7
-#define NVENCAPI_MINOR_VERSION_1 1
-#define NVENCAPI_VERSION_7_1 (NVENCAPI_MAJOR_VERSION_7 | (NVENCAPI_MINOR_VERSION_1 << 24))
-#define NVENCAPI_STRUCT_VERSION_7_1(ver) ((uint32_t)NVENCAPI_VERSION_7_1 | ((ver) << 16) | (0x7 << 28))
+#define NVENCAPI_VERSION (NVENCAPI_MAJOR_VERSION | (NVENCAPI_MINOR_VERSION << 24))
+#define NVENCAPI_STRUCT_VERSION(ver) ((uint32_t)NVENCAPI_VERSION | ((ver)<<16) | (0x7 << 28))
 
 #define NVENCSTATUS int
 #define NV_ENC_SUCCESS 0
@@ -50,7 +40,6 @@ typedef void *NV_ENC_INPUT_PTR;
 typedef void *NV_ENC_OUTPUT_PTR;
 typedef void *NV_ENC_REGISTERED_PTR;
 
-typedef struct _NV_ENC_CAPS_PARAM NV_ENC_CAPS_PARAM;
 typedef struct _NV_ENC_CREATE_INPUT_BUFFER NV_ENC_CREATE_INPUT_BUFFER;
 typedef struct _NV_ENC_CREATE_BITSTREAM_BUFFER NV_ENC_CREATE_BITSTREAM_BUFFER;
 typedef struct _NV_ENC_QP NV_ENC_QP;
@@ -62,6 +51,7 @@ typedef struct _NV_ENC_CONFIG NV_ENC_CONFIG;
 typedef struct _NV_ENC_RECONFIGURE_PARAMS NV_ENC_RECONFIGURE_PARAMS;
 typedef struct _NV_ENC_PRESET_CONFIG NV_ENC_PRESET_CONFIG;
 typedef struct _NV_ENC_H264_SEI_PAYLOAD NV_ENC_H264_SEI_PAYLOAD;
+typedef struct _NV_ENC_SEI_PAYLOAD NV_ENC_SEI_PAYLOAD;
 typedef struct _NV_ENC_LOCK_BITSTREAM NV_ENC_LOCK_BITSTREAM;
 typedef struct _NV_ENC_LOCK_INPUT_BUFFER NV_ENC_LOCK_INPUT_BUFFER;
 typedef struct _NV_ENC_MAP_INPUT_RESOURCE NV_ENC_MAP_INPUT_RESOURCE;
@@ -74,6 +64,14 @@ typedef struct _NV_ENC_BUFFER_FORMAT NV_ENC_BUFFER_FORMAT;
 typedef struct _NV_ENC_OPEN_ENCODE_SESSION_EX_PARAMS NV_ENC_OPEN_ENCODE_SESSION_EX_PARAMS;
 typedef struct _NV_ENC_CREATE_MV_BUFFER NV_ENC_CREATE_MV_BUFFER;
 typedef struct _NV_ENC_MEONLY_PARAMS NV_ENC_MEONLY_PARAMS;
+
+typedef struct _NV_ENC_CAPS_PARAM
+{
+    uint32_t version;
+    uint32_t capsToQuery;
+    uint32_t reserved[62];
+} NV_ENC_CAPS_PARAM;
+#define NV_ENC_CAPS_PARAM_VER NVENCAPI_STRUCT_VERSION(1)
 
 typedef struct _NVENC_EXTERNAL_ME_HINT_COUNTS_PER_BLOCKTYPE
 {
@@ -98,10 +96,12 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
     uint32_t frameRateDen;
     uint32_t enableEncodeAsync;
     uint32_t enablePTD;
-    uint32_t reportSliceOffsets    : 1;
-    uint32_t enableSubFrameWrite   : 1;
-    uint32_t enableExternalMEHints : 1;
-    uint32_t reservedBitFields     : 29;
+    uint32_t reportSliceOffsets       : 1;
+    uint32_t enableSubFrameWrite      : 1;
+    uint32_t enableExternalMEHints    : 1;
+    uint32_t enableMEOnlyMode         : 1;
+    uint32_t enableWeightedPrediction : 1;
+    uint32_t reservedBitFields        : 27;
     uint32_t privDataSize;
     void *privData;
     void *encodeConfig;
@@ -155,8 +155,10 @@ typedef struct _NV_ENC_PIC_PARAMS_HEVC
     uint32_t ltrMarkFrameIdx;
     uint32_t ltrUseFrameBitmap;
     uint32_t ltrUsageMode;
-    uint32_t reserved[246];
-    void *reserved2[62];
+    uint32_t reserved;
+    NV_ENC_SEI_PAYLOAD *seiPayloadArray;
+    uint32_t reserved2[244];
+    void *reserved3[61];
 } NV_ENC_PIC_PARAMS_HEVC;
 
 typedef union _NV_ENC_CODEC_PIC_PARAMS
@@ -201,7 +203,8 @@ typedef struct _NV_ENC_PIC_PARAMS
     int8_t *qpDeltaMap;
     uint32_t qpDeltaMapSize;
     uint32_t reservedBitFields;
-    uint32_t reserved3[287];
+    uint16_t meHintRefPicDist[2];
+    uint32_t reserved3[286];
     void *reserved4[60];
 } NV_ENC_PIC_PARAMS;
 
@@ -251,10 +254,7 @@ typedef struct __NV_ENCODE_API_FUNCTION_LIST
     NVENCSTATUS (WINAPI *nvEncRunMotionEstimationOnly)(void *encoder, NV_ENC_MEONLY_PARAMS *MEOnlyParams);
     void *reserved2[281];
 } NV_ENCODE_API_FUNCTION_LIST;
-
-#define NV_ENCODE_API_FUNCTION_LIST_VER NVENCAPI_STRUCT_VERSION(NV_ENCODE_API_FUNCTION_LIST, 2)
-#define NV_ENCODE_API_FUNCTION_LIST_VER_6_0 NVENCAPI_STRUCT_VERSION_6_0(2)
-#define NV_ENCODE_API_FUNCTION_LIST_VER_7_1 NVENCAPI_STRUCT_VERSION_7_1(2)
+#define NV_ENCODE_API_FUNCTION_LIST_VER NVENCAPI_STRUCT_VERSION(2)
 
 typedef struct __LINUX_NV_ENCODE_API_FUNCTION_LIST
 {
