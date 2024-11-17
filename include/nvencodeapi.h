@@ -23,8 +23,8 @@
 #ifndef __WINE_NVENCODEAPI_H
 #define __WINE_NVENCODEAPI_H
 
-#define NVENCAPI_MAJOR_VERSION 10
-#define NVENCAPI_MINOR_VERSION 0
+#define NVENCAPI_MAJOR_VERSION 12
+#define NVENCAPI_MINOR_VERSION 1
 
 #define NVENCAPI_VERSION (NVENCAPI_MAJOR_VERSION | (NVENCAPI_MINOR_VERSION << 24))
 #define NVENCAPI_STRUCT_VERSION(ver) ((uint32_t)NVENCAPI_VERSION | ((ver)<<16) | (0x7 << 28))
@@ -34,6 +34,7 @@
 #define NV_ENC_ERR_INVALID_PTR 6
 #define NV_ENC_ERR_UNSUPPORTED_PARAM 12
 #define NV_ENC_ERR_INVALID_VERSION 15
+#define MAX_NUM_CLOCK_TS 3
 
 typedef void *NV_ENC_INPUT_PTR;
 typedef void *NV_ENC_OUTPUT_PTR;
@@ -60,10 +61,69 @@ typedef struct _NV_ENC_STAT NV_ENC_STAT;
 typedef struct _NV_ENC_SEQUENCE_PARAM_PAYLOAD NV_ENC_SEQUENCE_PARAM_PAYLOAD;
 typedef struct _NV_ENC_EVENT_PARAMS NV_ENC_EVENT_PARAMS;
 typedef struct _NV_ENC_OPEN_ENCODE_SESSIONEX_PARAMS NV_ENC_OPEN_ENCODE_SESSIONEX_PARAMS;
-typedef struct _NV_ENC_BUFFER_FORMAT NV_ENC_BUFFER_FORMAT;
 typedef struct _NV_ENC_OPEN_ENCODE_SESSION_EX_PARAMS NV_ENC_OPEN_ENCODE_SESSION_EX_PARAMS;
 typedef struct _NV_ENC_CREATE_MV_BUFFER NV_ENC_CREATE_MV_BUFFER;
 typedef struct _NV_ENC_MEONLY_PARAMS NV_ENC_MEONLY_PARAMS;
+typedef struct _NV_ENC_TIME_CODE NV_ENC_TIME_CODE;
+typedef struct _NVENC_EXTERNAL_ME_SB_HINT NVENC_EXTERNAL_ME_SB_HINT;
+typedef struct _NV_ENC_RESTORE_ENCODER_STATE_PARAMS NV_ENC_RESTORE_ENCODER_STATE_PARAMS;
+typedef struct _NV_ENC_LOOKAHEAD_PIC_PARAMS NV_ENC_LOOKAHEAD_PIC_PARAMS;
+
+typedef enum _NV_ENC_BUFFER_FORMAT
+{
+    NV_ENC_BUFFER_FORMAT_UNDEFINED                       = 0x00000000,
+    NV_ENC_BUFFER_FORMAT_NV12                            = 0x00000001,
+    NV_ENC_BUFFER_FORMAT_YV12                            = 0x00000010,
+    NV_ENC_BUFFER_FORMAT_IYUV                            = 0x00000100,
+    NV_ENC_BUFFER_FORMAT_YUV444                          = 0x00001000,
+    NV_ENC_BUFFER_FORMAT_YUV420_10BIT                    = 0x00010000,
+    NV_ENC_BUFFER_FORMAT_YUV444_10BIT                    = 0x00100000,
+    NV_ENC_BUFFER_FORMAT_ARGB                            = 0x01000000,
+    NV_ENC_BUFFER_FORMAT_ARGB10                          = 0x02000000,
+    NV_ENC_BUFFER_FORMAT_AYUV                            = 0x04000000,
+    NV_ENC_BUFFER_FORMAT_ABGR                            = 0x10000000,
+    NV_ENC_BUFFER_FORMAT_ABGR10                          = 0x20000000,
+    NV_ENC_BUFFER_FORMAT_U8                              = 0x40000000,
+} NV_ENC_BUFFER_FORMAT;
+#define NV_ENC_BUFFER_FORMAT_NV12_PL NV_ENC_BUFFER_FORMAT_NV12
+#define NV_ENC_BUFFER_FORMAT_YV12_PL NV_ENC_BUFFER_FORMAT_YV12
+#define NV_ENC_BUFFER_FORMAT_IYUV_PL NV_ENC_BUFFER_FORMAT_IYUV
+#define NV_ENC_BUFFER_FORMAT_YUV444_PL NV_ENC_BUFFER_FORMAT_YUV444
+
+typedef enum _NV_ENC_OUTPUT_STATS_LEVEL
+{
+    NV_ENC_OUTPUT_STATS_NONE          = 0,
+    NV_ENC_OUTPUT_STATS_BLOCK_LEVEL   = 1,
+    NV_ENC_OUTPUT_STATS_ROW_LEVEL     = 2,
+} NV_ENC_OUTPUT_STATS_LEVEL;
+
+typedef enum _NV_ENC_DISPLAY_PIC_STRUCT
+{
+    NV_ENC_PIC_STRUCT_DISPLAY_FRAME             = 0x00,
+    NV_ENC_PIC_STRUCT_DISPLAY_FIELD_TOP_BOTTOM  = 0x01,
+    NV_ENC_PIC_STRUCT_DISPLAY_FIELD_BOTTOM_TOP  = 0x02,
+    NV_ENC_PIC_STRUCT_DISPLAY_FRAME_DOUBLING    = 0x03,
+    NV_ENC_PIC_STRUCT_DISPLAY_FRAME_TRIPLING    = 0x04
+} NV_ENC_DISPLAY_PIC_STRUCT;
+
+typedef struct _NV_ENC_CLOCK_TIMESTAMP_SET
+{
+    uint32_t countingType            : 1;
+    uint32_t discontinuityFlag       : 1;
+    uint32_t cntDroppedFrames        : 1;
+    uint32_t nFrames                 : 8;
+    uint32_t secondsValue            : 6;
+    uint32_t minutesValue            : 6;
+    uint32_t hoursValue              : 5;
+    uint32_t reserved2               : 4;
+    uint32_t timeOffset;
+} NV_ENC_CLOCK_TIMESTAMP_SET;
+
+typedef struct _NV_ENC_TIME_CODE
+{
+    NV_ENC_DISPLAY_PIC_STRUCT displayPicStruct;
+    NV_ENC_CLOCK_TIMESTAMP_SET clockTimestamp[MAX_NUM_CLOCK_TS];
+} NV_ENC_TIME_CODE;
 
 typedef struct _NV_ENC_CAPS_PARAM
 {
@@ -111,8 +171,11 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
     uint32_t enableExternalMEHints    : 1;
     uint32_t enableMEOnlyMode         : 1;
     uint32_t enableWeightedPrediction : 1;
+    uint32_t splitEncodeMode          : 4;
     uint32_t enableOutputInVidmem     : 1;
-    uint32_t reservedBitFields        : 26;
+    uint32_t enableReconFrameOutput   : 1;
+    uint32_t enableOutputStats        : 1;
+    uint32_t reservedBitFields        : 20;
     uint32_t privDataSize;
     void *privData;
     void *encodeConfig;
@@ -120,9 +183,13 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
     uint32_t maxEncodeHeight;
     NVENC_EXTERNAL_ME_HINT_COUNTS_PER_BLOCKTYPE maxMEHintCountsPerBlock[2];
     NV_ENC_TUNING_INFO tuningInfo;
-    uint32_t reserved[288];
+    NV_ENC_BUFFER_FORMAT bufferFormat;
+    uint32_t numStateBuffers;
+    NV_ENC_OUTPUT_STATS_LEVEL outputStatsLevel;
+    uint32_t reserved[285];
     void *reserved2[64];
 } NV_ENC_INITIALIZE_PARAMS;
+#define NV_ENC_INITIALIZE_PARAMS_VER (NVENCAPI_STRUCT_VERSION(6) | ( 1<<31 ))
 
 typedef struct _NV_ENC_PIC_PARAMS_MVC
 {
@@ -165,7 +232,8 @@ typedef struct _NV_ENC_PIC_PARAMS_H264
     uint32_t forceIntraSliceCount;
     uint32_t *forceIntraSliceIdx;
     NV_ENC_PIC_PARAMS_H264_EXT h264ExtPicParams;
-    uint32_t reserved[210];
+    NV_ENC_TIME_CODE timeCode;
+    uint32_t reserved[203];
     void *reserved2[61];
 } NV_ENC_PIC_PARAMS_H264;
 
@@ -189,7 +257,8 @@ typedef struct _NV_ENC_PIC_PARAMS_HEVC
     uint32_t ltrUsageMode;
     uint32_t reserved;
     NV_ENC_SEI_PAYLOAD *seiPayloadArray;
-    uint32_t reserved2[244];
+    NV_ENC_TIME_CODE timeCode;
+    uint32_t reserved2[237];
     void *reserved3[61];
 } NV_ENC_PIC_PARAMS_HEVC;
 
@@ -236,9 +305,15 @@ typedef struct _NV_ENC_PIC_PARAMS
     uint32_t qpDeltaMapSize;
     uint32_t reservedBitFields;
     uint16_t meHintRefPicDist[2];
-    uint32_t reserved3[286];
-    void *reserved4[60];
+    NV_ENC_INPUT_PTR alphaBuffer;
+    NVENC_EXTERNAL_ME_SB_HINT *meExternalSbHints;
+    uint32_t meSbHintsCount;
+    uint32_t stateBufferIdx;
+    NV_ENC_OUTPUT_PTR outputReconBuffer;
+    uint32_t reserved3[284];
+    void *reserved4[57];
 } NV_ENC_PIC_PARAMS;
+#define NV_ENC_PIC_PARAMS_VER (NVENCAPI_STRUCT_VERSION(6) | ( 1<<31 ))
 
 typedef struct __NV_ENCODE_API_FUNCTION_LIST
 {
@@ -288,7 +363,9 @@ typedef struct __NV_ENCODE_API_FUNCTION_LIST
     NVENCSTATUS (WINAPI *nvEncSetIOCudaStreams)(void* encoder, NV_ENC_CUSTREAM_PTR inputStream, NV_ENC_CUSTREAM_PTR outputStream);
     NVENCSTATUS (WINAPI *nvEncGetEncodePresetConfigEx)(void* encoder, GUID encodeGUID, GUID  presetGUID, NV_ENC_TUNING_INFO tuningInfo, NV_ENC_PRESET_CONFIG* presetConfig);
     NVENCSTATUS (WINAPI *nvEncGetSequenceParamEx)(void* encoder, NV_ENC_INITIALIZE_PARAMS* encInitParams, NV_ENC_SEQUENCE_PARAM_PAYLOAD* sequenceParamPayload);
-    void *reserved2[277];
+    NVENCSTATUS (WINAPI *nvEncRestoreEncoderState)(void* encoder, NV_ENC_RESTORE_ENCODER_STATE_PARAMS* restoreState);
+    NVENCSTATUS (WINAPI *nvEncLookaheadPicture)(void* encoder, NV_ENC_LOOKAHEAD_PIC_PARAMS *lookaheadParams);
+    void *reserved2[275];
 } NV_ENCODE_API_FUNCTION_LIST;
 #define NV_ENCODE_API_FUNCTION_LIST_VER NVENCAPI_STRUCT_VERSION(2)
 
@@ -340,7 +417,9 @@ typedef struct __LINUX_NV_ENCODE_API_FUNCTION_LIST
     NVENCSTATUS (*nvEncSetIOCudaStreams)(void* encoder, NV_ENC_CUSTREAM_PTR inputStream, NV_ENC_CUSTREAM_PTR outputStream);
     NVENCSTATUS (*nvEncGetEncodePresetConfigEx)(void* encoder, GUID encodeGUID, GUID  presetGUID, NV_ENC_TUNING_INFO tuningInfo, NV_ENC_PRESET_CONFIG* presetConfig);
     NVENCSTATUS (*nvEncGetSequenceParamEx)(void* encoder, NV_ENC_INITIALIZE_PARAMS* encInitParams, NV_ENC_SEQUENCE_PARAM_PAYLOAD* sequenceParamPayload);
-    void *reserved2[277];
+    NVENCSTATUS (*nvEncRestoreEncoderState)(void* encoder, NV_ENC_RESTORE_ENCODER_STATE_PARAMS* restoreState);
+    NVENCSTATUS (*nvEncLookaheadPicture)(void* encoder, NV_ENC_LOOKAHEAD_PIC_PARAMS *lookaheadParams);
+    void *reserved2[275];
 } LINUX_NV_ENCODE_API_FUNCTION_LIST;
 
 #endif /* __WINE_NVENCODEAPI_H */

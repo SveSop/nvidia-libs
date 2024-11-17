@@ -295,16 +295,28 @@ static NVENCSTATUS WINAPI NvEncSetIOCudaStreams(void* encoder, NV_ENC_CUSTREAM_P
     return origFunctions.nvEncSetIOCudaStreams(encoder, inputStream, outputStream);
 }
 
-static NVENCSTATUS WINAPI NvEncGetEncodePresetConfigEx(void* encoder, GUID encodeGUID, GUID presetGUID, NV_ENC_TUNING_INFO tuningInfo, NV_ENC_PRESET_CONFIG* presetConfig)
+static NVENCSTATUS WINAPI NvEncGetEncodePresetConfigEx(void* encoder, GUID encodeGUID, GUID presetGUID, NV_ENC_TUNING_INFO tuningInfo, NV_ENC_PRESET_CONFIG *presetConfig)
 {
     TRACE("(%p, %s, %s, %u, %p)\n", encoder, debugstr_guid(&encodeGUID), debugstr_guid(&presetGUID), tuningInfo, presetConfig);
     return origFunctions.nvEncGetEncodePresetConfigEx(encoder, encodeGUID, presetGUID, tuningInfo, presetConfig);
 }
 
-static NVENCSTATUS WINAPI NvEncGetSequenceParamEx(void* encoder, NV_ENC_INITIALIZE_PARAMS* encInitParams, NV_ENC_SEQUENCE_PARAM_PAYLOAD* sequenceParamPayload)
+static NVENCSTATUS WINAPI NvEncGetSequenceParamEx(void* encoder, NV_ENC_INITIALIZE_PARAMS* encInitParams, NV_ENC_SEQUENCE_PARAM_PAYLOAD *sequenceParamPayload)
 {
     TRACE("(%p, %p, %p)\n", encoder, encInitParams, sequenceParamPayload);
     return origFunctions.nvEncGetSequenceParamEx(encoder, encInitParams, sequenceParamPayload);
+}
+
+static NVENCSTATUS WINAPI NvEncRestoreEncoderState(void* encoder, NV_ENC_RESTORE_ENCODER_STATE_PARAMS *restoreState)
+{
+    TRACE("(%p, %p)\n", encoder, restoreState);
+    return origFunctions.nvEncRestoreEncoderState(encoder, restoreState);
+}
+
+static NVENCSTATUS WINAPI NvEncLookaheadPicture(void* encoder, NV_ENC_LOOKAHEAD_PIC_PARAMS *lookaheadParams)
+{
+    TRACE("(%p, %p)\n", encoder, lookaheadParams);
+    return origFunctions.nvEncLookaheadPicture(encoder, lookaheadParams);
 }
 
 NVENCSTATUS WINAPI NvEncodeAPIGetMaxSupportedVersion(uint32_t* version)
@@ -377,6 +389,8 @@ NVENCSTATUS WINAPI NvEncodeAPICreateInstance(NV_ENCODE_API_FUNCTION_LIST *functi
     SET_FUNCPTR(EncSetIOCudaStreams);           /* 10.0 */
     SET_FUNCPTR(EncGetEncodePresetConfigEx);    /* 10.0 */
     SET_FUNCPTR(EncGetSequenceParamEx);         /* 10.0 */
+    SET_FUNCPTR(EncRestoreEncoderState);        /* 12.0 */
+    SET_FUNCPTR(EncLookaheadPicture);           /* 12.0 */
 
     #undef SET_FUNCPTR
 
