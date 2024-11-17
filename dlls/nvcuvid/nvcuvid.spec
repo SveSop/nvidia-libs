@@ -22,3 +22,16 @@
 @ stdcall cuvidParseVideoData(ptr ptr) wine_cuvidParseVideoData
 @ stdcall cuvidSetVideoSourceState(ptr long) wine_cuvidSetVideoSourceState
 @ stdcall cuvidUnmapVideoFrame(ptr long) wine_cuvidUnmapVideoFrame
+@ stub cuvidConvertYUVToRGB
+@ stub cuvidConvertYUVToRGBArray
+@ stub cuvidGetDecodeStatus
+@ stub cuvidGetDecoderCaps
+@ stub cuvidReconfigureDecoder
+@ stub NvToolCreateInterface
+@ stub NvToolDestroyInterface
+@ stub NvToolGetApiFunctionCount
+@ stub NvToolGetApiID
+@ stub NvToolGetApiNames
+@ stub NvToolGetInterface
+@ stub NvToolSetApiID
+@ stub NvToolSetInterface
