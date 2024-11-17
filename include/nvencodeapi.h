@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 Michael Müller
+ * Copyright (C) 2024 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,6 +33,12 @@
 #define NVENCAPI_MINOR_VERSION_0 0
 #define NVENCAPI_VERSION_6_0 (NVENCAPI_MAJOR_VERSION_6 | (NVENCAPI_MINOR_VERSION_0 << 24))
 #define NVENCAPI_STRUCT_VERSION_6_0(ver) ((uint32_t)NVENCAPI_VERSION_6_0 | ((ver)<<16) | (0x7 << 28))
+
+/* Support 7.1 */
+#define NVENCAPI_MAJOR_VERSION_7 7
+#define NVENCAPI_MINOR_VERSION_1 1
+#define NVENCAPI_VERSION_7_1 (NVENCAPI_MAJOR_VERSION_7 | (NVENCAPI_MINOR_VERSION_1 << 24))
+#define NVENCAPI_STRUCT_VERSION_7_1(ver) ((uint32_t)NVENCAPI_VERSION_7_1 | ((ver) << 16) | (0x7 << 28))
 
 #define NVENCSTATUS int
 #define NV_ENC_SUCCESS 0
@@ -247,6 +254,7 @@ typedef struct __NV_ENCODE_API_FUNCTION_LIST
 
 #define NV_ENCODE_API_FUNCTION_LIST_VER NVENCAPI_STRUCT_VERSION(NV_ENCODE_API_FUNCTION_LIST, 2)
 #define NV_ENCODE_API_FUNCTION_LIST_VER_6_0 NVENCAPI_STRUCT_VERSION_6_0(2)
+#define NV_ENCODE_API_FUNCTION_LIST_VER_7_1 NVENCAPI_STRUCT_VERSION_7_1(2)
 
 typedef struct __LINUX_NV_ENCODE_API_FUNCTION_LIST
 {

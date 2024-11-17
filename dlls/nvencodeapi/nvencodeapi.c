@@ -300,7 +300,8 @@ NVENCSTATUS WINAPI NvEncodeAPICreateInstance(NV_ENCODE_API_FUNCTION_LIST *functi
 
     /* we currently support 5.0 and 6.0 */
     if (functionList->version != NV_ENCODE_API_FUNCTION_LIST_VER &&
-        functionList->version != NV_ENCODE_API_FUNCTION_LIST_VER_6_0)
+        functionList->version != NV_ENCODE_API_FUNCTION_LIST_VER_6_0 &&
+        functionList->version != NV_ENCODE_API_FUNCTION_LIST_VER_7_1)
     {
         FIXME("Application requested nvencodeapi version %x which is not supported yet\n",
               functionList->version);
