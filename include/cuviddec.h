@@ -25,13 +25,49 @@
 typedef void *CUvideodecoder;
 typedef void *CUvideoctxlock;
 
-typedef int cudaVideoCodec;
-typedef int cudaVideoChromaFormat;
-typedef int cudaVideoSurfaceFormat;
-typedef int cudaVideoDeinterlaceMode;
-
 /* the following structures are documented but we don't need to know the content */
 typedef struct _CUVIDPROCPARAMS CUVIDPROCPARAMS;
+
+typedef enum cudaVideoCodec_enum {
+    cudaVideoCodec_MPEG1=0,
+    cudaVideoCodec_MPEG2,
+    cudaVideoCodec_MPEG4,
+    cudaVideoCodec_VC1,
+    cudaVideoCodec_H264,
+    cudaVideoCodec_JPEG,
+    cudaVideoCodec_H264_SVC,
+    cudaVideoCodec_H264_MVC,
+    cudaVideoCodec_HEVC,
+    cudaVideoCodec_VP8,
+    cudaVideoCodec_VP9,
+    cudaVideoCodec_AV1,
+    cudaVideoCodec_NumCodecs,
+    cudaVideoCodec_YUV420 = (('I'<<24)|('Y'<<16)|('U'<<8)|('V')),
+    cudaVideoCodec_YV12   = (('Y'<<24)|('V'<<16)|('1'<<8)|('2')),
+    cudaVideoCodec_NV12   = (('N'<<24)|('V'<<16)|('1'<<8)|('2')),
+    cudaVideoCodec_YUYV   = (('Y'<<24)|('U'<<16)|('Y'<<8)|('V')),
+    cudaVideoCodec_UYVY   = (('U'<<24)|('Y'<<16)|('V'<<8)|('Y'))
+} cudaVideoCodec;
+
+typedef enum cudaVideoChromaFormat_enum {
+    cudaVideoChromaFormat_Monochrome=0,
+    cudaVideoChromaFormat_420,
+    cudaVideoChromaFormat_422,
+    cudaVideoChromaFormat_444
+} cudaVideoChromaFormat;
+
+typedef enum cudaVideoSurfaceFormat_enum {
+    cudaVideoSurfaceFormat_NV12=0,
+    cudaVideoSurfaceFormat_P016=1,
+    cudaVideoSurfaceFormat_YUV444=2,
+    cudaVideoSurfaceFormat_YUV444_16Bit=3,
+} cudaVideoSurfaceFormat;
+
+typedef enum cudaVideoDeinterlaceMode_enum {
+    cudaVideoDeinterlaceMode_Weave=0,
+    cudaVideoDeinterlaceMode_Bob,
+    cudaVideoDeinterlaceMode_Adaptive
+} cudaVideoDeinterlaceMode;
 
 typedef struct _LINUX_CUVIDDECODECREATEINFO
 {
@@ -41,7 +77,11 @@ typedef struct _LINUX_CUVIDDECODECREATEINFO
     cudaVideoCodec CodecType;
     cudaVideoChromaFormat ChromaFormat;
     unsigned long ulCreationFlags;
-    unsigned long Reserved1[5];
+    unsigned long bitDepthMinus8;
+    unsigned long ulIntraDecodeOnly;
+    unsigned long ulMaxWidth;
+    unsigned long ulMaxHeight;
+    unsigned long Reserved1;
     struct
     {
         short left;
@@ -62,7 +102,8 @@ typedef struct _LINUX_CUVIDDECODECREATEINFO
         short right;
         short bottom;
     } target_rect;
-    unsigned long Reserved2[5];
+    unsigned long enableHistogram;
+    unsigned long Reserved2[4];
 } LINUX_CUVIDDECODECREATEINFO;
 
 typedef struct _CUVIDDECODECREATEINFO
@@ -73,7 +114,11 @@ typedef struct _CUVIDDECODECREATEINFO
     cudaVideoCodec CodecType;
     cudaVideoChromaFormat ChromaFormat;
     ULONG ulCreationFlags;
-    ULONG Reserved1[5];
+    ULONG bitDepthMinus8;
+    ULONG ulIntraDecodeOnly;
+    ULONG ulMaxWidth;
+    ULONG ulMaxHeight;
+    ULONG Reserved1;
     struct
     {
         short left;
@@ -94,7 +139,8 @@ typedef struct _CUVIDDECODECREATEINFO
         short right;
         short bottom;
     } target_rect;
-    ULONG Reserved2[5];
+    ULONG enableHistogram;
+    ULONG Reserved2[4];
 } CUVIDDECODECREATEINFO;
 
 #endif /* __WINE_CUVIDDEC_H */

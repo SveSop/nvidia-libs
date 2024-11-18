@@ -190,11 +190,11 @@ CUresult WINAPI wine_cuvidCreateDecoder(CUvideodecoder *phDecoder, CUVIDDECODECR
         linux_dci.CodecType             = pdci->CodecType;
         linux_dci.ChromaFormat          = pdci->ChromaFormat;
         linux_dci.ulCreationFlags       = pdci->ulCreationFlags;
-        linux_dci.Reserved1[0]          = pdci->Reserved1[0];
-        linux_dci.Reserved1[1]          = pdci->Reserved1[1];
-        linux_dci.Reserved1[2]          = pdci->Reserved1[2];
-        linux_dci.Reserved1[3]          = pdci->Reserved1[3];
-        linux_dci.Reserved1[4]          = pdci->Reserved1[4];
+        linux_dci.bitDepthMinus8        = pdci->bitDepthMinus8;
+        linux_dci.ulIntraDecodeOnly     = pdci->ulIntraDecodeOnly;
+        linux_dci.ulMaxWidth            = pdci->ulMaxWidth;
+        linux_dci.ulMaxHeight           = pdci->ulMaxHeight;
+        linux_dci.Reserved1             = pdci->Reserved1;
         linux_dci.display_area.left     = pdci->display_area.left;
         linux_dci.display_area.top      = pdci->display_area.top;
         linux_dci.display_area.right    = pdci->display_area.right;
@@ -209,11 +209,11 @@ CUresult WINAPI wine_cuvidCreateDecoder(CUvideodecoder *phDecoder, CUVIDDECODECR
         linux_dci.target_rect.top       = pdci->target_rect.top;
         linux_dci.target_rect.right     = pdci->target_rect.right;
         linux_dci.target_rect.bottom    = pdci->target_rect.bottom;
+        linux_dci.enableHistogram       = pdci->enableHistogram;
         linux_dci.Reserved2[0]          = pdci->Reserved2[0];
         linux_dci.Reserved2[1]          = pdci->Reserved2[1];
         linux_dci.Reserved2[2]          = pdci->Reserved2[2];
         linux_dci.Reserved2[3]          = pdci->Reserved2[3];
-        linux_dci.Reserved2[4]          = pdci->Reserved2[4];
     }
 
     return pcuvidCreateDecoder(phDecoder, pdci ? &linux_dci : NULL);

@@ -42,19 +42,25 @@ typedef struct _CUVIDPARSERPARAMS
     unsigned int ulClockRate;
     unsigned int ulErrorThreshold;
     unsigned int ulMaxDisplayDelay;
-    unsigned int uReserved1[5];
+    unsigned int bAnnexb : 1;
+    unsigned int uReserved : 31;
+    unsigned int uReserved1[4];
     void *pUserData;
     void *pfnSequenceCallback;
     void *pfnDecodePicture;
     void *pfnDisplayPicture;
-    void *pvReserved2[7];
+    void *pfnGetOperatingPoint;
+    void *pfnGetSEIMsg;
+    void *pvReserved2[5];
     CUVIDEOFORMATEX *pExtVideoInfo;
 } CUVIDPARSERPARAMS;
 
 typedef struct _CUVIDSOURCEPARAMS
 {
     unsigned int ulClockRate;
-    unsigned int uReserved1[7];
+    unsigned int bAnnexb : 1;
+    unsigned int uReserved : 31;
+    unsigned int uReserved1[6];
     void *pUserData;
     void *pfnVideoDataHandler;
     void *pfnAudioDataHandler;
