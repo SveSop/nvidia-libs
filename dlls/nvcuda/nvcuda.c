@@ -1587,8 +1587,10 @@ CUresult WINAPI wine_cuDeviceCanAccessPeer(int *canAccessPeer, CUdevice dev, CUd
 
 CUresult WINAPI wine_cuDeviceComputeCapability(int *major, int *minor, CUdevice dev)
 {
-    TRACE("(%p, %p, %d)\n", major, minor, dev);
-    return pcuDeviceComputeCapability(major, minor, dev);
+    CUresult ret;
+    ret = pcuDeviceComputeCapability(major, minor, dev);
+    TRACE("(Device: %d) SM Version: (%d.%d)\n", dev, *major, *minor);
+    return ret;
 }
 
 CUresult WINAPI wine_cuDeviceGet(CUdevice *device, int ordinal)
@@ -1619,8 +1621,10 @@ CUresult WINAPI wine_cuDeviceGetCount(int *count)
 
 CUresult WINAPI wine_cuDeviceGetName(char *name, int len, CUdevice dev)
 {
-    TRACE("(%p, %d, %d)\n", name, len, dev);
-    return pcuDeviceGetName(name, len, dev);
+    CUresult ret;
+    ret = pcuDeviceGetName(name, len, dev);
+    TRACE("(Device: %d) Name: (%s)\n", dev, name);
+    return ret;
 }
 
 CUresult WINAPI wine_cuDeviceGetPCIBusId(char *pciBusId, int len, CUdevice dev)
@@ -5559,7 +5563,7 @@ CUresult WINAPI wine_cuD3D9GetDevice(CUdevice *pCudaDevice, const char *pszAdapt
 
 CUresult WINAPI wine_cuGraphicsD3D9RegisterResource(CUgraphicsResource *pCudaResource, IDirect3DResource9 *pD3DResource, unsigned int Flags)
 {
-    TRACE("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
+    FIXME("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
     /* Not able to handle spesific flags at this time */
     if(Flags > 0)
       return CUDA_ERROR_INVALID_VALUE;
@@ -5577,7 +5581,7 @@ CUresult WINAPI wine_cuD3D10GetDevice(CUdevice *pCudaDevice, IDXGIAdapter *pAdap
 
 CUresult WINAPI wine_cuGraphicsD3D10RegisterResource(CUgraphicsResource *pCudaResource, ID3D10Resource *pD3DResource, unsigned int Flags)
 {
-    TRACE("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
+    FIXME("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
     /* Not able to handle spesific flags at this time */
     if(Flags > 0)
       return CUDA_ERROR_INVALID_VALUE;
@@ -5595,7 +5599,7 @@ CUresult WINAPI wine_cuD3D11GetDevice(CUdevice *pCudaDevice, IDXGIAdapter *pAdap
 
 CUresult WINAPI wine_cuGraphicsD3D11RegisterResource(CUgraphicsResource *pCudaResource, ID3D11Resource *pD3DResource, unsigned int Flags)
 {
-    TRACE("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
+    FIXME("(%p, %p, %u) - semi-stub\n", pCudaResource, pD3DResource, Flags);
     /* Not able to handle spesific flags at this time */
     if(Flags > 0)
       return CUDA_ERROR_INVALID_VALUE;
