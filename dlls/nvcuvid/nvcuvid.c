@@ -57,11 +57,11 @@ static void *cuvid_handle = NULL;
 
 static BOOL load_functions(void)
 {
-    cuvid_handle = dlopen("libnvcuvid.so", RTLD_NOW);
+    cuvid_handle = dlopen("libnvcuvid.so.1", RTLD_NOW);
 
     if (!cuvid_handle)
     {
-        FIXME("Wine cannot find the libnvcuvid.so library, CUDA gpu decoding support disabled.\n");
+        FIXME("Wine cannot find the libnvcuvid.so.1 library, CUDA gpu decoding support disabled.\n");
         return FALSE;
     }
 
