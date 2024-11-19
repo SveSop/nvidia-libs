@@ -24,8 +24,8 @@
 @ stdcall cuvidUnmapVideoFrame(ptr long) wine_cuvidUnmapVideoFrame
 @ stub cuvidConvertYUVToRGB
 @ stub cuvidConvertYUVToRGBArray
-@ stub cuvidGetDecodeStatus
-@ stub cuvidGetDecoderCaps
+@ stdcall cuvidGetDecodeStatus(ptr long ptr) wine_cuvidGetDecodeStatus
+@ stdcall cuvidGetDecoderCaps(ptr) wine_cuvidGetDecoderCaps
 @ stub cuvidReconfigureDecoder
 @ stub NvToolCreateInterface
 @ stub NvToolDestroyInterface

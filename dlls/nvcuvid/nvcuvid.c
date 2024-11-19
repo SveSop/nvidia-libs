@@ -48,13 +48,10 @@ static CUresult (*pcuvidMapVideoFrame)(CUvideodecoder hDecoder, int nPicIdx, uns
 static CUresult (*pcuvidParseVideoData)(CUvideoparser obj, LINUX_CUVIDSOURCEDATAPACKET *pPacket);
 static CUresult (*pcuvidSetVideoSourceState)(CUvideosource obj, cudaVideoState state);
 static CUresult (*pcuvidUnmapVideoFrame)(CUvideodecoder hDecoder, unsigned int DevPtr);
-
-/* x86_64 */
-#ifdef __x86_64__
-static CUresult (*pcuvidMapVideoFrame64)(CUvideodecoder hDecoder, int nPicIdx, unsigned long long *pDevPtr,
-                                         unsigned int *pPitch, CUVIDPROCPARAMS *pVPP);
+static CUresult (*pcuvidGetDecoderCaps)(CUVIDDECODECAPS *pdc);
+static CUresult (*pcuvidGetDecodeStatus)(CUvideodecoder hDecoder, int nPicIdx, CUVIDGETDECODESTATUS* pDecodeStatus);
+static CUresult (*pcuvidMapVideoFrame64)(CUvideodecoder hDecoder, int nPicIdx, unsigned long long *pDevPtr, unsigned int *pPitch, CUVIDPROCPARAMS *pVPP);
 static CUresult (*pcuvidUnmapVideoFrame64)(CUvideodecoder hDecoder, unsigned long long DevPtr);
-#endif
 
 static void *cuvid_handle = NULL;
 
@@ -89,12 +86,10 @@ static BOOL load_functions(void)
     LOAD_FUNCPTR(cuvidParseVideoData);
     LOAD_FUNCPTR(cuvidSetVideoSourceState);
     LOAD_FUNCPTR(cuvidUnmapVideoFrame);
-
-    /* x86_64 */
-#ifdef __x86_64__
+    LOAD_FUNCPTR(cuvidGetDecoderCaps);
+    LOAD_FUNCPTR(cuvidGetDecodeStatus);
     LOAD_FUNCPTR(cuvidMapVideoFrame64);
     LOAD_FUNCPTR(cuvidUnmapVideoFrame64);
-#endif
 
     #undef LOAD_FUNCPTR
 
@@ -465,31 +460,29 @@ CUresult WINAPI wine_cuvidUnmapVideoFrame(CUvideodecoder hDecoder, unsigned int 
     return pcuvidUnmapVideoFrame(hDecoder, DevPtr);
 }
 
-/*
- * On Linux those functions are only exported x86_64, but on Windows they also exist in the 32-bit version.
- */
+CUresult WINAPI wine_cuvidGetDecoderCaps(CUVIDDECODECAPS *pdc)
+{
+    TRACE("(%p)\n", pdc);
+    return pcuvidGetDecoderCaps(pdc);
+}
+
+CUresult WINAPI wine_cuvidGetDecodeStatus(CUvideodecoder hDecoder, int nPicIdx, CUVIDGETDECODESTATUS *pDecodeStatus)
+{
+    TRACE("(%p, %d, %p)\n", hDecoder, nPicIdx, pDecodeStatus);
+    return pcuvidGetDecodeStatus(hDecoder, nPicIdx, pDecodeStatus);
+}
 
 CUresult WINAPI wine_cuvidMapVideoFrame64(CUvideodecoder hDecoder, int nPicIdx, unsigned long long *pDevPtr,
                                           unsigned int *pPitch, CUVIDPROCPARAMS *pVPP)
 {
     TRACE("(%p, %d, %p, %p, %p)\n", hDecoder, nPicIdx, pDevPtr, pPitch, pVPP);
-#ifdef __x86_64__
     return pcuvidMapVideoFrame64(hDecoder, nPicIdx, pDevPtr, pPitch, pVPP);
-#else
-    FIXME("not supported\n");
-    return CUDA_ERROR_NOT_SUPPORTED;
-#endif
 }
 
 CUresult WINAPI wine_cuvidUnmapVideoFrame64(CUvideodecoder hDecoder, unsigned long long DevPtr)
 {
     TRACE("(%p, %llu)\n", hDecoder, DevPtr);
-#ifdef __x86_64__
     return pcuvidUnmapVideoFrame64(hDecoder, DevPtr);
-#else
-    FIXME("not supported\n");
-    return CUDA_ERROR_NOT_SUPPORTED;
-#endif
 }
 
 BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)

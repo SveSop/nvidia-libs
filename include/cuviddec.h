@@ -27,6 +27,8 @@ typedef void *CUvideoctxlock;
 
 /* the following structures are documented but we don't need to know the content */
 typedef struct _CUVIDPROCPARAMS CUVIDPROCPARAMS;
+typedef struct _CUVIDDECODECAPS CUVIDDECODECAPS;
+typedef struct _CUVIDGETDECODESTATUS CUVIDGETDECODESTATUS;
 
 typedef enum cudaVideoCodec_enum {
     cudaVideoCodec_MPEG1=0,
