@@ -147,13 +147,9 @@ prepare
 build_arch 64
 build_arch 32
 
-# Copy installscript
-cp "$NVLIBS_SRC_DIR/setup_nvlibs.sh" "$NVLIBS_BUILD_DIR/setup_nvlibs.sh"
-chmod +x "$NVLIBS_BUILD_DIR/setup_nvlibs.sh"
-cp "$NVLIBS_SRC_DIR/proton_setup.sh" "$NVLIBS_BUILD_DIR/proton_setup.sh"
-chmod +x "$NVLIBS_BUILD_DIR/proton_setup.sh"
-cp "$NVLIBS_SRC_DIR/nvml_setup.sh" "$NVLIBS_BUILD_DIR/nvml_setup.sh"
-chmod +x "$NVLIBS_BUILD_DIR/nvml_setup.sh"
+# Copy installscripts
+cp $NVLIBS_SRC_DIR/*.sh "$NVLIBS_BUILD_DIR/"
+chmod +x $NVLIBS_BUILD_DIR/*.sh
 cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
 
 # cleanup
