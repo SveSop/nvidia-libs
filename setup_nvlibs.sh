@@ -95,26 +95,34 @@ install)
     ;;
 esac
 
-echo '[1/2] nvcuda :'
+echo '[1/4] nvcuda :'
 $fun nvcuda
+echo '[2/4] nvcuvid :'
+$fun nvcuvid
+echo '[3/4] nvencodeapi :'
+$fun nvencodeapi
 dll_ext='dll'
 lib='lib/wine/i386-windows'
-echo '[2/2] nvapi :'
+echo '[4/4] nvapi :'
 $fun nvapi
 
 dll_ext='dll.so'
 wine="wine64"
 lib='lib64/wine/x86_64-unix'
 unix_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
-echo '[1/4] 64 bit nvcuda :'
+echo '[1/6] 64 bit nvcuda :'
 $fun nvcuda
-echo '[2/4] 64 bit nvoptix :'
+echo '[2/6] 64 bit nvoptix :'
 $fun nvoptix
+echo '[3/6] 64 bit nvcuvid :'
+$fun nvcuvid
+echo '[4/6] 64 bit nvencodeapi64 :'
+$fun nvencodeapi64
 dll_ext='dll'
 lib='lib64/wine/x86_64-windows'
-echo '[3/4] 64 bit nvapi64 :'
+echo '[5/6] 64 bit nvapi64 :'
 $fun nvapi64
-echo '[4/4] 64 bit nvofapi64 :'
+echo '[6/6] 64 bit nvofapi64 :'
 $fun nvofapi64
 
 if [ "$fun" = removeOverride ]; then

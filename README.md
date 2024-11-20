@@ -15,10 +15,11 @@ Create logs typically with: `WINEDEBUG=-all,+nvcuda,+nvml wine ./yourapp.exe > y
 Also see notes about DXVK-NVAPI below for logging.  
 
 Library contains:  
-nvapi (dxvk-nvapi)  
-nvcuda (staging)  
-nvml (wine-nvml)  
-nvoptix (wine-nvoptix)  
+nvapi (dxvk-nvapi + additions - [https://github.com/SveSop/dxvk-nvapi/tree/experimental](https://github.com/SveSop/dxvk-nvapi/tree/experimental))  
+nvcuda (wine-staging + development - [https://github.com/SveSop/nvcuda/tree/devel](https://github.com/SveSop/nvcuda/tree/devel))  
+nvcuvid/nvencodeapi (wine-staging + development - [https://github.com/SveSop/nvenc/tree/devel](https://github.com/SveSop/nvenc/tree/devel))  
+nvml (wine-nvml - [https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml))  
+nvoptix (wine-nvoptix - [https://github.com/SveSop/wine-nvoptix](https://github.com/SveSop/wine-nvoptix))  
 
 ## Build requirements:  
 - [WINE] (version >= 9.0) [https://www.winehq.org/](https://www.winehq.org/)  
@@ -128,9 +129,6 @@ Loads of reference info here:
 
 [NVIDIA NvAPI](https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/annotated.html)  
 [NVIDIA OPTIX](https://developer.nvidia.com/optix)  
-[DXVK-NVAPI](https://github.com/jp7677/dxvk-nvapi)  
-[WINE-NVML](https://github.com/Saancreed/wine-nvml)  
-[WINE-NVOPTIX](https://github.com/SveSop/wine-nvoptix)  
 
 Tool to check various GPU options:  
 [http://www.ozone3d.net/gpu_caps_viewer/](http://www.ozone3d.net/gpu_caps_viewer/)  
