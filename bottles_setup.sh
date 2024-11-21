@@ -3,11 +3,10 @@
 nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
 bottles_dir="$HOME/.var/app/com.usebottles.bottles/data/bottles/bottles"
 win='drive_c/windows/system32'
-lib='lib64/wine'
-arch='x86_64'
+lib='x64'
 
-if [ ! -f "$nvlibs_dir/$lib/$arch-unix/nvml.so" ]; then
-    echo "Files not found in $nvlibs_dir/$lib/$arch-unix" >&2
+if [ ! -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
+    echo "Files not found in $nvlibs_dir/$lib" >&2
     exit 1
 fi
 
@@ -29,22 +28,22 @@ else
 fi
 
 function install {
-    cp -f "$nvlibs_dir/$lib/$arch-unix/$1.dll.so" "$bottles_dir/$BOTTLE/$win/$1.dll"
+    cp -f "$nvlibs_dir/$lib/$1" "$bottles_dir/$BOTTLE/$win/"
 }
 
 fun=install
-$fun nvcuda
-$fun nvcuvid
-$fun nvencodeapi64
-$fun nvoptix
+$fun nvcuda.dll
+$fun nvcuvid.dll
+$fun nvencodeapi64.dll
+$fun nvoptix.dll
 
 win='drive_c/windows/syswow64'
-lib='lib/wine'
-arch='i386'
+lib='x32'
 
-$fun nvcuda
-$fun nvcuvid
-$fun nvencodeapi
+$fun nvcuda.dll
+$fun nvcuvid.dll
+$fun nvencodeapi.dll
 
 echo -ne "All done - NVIDIA libraries copied to $BOTTLE\n"
 echo -ne "Remeber! You need to run this script every time you upgrade the nvidia-libs package\n"
+echo -ne "and probably should if you upgrade/change your runner\n"

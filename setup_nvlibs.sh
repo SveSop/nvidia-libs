@@ -1,12 +1,11 @@
 #!/bin/bash
 
 nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
-dll_ext='dll.so'
 wine="wine"
-lib='lib/wine/i386-unix'
+lib='x32'
 
-if [ ! -f "$nvlibs_dir/$lib/nvcuda.$dll_ext" ]; then
-    echo "nvcuda.$dll_ext not found in $nvlibs_dir/$lib" >&2
+if [ ! -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
+    echo "Files not found in $nvlibs_dir/$lib" >&2
     exit 1
 fi
 
@@ -73,8 +72,8 @@ function createOverride {
         echo -e "    Failed to create override"
         exit 1
     fi
-    echo "    Creating symlink to $1.$dll_ext... "
-    ln -sf "$nvlibs_dir/$lib/$1.$dll_ext" "$unix_sys_path/$1.dll"
+    echo "    Creating symlink to $1.dll... "
+    ln -sf "$nvlibs_dir/$lib/$1.dll" "$unix_sys_path/$1.dll"
     if [ $? -ne 0 ]; then
         echo -e "    Failed to create override"
         exit 1
@@ -101,14 +100,11 @@ echo '[2/4] nvcuvid :'
 $fun nvcuvid
 echo '[3/4] nvencodeapi :'
 $fun nvencodeapi
-dll_ext='dll'
-lib='lib/wine/i386-windows'
 echo '[4/4] nvapi :'
 $fun nvapi
 
-dll_ext='dll.so'
 wine="wine64"
-lib='lib64/wine/x86_64-unix'
+lib='x64'
 unix_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
 echo '[1/6] 64 bit nvcuda :'
 $fun nvcuda
@@ -118,8 +114,6 @@ echo '[3/6] 64 bit nvcuvid :'
 $fun nvcuvid
 echo '[4/6] 64 bit nvencodeapi64 :'
 $fun nvencodeapi64
-dll_ext='dll'
-lib='lib64/wine/x86_64-windows'
 echo '[5/6] 64 bit nvapi64 :'
 $fun nvapi64
 echo '[6/6] 64 bit nvofapi64 :'

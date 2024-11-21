@@ -4,8 +4,8 @@ nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
 arch='x86_64'
 lib='lib64/wine'
 
-if [ ! -f "$nvlibs_dir/$lib/$arch-unix/nvml.so" ]; then
-    echo "Files not found in $nvlibs_dir/$lib/$arch-unix" >&2
+if [ ! -f "$nvlibs_dir/x64/wine/$arch-unix/nvml.so" ]; then
+    echo "Files not found in $nvlibs_dir/x64/wine/$arch-unix" >&2
     exit 1
 fi
 
@@ -23,11 +23,11 @@ if [ ! -f "$WINE_BIN/$lib/$arch-windows/dxgi.dll" ]; then
 fi
 
 function win_install {
-    cp -f "$nvlibs_dir/$lib/$arch-windows/$1" "$WINE_BIN/$lib/$arch-windows/"
+    cp -f "$nvlibs_dir/x64/wine/$arch-windows/$1" "$WINE_BIN/$lib/$arch-windows/"
 }
 
 function install {
-    cp -f "$nvlibs_dir/$lib/$arch-unix/$1" "$WINE_BIN/$lib/$arch-unix/"
+    cp -f "$nvlibs_dir/x64/wine/$arch-unix/$1" "$WINE_BIN/$lib/$arch-unix/"
 }
 
 fun=win_install
