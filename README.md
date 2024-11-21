@@ -3,7 +3,7 @@
 Release: 0.7.20  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
-CUDA SDK >11.5 should now mostly be supported. There can still be missing functions  
+CUDA SDK >12.x should now mostly be supported. There can still be missing functions  
 Added CUFFT helper library for FFT functions when running SDK 12.3 and newer  
 See https://github.com/SveSop/nvidia-libs#helper-lib-usage below for usage  
 
@@ -69,7 +69,7 @@ Ghost of Tsushima : `DXVK_NVAPI_GPU_ARCH=GA100`
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  
-running the included nvml_setup.sh script. NVML is only available as 64-bit  
+running the included `nvml_setup.sh` script. NVML is only available as 64-bit  
 See the Readme_nvml.txt file.  
 
 ### Tests  
@@ -77,6 +77,16 @@ You can run tests of your adapter and functions by running the test case file:
 `WINEPREFIX=/your/wine/prefix wine bin/nvapi64-tests.exe`  
 
 PS. You must install said libraryfile in your WINEPREFIX (see above)  
+
+### Bottles
+Added a script that will install the libraries in a bottle.  
+This assumes you are using bottles installed via `FlatPak`.  
+
+Run `./bottles-install.sh` for a list of your available bottles, and use it like this:  
+`./bottles-install.sh YourBottle` to install the libraries in the `YourBottle` bottle.  
+
+You will want to run the script ever time you upgrade `nvidia-libs` binaries, and possibly  
+if you change/update your runner. Eg. switching from Caffe-9.7 to Caffe-9.8.  
 
 ### Proton  
 You can drop-in the libraries in Proton8 - Experimental or GE-Proton-8 or newer like this:
@@ -117,11 +127,11 @@ with using `LD_LIBRARY_PATH=/lib/i386-linux-gnu:$LD_LIBRARY_PATH`
 
 ## DAZ Studio
 
-In case you do NOT use nvml (wine-nvml) library to emulate nvml.dll, DAZ Studio will  
-show 2 "adapters" for rending. Choose the one that show your GPU name, and NOT the other.  
+In case you do NOT use nvml (wine-nvml) library to emulate nvml.dll, DAZ Studio MAY  
+show 2 "adapters" for rendering. Choose the one that show your GPU name, and NOT the other.  
 
 NVML can be installed by using the `setup_nvml.sh` script included in the package and for  
-DAZ Studio is recommended.  
+DAZ Studio it is recommended.  
  
 ## Info  
 
