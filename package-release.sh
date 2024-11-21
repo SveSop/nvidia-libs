@@ -28,7 +28,7 @@ function build_arch {
   meson --cross-file "$NVLIBS_SRC_DIR/build-wine$1.txt"  \
         --buildtype release                              \
         --prefix "$NVLIBS_BUILD_DIR"                     \
-        --libdir lib$1                                   \
+        --libdir "x$1"                                   \
 	--strip                                          \
         "$NVLIBS_BUILD_DIR/build.$1"
 
@@ -50,7 +50,7 @@ cd $NVOPTIX_SRC_DIR
 meson --cross-file "$NVOPTIX_SRC_DIR/build-wine64.txt"  \
       --buildtype release                               \
       --prefix "$NVLIBS_BUILD_DIR"                      \
-      --libdir lib64                                    \
+      --libdir x64                                      \
       --strip                                           \
       "$NVLIBS_BUILD_DIR/build"
 
@@ -58,7 +58,6 @@ cd "$NVLIBS_BUILD_DIR/build"
 ninja install
 
 rm -R "$NVLIBS_BUILD_DIR/build"
-rm -R "$NVLIBS_BUILD_DIR/defs"
 
 # Build wine-nvml
 
@@ -71,7 +70,7 @@ function build_arch {
   meson --cross-file "$NVML_SRC_DIR/cross-mingw$1.txt"  \
         --buildtype release                             \
         --prefix "$NVLIBS_BUILD_DIR"                    \
-        --libdir lib$1                                  \
+        --libdir "x$1"                                  \
         --strip                                         \
         "$NVLIBS_BUILD_DIR/build.mingw$1"
 
@@ -82,7 +81,7 @@ function build_arch {
   meson --cross-file "$NVML_SRC_DIR/cross-wine$1.txt"  \
         --buildtype release                            \
         --prefix "$NVLIBS_BUILD_DIR"                   \
-        --libdir lib$1                                 \
+        --libdir "x$1"                                 \
         --strip                                        \
         "$NVLIBS_BUILD_DIR/build.wine$1"
 
@@ -131,7 +130,8 @@ function build_arch {
         --buildtype release                            \
         --prefix "$NVLIBS_BUILD_DIR"                   \
         --strip                                        \
-        --libdir lib$1                                 \
+        --bindir "x$1"                                 \
+        --libdir "x$1"                                 \
         -Denable_tests=true                            \
         "$NVLIBS_BUILD_DIR/build.$1"
 
@@ -152,8 +152,11 @@ cp $NVLIBS_SRC_DIR/*.sh "$NVLIBS_BUILD_DIR/"
 chmod +x $NVLIBS_BUILD_DIR/*.sh
 cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
 
+# Move test
+mkdir -p "$NVLIBS_BUILD_DIR/bin" && mv "$NVLIBS_BUILD_DIR/x64/nvapi64-tests.exe" "$NVLIBS_BUILD_DIR/bin/"
+
 # cleanup
 cd $NVLIBS_BUILD_DIR
 find . -name \*.a -type f -delete
-mv lib32 lib
+find . -name "*.dll.so" -type f -exec bash -c 'mv "$0" "${0%.so}"' {} \;
 echo "Done building!"

@@ -2,18 +2,7 @@ nvcuvid_src = [
   'nvcuvid.c',
 ]
 
-arch_dir_prefix = target_machine.cpu_family() == 'x86_64' ? 'x86_64-' : 'i386-'
-
-install_dir_unix    = install_dir / arch_dir_prefix + 'unix'
-install_dir_windows = install_dir / arch_dir_prefix + 'windows'
-
 thread_dep = dependency('threads')
-
-nvcuvid_res_target = custom_target('nvencodeapi.res',
-  output  : 'nvcuvid.res',
-  input   : 'nvcuvid.rc',
-  command : [ wrc, target_arch, '--nostdinc', '-I.', '-I'+meson.source_root()+'/include', '-D__WINESRC__', '-o', '@OUTPUT@', '@INPUT@' ],
-  install : false)
 
 
 nvcuvid_dll = shared_library('nvcuvid.dll', nvcuvid_src,
@@ -21,20 +10,4 @@ nvcuvid_dll = shared_library('nvcuvid.dll', nvcuvid_src,
   dependencies        : [ thread_dep, lib_dl ],
   include_directories : include_path,
   objects             : 'nvcuvid.spec',
-  install             : true,
-  install_dir         : install_dir_unix)
-
-
-nvcuvid_def_target = custom_target('nvcuvid.def',
-  output  : 'nvcuvid.def',
-  input   : 'nvcuvid.spec',
-  command : [ winebuild, target_arch, '-w', '--def', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
-  install : false)
-
-
-nvcuvid_dll_target = custom_target('nvcuvid.dll',
-  output  : 'nvcuvid.dll',
-  input   : [ nvcuvid_def_target, nvcuvid_res_target ],
-  command : [ winebuild, target_arch, '--dll', '--fake-module', '-o', '@OUTPUT@', '-E', '@INPUT@' ],
-  install : true,
-  install_dir : install_dir_windows)
+  install             : true)
