@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.7.20  
+Release: 0.8.0  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK >12.x should now mostly be supported. There can still be missing functions  
@@ -12,7 +12,9 @@ logs on the issue page. However these are highly outdated drivers in general and
 see too much attention in that regard.  
 
 Create logs typically with: `WINEDEBUG=-all,+nvcuda,+nvml wine ./yourapp.exe > yourapp.log 2>&1`  
-Also see notes about DXVK-NVAPI below for logging.  
+If you suspect errors with video encoding/decoding (NVENC), you can create a log like this:  
+`WINEDEBUG=-all,+nvcuvid,+nvencodeapi wine ./yourapp.exe > yourapp.log 2>&1`
+Also see notes about DXVK-NVAPI below for additional logging.  
 
 Library contains:  
 nvapi (dxvk-nvapi + additions - [https://github.com/SveSop/dxvk-nvapi/tree/experimental](https://github.com/SveSop/dxvk-nvapi/tree/experimental))  
@@ -61,7 +63,7 @@ the detected architecture, you can override detected architecture like this:
 `GA100` (Ampere)  
 `AD100` (Ada)  
 
-Known games that needs override:  
+Known games that may need override:  
 Monster Hunter World : `DXVK_NVAPI_GPU_ARCH=GP100`  
 War Thunder : `DXVK_NVAPI_GPU_ARCH=GP100`  
 Ghost of Tsushima : `DXVK_NVAPI_GPU_ARCH=GA100`  
