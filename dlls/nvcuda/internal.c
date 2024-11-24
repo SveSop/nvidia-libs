@@ -61,12 +61,14 @@ static RTL_CRITICAL_SECTION tls_callback_section = { &critsect_debug, -1, 0, 0, 
 
 void cuda_process_tls_callbacks(DWORD reason)
 {
+    // Check if the list is empty before entering the critical section
+    if (list_empty(&tls_callbacks)) {
+        return;
+    }
+
     struct list *ptr;
 
     TRACE("(%d)\n", reason);
-
-    if (reason != DLL_THREAD_DETACH)
-        return;
 
     EnterCriticalSection( &tls_callback_section );
     ptr = list_head( &tls_callbacks );

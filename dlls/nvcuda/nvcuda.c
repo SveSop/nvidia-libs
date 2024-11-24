@@ -5642,6 +5642,7 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
             if (cuda_handle) dlclose(cuda_handle);
             break;
         case DLL_THREAD_ATTACH:
+            break;
         case DLL_THREAD_DETACH:
             cuda_process_tls_callbacks(reason);
             break;
