@@ -1666,10 +1666,24 @@ static void* WINAPI Relay9_func5(void *param0, void *param1)
     return Relay9_orig->func5(param0, param1);
 }
 
+/* Some hackery here to relay a function with different calling convention */
+static void* (WINAPI *Relay9_func6_wine)(void *param0, void *param1, void *param2);
+
+static void* Relay9_func6_cuda(void *param0, void *param1, void *param2)
+{
+    TRACE("(%p, %p, %p)\n", param0, param1, param2);
+    /* Return the parameters to WINAPI function Relay9_func6_wine */
+    return Relay9_func6_wine(param0, param1, param2);
+}
+
 static void* WINAPI Relay9_func6(void *param0, void *param1, void *param2, void *param3)
 {
     TRACE("(%p, %p, %p, %p)\n", param0, param1, param2, param3);
-    return Relay9_orig->func6(param0, param1, param2, param3);
+    /* Use the funcptr from param2 to this Relay9_func6_wine */
+    /* function as this call needs to run with WINAPI */
+    Relay9_func6_wine = (void* (WINAPI *)(void*, void*, void*))param2;
+    /* Return with a funcptr to the __cdecl call Relay9_func6_cuda */
+    return Relay9_orig->func6(param0, param1, Relay9_func6_cuda, param3);
 }
 
 static void* WINAPI Relay9_func7(void *param0, void *param1)
