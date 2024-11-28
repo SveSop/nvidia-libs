@@ -1,11 +1,10 @@
 # NVIDIA Libs
 
-Release: 0.8.0  
+Release: 0.8.1  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK >12.x should now mostly be supported. There can still be missing functions  
-Added CUFFT helper library for FFT functions when running SDK 12.3 and newer  
-See https://github.com/SveSop/nvidia-libs#helper-lib-usage below for usage  
+Up to OptiX ABI 93 (SDK 8.1.0) should be supported. Additional logging: `WINEDEBUG=+nvoptix`  
 
 Older drivers that does not support SDK 10 and older may also fail/crash. Report any crashes with  
 logs on the issue page. However these are highly outdated drivers in general and will probably not  
@@ -109,17 +108,8 @@ Or you can run the game with `PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 %command
 
 Some additional tweaks may be required depending on game used and version of Proton.  
 
-## Helper lib usage
-To use FFT helper library `cufft64_11.dll` when running CUDA 12.3 or newer, simply  
-symlink the binary to the same folder where the executable you are running like this:  
-`ln -sf nvidia-libs-release\lib64\wine\x86_64-unix\cufft64_11.dll.so cufft64_11.dll`  
-NB. You should probably make a backup of the original `cufft64_11.dll` in that folder.  
-This however requires CUDA SDK 12.3 or newer to be installed on your system!  
-
-Newest CUDA SDK toolkit can be downloaded here:  
-https://developer.nvidia.com/cuda-downloads  
-
-Some older SDK samples can be run by specifying LD_LIBRARY_PATH to the system folder  
+## Quirks
+Some older SDK samples may require specifying LD_LIBRARY_PATH to the system folder  
 where libcuda.so.1 and other libnvidia-xxx.so libraries reside. This varies depending  
 on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit and  
 `/lib/i386-linux-gnu/` for 32-bit.  
