@@ -29,6 +29,7 @@
 
 #include "windef.h"
 #include "winbase.h"
+#include "winternl.h"
 #include "wine/debug.h"
 #include "wine/list.h"
 #include "wine/wgl.h"
@@ -3651,23 +3652,122 @@ CUresult WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice dev)
     else return CUDA_ERROR_INVALID_VALUE;
 }
 
+/* code borrowed from Wine starts here */
+
+static const char devpropkey_gpu_vulkan_uuidA[] = "Properties\\{233A9EF3-AFC4-4ABD-B564-C32F21F1535C}\\0002";
+static const char devpropkey_gpu_luidA[] = "Properties\\{60B193CB-5276-4D0F-96FC-F173ABAD3EC6}\\0002";
+
+static inline UINT asciiz_to_unicode( WCHAR *dst, const char *src )
+{
+    WCHAR *p = dst;
+    while ((*p++ = *src++));
+    return (p - dst) * sizeof(WCHAR);
+}
+
+static HKEY reg_open_key( HKEY root, const WCHAR *name, ULONG name_len )
+{
+    UNICODE_STRING nameW = { name_len, name_len, (WCHAR *)name };
+    OBJECT_ATTRIBUTES attr;
+    HANDLE ret;
+
+    attr.Length = sizeof(attr);
+    attr.RootDirectory = root;
+    attr.ObjectName = &nameW;
+    attr.Attributes = 0;
+    attr.SecurityDescriptor = NULL;
+    attr.SecurityQualityOfService = NULL;
+
+    if (NtOpenKeyEx( &ret, MAXIMUM_ALLOWED, &attr, 0 )) return 0;
+    return ret;
+}
+
+static HKEY reg_open_ascii_key( HKEY root, const char *name )
+{
+    WCHAR nameW[MAX_PATH];
+    return reg_open_key( root, nameW, asciiz_to_unicode( nameW, name ) - sizeof(WCHAR) );
+}
+
+static ULONG query_reg_value( HKEY hkey, const WCHAR *name,
+                       KEY_VALUE_PARTIAL_INFORMATION *info, ULONG size )
+{
+    unsigned int name_size = name ? lstrlenW( name ) * sizeof(WCHAR) : 0;
+    UNICODE_STRING nameW = { name_size, name_size, (WCHAR *)name };
+
+    if (NtQueryValueKey( hkey, &nameW, KeyValuePartialInformation,
+                         info, size, &size ))
+        return 0;
+
+    return size - FIELD_OFFSET(KEY_VALUE_PARTIAL_INFORMATION, Data);
+}
+
+/* code borrowed from Wine ends here */
+
 CUresult WINAPI wine_cuDeviceGetLuid(char *luid, unsigned int *deviceNodeMask, CUdevice dev)
 {
-    int wine_luid[] = { 0x0000adde, 0x00000000 };
+    char buffer[1024];
+    KEY_VALUE_PARTIAL_INFORMATION *value = (void *)buffer;
+    KEY_BASIC_INFORMATION *key = (void *)buffer;
+    HKEY pci, outerdev, innerdev, prop;
+    DWORD size, i = 0;
+    CUresult ret;
+    CUuuid uuid;
 
     TRACE("(%p, %p, %d)\n", luid, deviceNodeMask, dev);
-    /* Linux native libcuda does not provide a LUID, so we need to fake something and return a success */
 
-    memcpy(luid, &wine_luid, sizeof(wine_luid));
-    FIXME("Fix this LUID: ");
-    for(int i = 0; i < sizeof(luid); i++){
-        FIXME("%02x", (unsigned char)luid[i]);
-        if(i == 3) FIXME("-");
+    if ((ret = pcuDeviceGetUuid(&uuid, dev)) != CUDA_SUCCESS)
+        return ret;
+
+    ret = CUDA_ERROR_UNKNOWN;
+
+    if (!(pci = reg_open_ascii_key(NULL, "\\Registry\\Machine\\System\\CurrentControlSet\\Enum\\PCI")))
+        return ret;
+
+    while (!NtEnumerateKey(pci, i++, KeyBasicInformation, key, sizeof(buffer), &size))
+    {
+        DWORD j = 0;
+
+        if (!(outerdev = reg_open_key(pci, key->Name, key->NameLength)))
+            continue;
+
+        while (!NtEnumerateKey(outerdev, j++, KeyBasicInformation, key, sizeof(buffer), &size))
+        {
+            if (!(innerdev = reg_open_key(outerdev, key->Name, key->NameLength)))
+                continue;
+
+            if (!(prop = reg_open_ascii_key(innerdev, devpropkey_gpu_vulkan_uuidA)))
+                goto next;
+
+            if (query_reg_value(prop, NULL, value, sizeof(buffer)) != sizeof(CUuuid) || memcmp(value->Data, &uuid, sizeof(uuid)))
+                goto cleanup;
+
+            NtClose(prop);
+
+            if (!(prop = reg_open_ascii_key(innerdev, devpropkey_gpu_luidA)))
+                goto next;
+
+            if (query_reg_value(prop, NULL, value, sizeof(buffer)) != sizeof(LUID))
+                goto cleanup;
+
+            memcpy(luid, value->Data, sizeof(LUID));
+            *deviceNodeMask = 1;
+            ret = CUDA_SUCCESS;
+
+            TRACE("Found LUID: %02x%02x%02x%02x-%02x%02x%02x%02x\n",
+                (unsigned char)luid[0], (unsigned char)luid[1], (unsigned char)luid[2], (unsigned char)luid[3],
+                (unsigned char)luid[4], (unsigned char)luid[5], (unsigned char)luid[6], (unsigned char)luid[7]);
+
+        cleanup:
+            NtClose(prop);
+        next:
+            NtClose(innerdev);
+        }
+
+        NtClose(outerdev);
     }
-    FIXME("\n");
-    *deviceNodeMask = 1;
 
-    return CUDA_SUCCESS;
+    NtClose(pci);
+
+    return ret;
 }
 
 CUresult WINAPI wine_cuStreamIsCapturing(CUstream hStream, CUstreamCaptureStatus *captureStatus)
