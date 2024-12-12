@@ -47,6 +47,16 @@
 
 WINE_DEFAULT_DEBUG_CHANNEL(nvcuda);
 
+static struct          list stream_callbacks         = LIST_INIT( stream_callbacks );
+static pthread_mutex_t stream_callback_mutex         = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t  stream_callback_request       = PTHREAD_COND_INITIALIZER;
+static pthread_cond_t  stream_callback_reply         = PTHREAD_COND_INITIALIZER;
+static const char      devpropkey_gpu_vulkan_uuidA[] = "Properties\\{233A9EF3-AFC4-4ABD-B564-C32F21F1535C}\\0002";
+static const char      devpropkey_gpu_luidA[]        = "Properties\\{60B193CB-5276-4D0F-96FC-F173ABAD3EC6}\\0002";
+LONG                   num_stream_callbacks;
+
+void get_addr();
+
 struct stream_callback_entry
 {
     struct list entry;
@@ -76,14 +86,50 @@ static char* cuda_print_uuid(const CUuuid *id, char *buffer, int size)
     return buffer;
 }
 
-void get_addr();
+static inline UINT asciiz_to_unicode( WCHAR *dst, const char *src )
+{
+    WCHAR *p = dst;
+    while ((*p++ = *src++));
+    return (p - dst) * sizeof(WCHAR);
+}
 
-static struct list stream_callbacks            = LIST_INIT( stream_callbacks );
-static pthread_mutex_t stream_callback_mutex   = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t  stream_callback_request = PTHREAD_COND_INITIALIZER;
-static pthread_cond_t  stream_callback_reply   = PTHREAD_COND_INITIALIZER;
-LONG num_stream_callbacks;
+static HKEY reg_open_key( HKEY root, const WCHAR *name, ULONG name_len )
+{
+    UNICODE_STRING nameW = { name_len, name_len, (WCHAR *)name };
+    OBJECT_ATTRIBUTES attr;
+    HANDLE ret;
 
+    attr.Length = sizeof(attr);
+    attr.RootDirectory = root;
+    attr.ObjectName = &nameW;
+    attr.Attributes = 0;
+    attr.SecurityDescriptor = NULL;
+    attr.SecurityQualityOfService = NULL;
+
+    if (NtOpenKeyEx( &ret, MAXIMUM_ALLOWED, &attr, 0 )) return 0;
+    return ret;
+}
+
+static HKEY reg_open_ascii_key( HKEY root, const char *name )
+{
+    WCHAR nameW[MAX_PATH];
+    return reg_open_key( root, nameW, asciiz_to_unicode( nameW, name ) - sizeof(WCHAR) );
+}
+
+static ULONG query_reg_value( HKEY hkey, const WCHAR *name,
+                       KEY_VALUE_PARTIAL_INFORMATION *info, ULONG size )
+{
+    unsigned int name_size = name ? lstrlenW( name ) * sizeof(WCHAR) : 0;
+    UNICODE_STRING nameW = { name_size, name_size, (WCHAR *)name };
+
+    if (NtQueryValueKey( hkey, &nameW, KeyValuePartialInformation,
+                         info, size, &size ))
+        return 0;
+
+    return size - FIELD_OFFSET(KEY_VALUE_PARTIAL_INFORMATION, Data);
+}
+
+/* CUDA Funcion declarations */
 static CUresult (*pcuArray3DCreate)(CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray);
 static CUresult (*pcuArray3DCreate_v2)(CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray);
 static CUresult (*pcuArray3DGetDescriptor)(CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray);
@@ -1382,6 +1428,7 @@ static BOOL load_functions(void)
     return TRUE;
 }
 
+/* CUDA Function relays */
 CUresult WINAPI wine_cuArray3DCreate(CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray)
 {
     TRACE("(%p, %p)\n", pHandle, pAllocateArray);
@@ -3651,56 +3698,6 @@ CUresult WINAPI wine_cuDeviceGetUuid(CUuuid *uuid, CUdevice dev)
     }
     else return CUDA_ERROR_INVALID_VALUE;
 }
-
-/* code borrowed from Wine starts here */
-
-static const char devpropkey_gpu_vulkan_uuidA[] = "Properties\\{233A9EF3-AFC4-4ABD-B564-C32F21F1535C}\\0002";
-static const char devpropkey_gpu_luidA[] = "Properties\\{60B193CB-5276-4D0F-96FC-F173ABAD3EC6}\\0002";
-
-static inline UINT asciiz_to_unicode( WCHAR *dst, const char *src )
-{
-    WCHAR *p = dst;
-    while ((*p++ = *src++));
-    return (p - dst) * sizeof(WCHAR);
-}
-
-static HKEY reg_open_key( HKEY root, const WCHAR *name, ULONG name_len )
-{
-    UNICODE_STRING nameW = { name_len, name_len, (WCHAR *)name };
-    OBJECT_ATTRIBUTES attr;
-    HANDLE ret;
-
-    attr.Length = sizeof(attr);
-    attr.RootDirectory = root;
-    attr.ObjectName = &nameW;
-    attr.Attributes = 0;
-    attr.SecurityDescriptor = NULL;
-    attr.SecurityQualityOfService = NULL;
-
-    if (NtOpenKeyEx( &ret, MAXIMUM_ALLOWED, &attr, 0 )) return 0;
-    return ret;
-}
-
-static HKEY reg_open_ascii_key( HKEY root, const char *name )
-{
-    WCHAR nameW[MAX_PATH];
-    return reg_open_key( root, nameW, asciiz_to_unicode( nameW, name ) - sizeof(WCHAR) );
-}
-
-static ULONG query_reg_value( HKEY hkey, const WCHAR *name,
-                       KEY_VALUE_PARTIAL_INFORMATION *info, ULONG size )
-{
-    unsigned int name_size = name ? lstrlenW( name ) * sizeof(WCHAR) : 0;
-    UNICODE_STRING nameW = { name_size, name_size, (WCHAR *)name };
-
-    if (NtQueryValueKey( hkey, &nameW, KeyValuePartialInformation,
-                         info, size, &size ))
-        return 0;
-
-    return size - FIELD_OFFSET(KEY_VALUE_PARTIAL_INFORMATION, Data);
-}
-
-/* code borrowed from Wine ends here */
 
 CUresult WINAPI wine_cuDeviceGetLuid(char *luid, unsigned int *deviceNodeMask, CUdevice dev)
 {
