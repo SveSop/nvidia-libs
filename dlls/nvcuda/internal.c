@@ -121,6 +121,9 @@ static const CUuuid UUID_Relay9                     = {{0x6E, 0x16, 0x3F, 0xBE, 
 static const CUuuid UUID_Relay10                    = {{0x26, 0x3E, 0x88, 0x60, 0x7C, 0xD2, 0x61, 0x43,
                                                         0x92, 0xF6, 0xBB, 0xD5, 0x00, 0x6D, 0xFA, 0x7E}};
                                                     // {263e8860-7cd2-6143-92f6-bbd5006dfa7e}
+static const CUuuid UUID_OpticalFlow                = {{0x9A, 0xF0, 0x70, 0x7B, 0x8E, 0x2D, 0xD8, 0x4C,
+                                                        0x8E, 0x4E, 0xB9, 0x94, 0xC8, 0x2D, 0xDC, 0x35}};
+                                                    // {9af0707b-8e2d-d84c-8e4e-b994c82ddc35}
 
 struct cuda_table
 {
@@ -664,6 +667,62 @@ static const struct
     void* (*func2)(void);
     void* (*func3)(void *param0);
 } *Relay10_orig = NULL;
+
+/*
+ * OpticalFlow
+*/
+struct OpticalFlow_table
+{
+    int size;
+    void* (WINAPI* func0)(void *param0);
+    void* (WINAPI* func1)(void *param0, void *param1);
+    void* (WINAPI* func2)(void *param0, void *param1);
+    void* (WINAPI* func3)(void *param0, void *param1);
+    void* (WINAPI* func4)(void *param0, void *param1);
+    void* (WINAPI* func5)(void *param0, void *param1);
+    void* (WINAPI* func6)(void *param0);
+    void* (WINAPI* func7)(void *param0);
+    void* (WINAPI* func8)(void *param0, void *param1, void *param2);
+    void* (WINAPI* func9)(void *param0, void *param1);
+    void* (WINAPI* func10)(void *param0, void *param1);
+    void* (WINAPI* func11)(void *param0, void *param1);
+    void* (WINAPI* func12)(void *param0, void *param1);
+    void* (WINAPI* func13)(void *param0, void *param1);
+    void* (WINAPI* func14)(void *param0, void *param1);
+    void* (WINAPI* func15)(void *param0, void *param1);
+    void* (WINAPI* func16)(void *param0, void *param1);
+    void* (WINAPI* func17)(void *param0, void *param1);
+    void* (WINAPI* func18)(void *param0, void *param1, void *param2);
+    void* (WINAPI* func19)(void *param0, void *param1);
+    void* (WINAPI* func20)(void *param0, void *param1);
+    void* (WINAPI* func21)(void *param0, void *param1);
+};
+static const struct
+{
+    int size;
+    void* (*func0)(void *param0);
+    void* (*func1)(void *param0, void *param1);
+    void* (*func2)(void *param0, void *param1);
+    void* (*func3)(void *param0, void *param1);
+    void* (*func4)(void *param0, void *param1);
+    void* (*func5)(void *param0, void *param1);
+    void* (*func6)(void *param0);
+    void* (*func7)(void *param0);
+    void* (*func8)(void *param0, void *param1, void *param2);
+    void* (*func9)(void *param0, void *param1);
+    void* (*func10)(void *param0, void *param1);
+    void* (*func11)(void *param0, void *param1);
+    void* (*func12)(void *param0, void *param1);
+    void* (*func13)(void *param0, void *param1);
+    void* (*func14)(void *param0, void *param1);
+    void* (*func15)(void *param0, void *param1);
+    void* (*func16)(void *param0, void *param1);
+    void* (*func17)(void *param0, void *param1);
+    void* (*func18)(void *param0, void *param1, void *param2);
+    void* (*func19)(void *param0, void *param1);
+    void* (*func20)(void *param0, void *param1);
+    void* (*func21)(void *param0, void *param1);
+} *OpticalFlow_orig = NULL;
 
 static void* WINAPI Relay1_func0(void *param0, void *param1)
 {
@@ -2340,6 +2399,165 @@ static struct Relay10_table Relay10_Impl =
     Relay10_func3,
 };
 
+static void* WINAPI OpticalFlow_func0(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return OpticalFlow_orig->func0(param0);
+}
+
+static void* WINAPI OpticalFlow_func1(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func1(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func2(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func2(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func3(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func3(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func4(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func4(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func5(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func5(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func6(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return OpticalFlow_orig->func6(param0);
+}
+
+static void* WINAPI OpticalFlow_func7(void *param0)
+{
+    TRACE("(%p)\n", param0);
+    return OpticalFlow_orig->func7(param0);
+}
+
+static void* WINAPI OpticalFlow_func8(void *param0, void *param1, void *param2)
+{
+    TRACE("(%p, %p, %p)\n", param0, param1, param2);
+    return OpticalFlow_orig->func8(param0, param1, param2);
+}
+
+static void* WINAPI OpticalFlow_func9(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func9(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func10(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func10(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func11(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func11(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func12(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func12(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func13(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func13(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func14(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func14(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func15(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func15(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func16(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func16(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func17(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func17(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func18(void *param0, void *param1, void *param2)
+{
+    TRACE("(%p, %p, %p)\n", param0, param1, param2);
+    return OpticalFlow_orig->func18(param0, param1, param2);
+}
+
+static void* WINAPI OpticalFlow_func19(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func19(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func20(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func20(param0, param1);
+}
+
+static void* WINAPI OpticalFlow_func21(void *param0, void *param1)
+{
+    TRACE("(%p, %p)\n", param0, param1);
+    return OpticalFlow_orig->func21(param0, param1);
+}
+
+static struct OpticalFlow_table OpticalFlow_Impl =
+{
+    sizeof(struct OpticalFlow_table),
+    OpticalFlow_func0,
+    OpticalFlow_func1,
+    OpticalFlow_func2,
+    OpticalFlow_func3,
+    OpticalFlow_func4,
+    OpticalFlow_func5,
+    OpticalFlow_func6,
+    OpticalFlow_func7,
+    OpticalFlow_func8,
+    OpticalFlow_func9,
+    OpticalFlow_func10,
+    OpticalFlow_func11,
+    OpticalFlow_func12,
+    OpticalFlow_func13,
+    OpticalFlow_func14,
+    OpticalFlow_func15,
+    OpticalFlow_func16,
+    OpticalFlow_func17,
+    OpticalFlow_func18,
+    OpticalFlow_func19,
+    OpticalFlow_func20,
+    OpticalFlow_func21,
+};
+
 static BOOL cuda_check_table(const struct cuda_table *orig, struct cuda_table *impl, const char *name)
 {
     if (!orig)
@@ -2490,6 +2708,18 @@ CUresult cuda_get_table(const void **table, const CUuuid *uuid, const void *orig
 
         Relay10_orig = orig_table;
         *table = (void *)&Relay10_Impl;
+        return CUDA_SUCCESS;
+    }
+    else if (cuda_equal_uuid(uuid, &UUID_OpticalFlow))
+    {
+        TRACE("(%p, OpticalFlow_UUID: %s)\n", table, cuda_print_uuid(uuid, buffer, sizeof(buffer)));
+        if (orig_result)
+            return orig_result;
+        if (!cuda_check_table(orig_table, (void *)&OpticalFlow_Impl, "OpticalFlow"))
+            return CUDA_ERROR_UNKNOWN;
+
+        OpticalFlow_orig = orig_table;
+        *table = (void *)&OpticalFlow_Impl;
         return CUDA_SUCCESS;
     }
 
