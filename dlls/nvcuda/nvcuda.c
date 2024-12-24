@@ -30,8 +30,11 @@
 #include "windef.h"
 #include "winbase.h"
 #include "winternl.h"
+#include "winioctl.h"
+#include "ntstatus.h"
 #include "wine/debug.h"
 #include "wine/list.h"
+#include "wine/server.h"
 #include "wine/wgl.h"
 #include "cuda.h"
 #include "nvcuda.h"
@@ -523,7 +526,7 @@ static CUresult (*pcuGraphExecDestroy)(CUgraphExec hGraphExec);
 static CUresult (*pcuMemGetAllocationGranularity)(size_t *granularity, const CUmemAllocationProp *prop, CUmemAllocationGranularity_flags option);
 static CUresult (*pcuLaunchHostFunc)(CUstream hStream, CUhostFn fn, void *userData);
 static CUresult (*pcuLaunchHostFunc_ptsz)(CUstream hStream, CUhostFn fn, void *userData);
-static CUresult (*pcuImportExternalMemory)(void *extMem_out, const void *memHandleDesc);
+static CUresult (*pcuImportExternalMemory)(void *extMem_out, const CUDA_EXTERNAL_MEMORY_HANDLE_DESC *memHandleDesc);
 static CUresult (*pcuExternalMemoryGetMappedBuffer)(CUdeviceptr_v2 *devPtr, void *extMem, const void *bufferDesc);
 static CUresult (*pcuExternalMemoryGetMappedMipmappedArray)(CUmipmappedArray *mipmap, void *extMem, const void *mipmapDesc);
 static CUresult (*pcuDestroyExternalMemory)(void *extMem);
@@ -3905,10 +3908,105 @@ CUresult WINAPI wine_cuLaunchHostFunc_ptsz(CUstream hStream, CUhostFn fn, void *
     return pcuLaunchHostFunc_ptsz(hStream, fn, userData);
 }
 
-CUresult WINAPI wine_cuImportExternalMemory(void *extMem_out, const void *memHandleDesc)
+#define IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE CTL_CODE(FILE_DEVICE_VIDEO, 3, METHOD_BUFFERED, FILE_READ_ACCESS)
+
+static int get_cuda_memory_fd(HANDLE win32_handle)
 {
-    TRACE("(%p, %p)\n", extMem_out, memHandleDesc);
-    return pcuImportExternalMemory(extMem_out, memHandleDesc);
+    IO_STATUS_BLOCK iosb;
+    obj_handle_t unix_resource;
+    NTSTATUS status;
+    int unix_fd = -1;
+
+    if (NtDeviceIoControlFile(win32_handle, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE,
+                              NULL, 0, &unix_resource, sizeof(unix_resource)))
+    {
+        ERR("NtDeviceIoControlFile failed for handle %p\n", win32_handle);
+        return -1;
+    }
+
+    status = wine_server_handle_to_fd(wine_server_ptr_handle(unix_resource), GENERIC_READ | GENERIC_WRITE, &unix_fd, NULL);
+    NtClose(wine_server_ptr_handle(unix_resource));
+
+    if (status != STATUS_SUCCESS || unix_fd < 0)
+    {
+        ERR("Failed to convert Unix resource to FD for handle %p - Status: 0x%x\n", win32_handle, status);
+        return -1;
+    }
+
+    return unix_fd;
+}
+
+#define IOCTL_SHARED_GPU_RESOURCE_GETKMT CTL_CODE(FILE_DEVICE_VIDEO, 2, METHOD_BUFFERED, FILE_READ_ACCESS)
+
+static int get_kmt_resource_fd(HANDLE win32_handle)
+{
+    IO_STATUS_BLOCK iosb;
+    obj_handle_t kmt_handle;
+    NTSTATUS status;
+    int unix_fd = -1;
+
+    if (NtDeviceIoControlFile(win32_handle, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_GETKMT,
+                              NULL, 0, &kmt_handle, sizeof(kmt_handle)))
+    {
+        ERR("NtDeviceIoControlFile failed for handle %p\n", win32_handle);
+        return -1;
+    }
+
+    status = wine_server_handle_to_fd(wine_server_ptr_handle(kmt_handle), GENERIC_READ | GENERIC_WRITE, &unix_fd, NULL);
+    NtClose(wine_server_ptr_handle(kmt_handle));
+
+    if (status != STATUS_SUCCESS || unix_fd < 0)
+    {
+        ERR("Failed to convert KMT handle to FD for handle %p - Status: 0x%x\n", win32_handle, status);
+        return -1;
+    }
+
+    return unix_fd;
+}
+
+CUresult WINAPI wine_cuImportExternalMemory(void *extMem_out, const CUDA_EXTERNAL_MEMORY_HANDLE_DESC *memHandleDesc)
+{
+    CUDA_EXTERNAL_MEMORY_HANDLE_DESC linuxHandleDesc = *memHandleDesc;
+
+    /* Linux libcuda does not work win32 handles */
+    if (linuxHandleDesc.type == CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT)
+    {
+        int unix_fd = get_kmt_resource_fd(linuxHandleDesc.handle.win32.handle);
+
+        if (unix_fd < 0)
+        {
+            ERR("Failed to retrieve Unix FD for Win32 KMT handle (%p)\n", linuxHandleDesc.handle.win32.handle);
+            return CUDA_ERROR_INVALID_HANDLE;
+        }
+
+        linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
+        linuxHandleDesc.handle.fd = unix_fd;
+    }
+
+    if (linuxHandleDesc.type == CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32)
+    {
+        int unix_fd = get_cuda_memory_fd(linuxHandleDesc.handle.win32.handle);
+
+        if (unix_fd < 0)
+        {
+            ERR("Failed to retrieve Unix FD for Win32 handle (%p)\n", linuxHandleDesc.handle.win32.handle);
+            return CUDA_ERROR_INVALID_HANDLE;
+        }
+
+        linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
+        linuxHandleDesc.handle.fd = unix_fd;
+    }
+
+    if (linuxHandleDesc.type != CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD)
+    {
+        ERR("MemoryType not supported!\n");
+        return CUDA_ERROR_INVALID_HANDLE;
+    }
+
+    TRACE("(%p, %p)\n", extMem_out, &linuxHandleDesc);
+    CUresult ret = pcuImportExternalMemory(extMem_out, &linuxHandleDesc);
+    if(ret) ERR("Returned error: %d\n", ret);
+    return ret;
 }
 
 CUresult WINAPI wine_cuExternalMemoryGetMappedBuffer(CUdeviceptr_v2 *devPtr, void *extMem, const void *bufferDesc)

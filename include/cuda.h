@@ -131,6 +131,17 @@ typedef void *CUgreenCtx;
 typedef unsigned long long CUsurfObject;
 typedef unsigned long long CUtexObject;
 
+typedef enum CUexternalMemoryHandleType_enum {
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD          = 1,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32       = 2,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT   = 3,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP         = 4,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE     = 5,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_RESOURCE     = 6,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_RESOURCE_KMT = 7,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_NVSCIBUF = 8
+} CUexternalMemoryHandleType;
+
 typedef struct CUipcEventHandle_st
 {
     char reserved[CU_IPC_HANDLE_SIZE];
@@ -205,5 +216,21 @@ typedef struct CUDA_ARRAY3D_DESCRIPTOR_st
     unsigned int Flags;
 } CUDA_ARRAY3D_DESCRIPTOR_v2;
 typedef CUDA_ARRAY3D_DESCRIPTOR_v2 CUDA_ARRAY3D_DESCRIPTOR;
+
+typedef struct CUDA_EXTERNAL_MEMORY_HANDLE_DESC_st {
+    CUexternalMemoryHandleType type;
+    union {
+        int fd;
+        struct {
+            void *handle;
+            const void *name;
+        } win32;
+        const void *nvSciBufObject;
+    } handle;
+    unsigned long long size;
+    unsigned int flags;
+    unsigned int reserved[16];
+} CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1;
+typedef CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1 CUDA_EXTERNAL_MEMORY_HANDLE_DESC;
 
 #endif /* __WINE_CUDA_H */
