@@ -3908,6 +3908,73 @@ CUresult WINAPI wine_cuLaunchHostFunc_ptsz(CUstream hStream, CUhostFn fn, void *
     return pcuLaunchHostFunc_ptsz(hStream, fn, userData);
 }
 
+#define IOCTL_SHARED_GPU_RESOURCE_OPEN CTL_CODE(FILE_DEVICE_VIDEO, 1, METHOD_BUFFERED, FILE_WRITE_ACCESS)
+
+struct shared_resource_open
+{
+    obj_handle_t kmt_handle;
+    WCHAR name[1];
+};
+
+struct shared_resource_info
+{
+    UINT64 resource_size;
+};
+
+static inline void init_unicode_string(UNICODE_STRING *str, const WCHAR *data)
+{
+    str->Length = lstrlenW(data) * sizeof(WCHAR);
+    str->MaximumLength = str->Length + sizeof(WCHAR);
+    str->Buffer = (WCHAR *)data;
+}
+
+static HANDLE open_shared_resource(HANDLE kmt_handle, LPCWSTR name)
+{
+    static const WCHAR shared_gpu_resourceW[] = {'\\','?','?','\\','S','h','a','r','e','d','G','p','u','R','e','s','o','u','r','c','e',0};
+    UNICODE_STRING shared_gpu_resource_us;
+    struct shared_resource_open *inbuff;
+    HANDLE shared_resource;
+    OBJECT_ATTRIBUTES attr;
+    IO_STATUS_BLOCK iosb;
+    NTSTATUS status;
+    DWORD in_size;
+
+    init_unicode_string(&shared_gpu_resource_us, shared_gpu_resourceW);
+
+    attr.Length = sizeof(attr);
+    attr.RootDirectory = 0;
+    attr.Attributes = 0;
+    attr.ObjectName = &shared_gpu_resource_us;
+    attr.SecurityDescriptor = NULL;
+    attr.SecurityQualityOfService = NULL;
+
+    if ((status = NtCreateFile(&shared_resource, GENERIC_READ | GENERIC_WRITE, &attr, &iosb, NULL, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_OPEN, 0, NULL, 0)))
+    {
+        ERR("Failed to load open a shared resource handle, status %#lx.\n", (long int)status);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    in_size = sizeof(*inbuff) + (name ? lstrlenW(name) * sizeof(WCHAR) : 0);
+    inbuff = calloc(1, in_size);
+    inbuff->kmt_handle = wine_server_obj_handle(kmt_handle);
+    if (name)
+        lstrcpyW(&inbuff->name[0], name);
+
+    status = NtDeviceIoControlFile(shared_resource, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_OPEN,
+            inbuff, in_size, NULL, 0);
+
+    free(inbuff);
+
+    if (status)
+    {
+        ERR("Failed to open video resource, status %#lx.\n", (long int)status);
+        NtClose(shared_resource);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    return shared_resource;
+}
+
 #define IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE CTL_CODE(FILE_DEVICE_VIDEO, 3, METHOD_BUFFERED, FILE_READ_ACCESS)
 
 static int get_cuda_memory_fd(HANDLE win32_handle)
@@ -3936,42 +4003,17 @@ static int get_cuda_memory_fd(HANDLE win32_handle)
     return unix_fd;
 }
 
-#define IOCTL_SHARED_GPU_RESOURCE_GETKMT CTL_CODE(FILE_DEVICE_VIDEO, 2, METHOD_BUFFERED, FILE_READ_ACCESS)
-
-static int get_kmt_resource_fd(HANDLE win32_handle)
-{
-    IO_STATUS_BLOCK iosb;
-    obj_handle_t kmt_handle;
-    NTSTATUS status;
-    int unix_fd = -1;
-
-    if (NtDeviceIoControlFile(win32_handle, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_GETKMT,
-                              NULL, 0, &kmt_handle, sizeof(kmt_handle)))
-    {
-        ERR("NtDeviceIoControlFile failed for handle %p\n", win32_handle);
-        return -1;
-    }
-
-    status = wine_server_handle_to_fd(wine_server_ptr_handle(kmt_handle), GENERIC_READ | GENERIC_WRITE, &unix_fd, NULL);
-    NtClose(wine_server_ptr_handle(kmt_handle));
-
-    if (status != STATUS_SUCCESS || unix_fd < 0)
-    {
-        ERR("Failed to convert KMT handle to FD for handle %p - Status: 0x%x\n", win32_handle, status);
-        return -1;
-    }
-
-    return unix_fd;
-}
-
 CUresult WINAPI wine_cuImportExternalMemory(void *extMem_out, const CUDA_EXTERNAL_MEMORY_HANDLE_DESC *memHandleDesc)
 {
+    TRACE("(%p, %p)\n", extMem_out, memHandleDesc);
+
     CUDA_EXTERNAL_MEMORY_HANDLE_DESC linuxHandleDesc = *memHandleDesc;
 
     /* Linux libcuda does not work win32 handles */
     if (linuxHandleDesc.type == CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT)
     {
-        int unix_fd = get_kmt_resource_fd(linuxHandleDesc.handle.win32.handle);
+        HANDLE handle = open_shared_resource(linuxHandleDesc.handle.win32.handle, linuxHandleDesc.handle.win32.name);
+        int unix_fd = get_cuda_memory_fd(handle);
 
         if (unix_fd < 0)
         {
@@ -4003,7 +4045,6 @@ CUresult WINAPI wine_cuImportExternalMemory(void *extMem_out, const CUDA_EXTERNA
         return CUDA_ERROR_INVALID_HANDLE;
     }
 
-    TRACE("(%p, %p)\n", extMem_out, &linuxHandleDesc);
     CUresult ret = pcuImportExternalMemory(extMem_out, &linuxHandleDesc);
     if(ret) ERR("Returned error: %d\n", ret);
     return ret;
@@ -4027,10 +4068,35 @@ CUresult WINAPI wine_cuDestroyExternalMemory(void *extMem)
     return pcuDestroyExternalMemory(extMem);
 }
 
-CUresult WINAPI wine_cuImportExternalSemaphore(void *extSem_out, const void *semHandleDesc)
+CUresult WINAPI wine_cuImportExternalSemaphore(void *extSem_out, const CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC *semHandleDesc)
 {
-    TRACE("(%p, %p)\n", extSem_out, semHandleDesc);
-    return pcuImportExternalSemaphore(extSem_out, semHandleDesc);
+    TRACE("(%p, %p, %d)\n", extSem_out, semHandleDesc, semHandleDesc->type);
+
+    CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC linuxHandleDesc = *semHandleDesc;
+    HANDLE handle;
+
+    switch (linuxHandleDesc.type)
+    {
+        case CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32:
+            linuxHandleDesc.handle.fd = get_cuda_memory_fd(linuxHandleDesc.handle.win32.handle);
+            linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD;
+            break;
+        case CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT:
+            handle = open_shared_resource(linuxHandleDesc.handle.win32.handle, linuxHandleDesc.handle.win32.name);
+            linuxHandleDesc.handle.fd = get_cuda_memory_fd(handle);
+            linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD;
+            break;
+        case CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_WIN32:
+            linuxHandleDesc.handle.fd = get_cuda_memory_fd(linuxHandleDesc.handle.win32.handle);
+            linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_FD;
+            break;
+        default:
+            break;
+    }
+
+    CUresult ret = pcuImportExternalSemaphore(extSem_out, &linuxHandleDesc);
+    if(ret) ERR("Returned error: %d\n", ret);
+    return ret;
 }
 
 CUresult WINAPI wine_cuSignalExternalSemaphoresAsync(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream)

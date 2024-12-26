@@ -142,6 +142,19 @@ typedef enum CUexternalMemoryHandleType_enum {
     CU_EXTERNAL_MEMORY_HANDLE_TYPE_NVSCIBUF = 8
 } CUexternalMemoryHandleType;
 
+typedef enum CUexternalSemaphoreHandleType_enum {
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD             = 1,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32          = 2,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT      = 3,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE           = 4,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_FENCE           = 5,
+	CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_NVSCISYNC             = 6,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_KEYED_MUTEX     = 7,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_KEYED_MUTEX_KMT = 8,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_FD = 9,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_WIN32 = 10
+} CUexternalSemaphoreHandleType;
+
 typedef struct CUipcEventHandle_st
 {
     char reserved[CU_IPC_HANDLE_SIZE];
@@ -232,5 +245,20 @@ typedef struct CUDA_EXTERNAL_MEMORY_HANDLE_DESC_st {
     unsigned int reserved[16];
 } CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1;
 typedef CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1 CUDA_EXTERNAL_MEMORY_HANDLE_DESC;
+
+typedef struct CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_st {
+    CUexternalSemaphoreHandleType type;
+    union {
+        int fd;
+        struct {
+            void *handle;
+            const void *name;
+        } win32;
+        const void* nvSciSyncObj;
+    } handle;
+    unsigned int flags;
+    unsigned int reserved[16];
+} CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1;
+typedef CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1 CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC;
 
 #endif /* __WINE_CUDA_H */
