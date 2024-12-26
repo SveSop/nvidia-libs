@@ -3910,41 +3910,21 @@ CUresult WINAPI wine_cuImportExternalMemory(void *extMem_out, const CUDA_EXTERNA
     TRACE("(%p, %p)\n", extMem_out, memHandleDesc);
 
     CUDA_EXTERNAL_MEMORY_HANDLE_DESC linuxHandleDesc = *memHandleDesc;
+    HANDLE handle;
 
     /* Linux libcuda does not work win32 handles */
-    if (linuxHandleDesc.type == CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT)
+    switch (linuxHandleDesc.type)
     {
-        HANDLE handle = open_shared_resource(linuxHandleDesc.handle.win32.handle, linuxHandleDesc.handle.win32.name);
-        int unix_fd = get_cuda_memory_fd(handle);
-
-        if (unix_fd < 0)
-        {
-            ERR("Failed to retrieve Unix FD for Win32 KMT handle (%p)\n", linuxHandleDesc.handle.win32.handle);
-            return CUDA_ERROR_INVALID_HANDLE;
-        }
-
-        linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
-        linuxHandleDesc.handle.fd = unix_fd;
-    }
-
-    if (linuxHandleDesc.type == CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32)
-    {
-        int unix_fd = get_cuda_memory_fd(linuxHandleDesc.handle.win32.handle);
-
-        if (unix_fd < 0)
-        {
-            ERR("Failed to retrieve Unix FD for Win32 handle (%p)\n", linuxHandleDesc.handle.win32.handle);
-            return CUDA_ERROR_INVALID_HANDLE;
-        }
-
-        linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
-        linuxHandleDesc.handle.fd = unix_fd;
-    }
-
-    if (linuxHandleDesc.type != CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD)
-    {
-        ERR("MemoryType not supported!\n");
-        return CUDA_ERROR_INVALID_HANDLE;
+        case CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32:
+            linuxHandleDesc.handle.fd = get_shared_resource_fd(linuxHandleDesc.handle.win32.handle);
+            linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
+            break;
+        case CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT:
+            handle = open_shared_resource(linuxHandleDesc.handle.win32.handle, linuxHandleDesc.handle.win32.name);
+            linuxHandleDesc.handle.fd = get_shared_resource_fd(handle);
+            linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
+        default:
+            break;
     }
 
     CUresult ret = pcuImportExternalMemory(extMem_out, &linuxHandleDesc);
@@ -3980,16 +3960,16 @@ CUresult WINAPI wine_cuImportExternalSemaphore(void *extSem_out, const CUDA_EXTE
     switch (linuxHandleDesc.type)
     {
         case CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32:
-            linuxHandleDesc.handle.fd = get_cuda_memory_fd(linuxHandleDesc.handle.win32.handle);
+            linuxHandleDesc.handle.fd = get_shared_resource_fd(linuxHandleDesc.handle.win32.handle);
             linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD;
             break;
         case CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT:
             handle = open_shared_resource(linuxHandleDesc.handle.win32.handle, linuxHandleDesc.handle.win32.name);
-            linuxHandleDesc.handle.fd = get_cuda_memory_fd(handle);
+            linuxHandleDesc.handle.fd = get_shared_resource_fd(handle);
             linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD;
             break;
         case CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_WIN32:
-            linuxHandleDesc.handle.fd = get_cuda_memory_fd(linuxHandleDesc.handle.win32.handle);
+            linuxHandleDesc.handle.fd = get_shared_resource_fd(linuxHandleDesc.handle.win32.handle);
             linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_FD;
             break;
         default:

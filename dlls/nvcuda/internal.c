@@ -164,7 +164,7 @@ HANDLE open_shared_resource(HANDLE kmt_handle, LPCWSTR name)
     return shared_resource;
 }
 
-int get_cuda_memory_fd(HANDLE win32_handle)
+int get_shared_resource_fd(HANDLE win32_handle)
 {
     IO_STATUS_BLOCK iosb;
     obj_handle_t unix_resource;
