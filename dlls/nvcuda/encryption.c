@@ -105,7 +105,7 @@ static inline void WINAPI encrypt_part3(unsigned char res[], EncryptInput1 *inpu
         encrypt_hash_round1(res, ((unsigned char *)input1)[i]);
 }
 
-CUresult WINAPI get_part2(int ordinal, EncryptInput2 *part2)
+static inline CUresult WINAPI get_part2(int ordinal, EncryptInput2 *part2)
 {
     int device;
     if (wine_cuDeviceGet(&device, ordinal)) return CUDA_ERROR_UNKNOWN;
@@ -159,7 +159,7 @@ static inline void WINAPI encrypt_part7(unsigned char res[], unsigned char aux[]
         encrypt_hash_round1(res, buf[i]);
 }
 
-CUresult WINAPI encrypt(EncryptInput1 *input1, __uint128_t *res) {
+CUresult __attribute((visibility("hidden"))) WINAPI encrypt(EncryptInput1 *input1, __uint128_t *res) {
     if (input1->cudaVersion % 10 < 2) {
         static unsigned char code[16] = {
             0x5c, 0x67, 0xcb, 0x03, 0x1c, 0x18, 0x41, 0x33,

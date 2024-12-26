@@ -30,7 +30,7 @@ typedef struct {
     FunctionPtr function;
 } FunctionMapping;
 
-extern const FunctionMapping mappings[];
-extern const size_t mappings_count;
+extern const __attribute((visibility("hidden"))) FunctionMapping mappings[];
+extern const __attribute((visibility("hidden"))) size_t mappings_count;
 
 #endif  /* __FUNCTION_MAPPINGS_H */

@@ -23,6 +23,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <time.h>
 #include <inttypes.h>
 
@@ -32,8 +33,12 @@
 
 #include "windef.h"
 #include "winbase.h"
+#include "winternl.h"
+#include "winioctl.h"
+#include "ntstatus.h"
 #include "wine/debug.h"
 #include "wine/list.h"
+#include "wine/server.h"
 #include "cuda.h"
 #include "nvcuda.h"
 #include "encryption.h"
@@ -89,6 +94,100 @@ void cuda_process_tls_callbacks(DWORD reason)
         }
     }
     LeaveCriticalSection( &tls_callback_section );
+}
+
+#define IOCTL_SHARED_GPU_RESOURCE_OPEN CTL_CODE(FILE_DEVICE_VIDEO, 1, METHOD_BUFFERED, FILE_WRITE_ACCESS)
+#define IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE CTL_CODE(FILE_DEVICE_VIDEO, 3, METHOD_BUFFERED, FILE_READ_ACCESS)
+
+struct shared_resource_open
+{
+    obj_handle_t kmt_handle;
+    WCHAR name[1];
+};
+
+struct shared_resource_info
+{
+    UINT64 resource_size;
+};
+
+static inline void init_unicode_string(UNICODE_STRING *str, const WCHAR *data)
+{
+    str->Length = lstrlenW(data) * sizeof(WCHAR);
+    str->MaximumLength = str->Length + sizeof(WCHAR);
+    str->Buffer = (WCHAR *)data;
+}
+
+HANDLE open_shared_resource(HANDLE kmt_handle, LPCWSTR name)
+{
+    static const WCHAR shared_gpu_resourceW[] = {'\\','?','?','\\','S','h','a','r','e','d','G','p','u','R','e','s','o','u','r','c','e',0};
+    UNICODE_STRING shared_gpu_resource_us;
+    struct shared_resource_open *inbuff;
+    HANDLE shared_resource;
+    OBJECT_ATTRIBUTES attr;
+    IO_STATUS_BLOCK iosb;
+    NTSTATUS status;
+    DWORD in_size;
+
+    init_unicode_string(&shared_gpu_resource_us, shared_gpu_resourceW);
+
+    attr.Length = sizeof(attr);
+    attr.RootDirectory = 0;
+    attr.Attributes = 0;
+    attr.ObjectName = &shared_gpu_resource_us;
+    attr.SecurityDescriptor = NULL;
+    attr.SecurityQualityOfService = NULL;
+
+    if ((status = NtCreateFile(&shared_resource, GENERIC_READ | GENERIC_WRITE, &attr, &iosb, NULL, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_OPEN, 0, NULL, 0)))
+    {
+        ERR("Failed to load open a shared resource handle, status %#lx.\n", (long int)status);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    in_size = sizeof(*inbuff) + (name ? lstrlenW(name) * sizeof(WCHAR) : 0);
+    inbuff = calloc(1, in_size);
+    inbuff->kmt_handle = wine_server_obj_handle(kmt_handle);
+    if (name)
+        lstrcpyW(&inbuff->name[0], name);
+
+    status = NtDeviceIoControlFile(shared_resource, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_OPEN,
+            inbuff, in_size, NULL, 0);
+
+    free(inbuff);
+
+    if (status)
+    {
+        ERR("Failed to open video resource, status %#lx.\n", (long int)status);
+        NtClose(shared_resource);
+        return INVALID_HANDLE_VALUE;
+    }
+
+    return shared_resource;
+}
+
+int get_cuda_memory_fd(HANDLE win32_handle)
+{
+    IO_STATUS_BLOCK iosb;
+    obj_handle_t unix_resource;
+    NTSTATUS status;
+    int unix_fd = -1;
+
+    if (NtDeviceIoControlFile(win32_handle, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE,
+                              NULL, 0, &unix_resource, sizeof(unix_resource)))
+    {
+        ERR("NtDeviceIoControlFile failed for handle %p\n", win32_handle);
+        return -1;
+    }
+
+    status = wine_server_handle_to_fd(wine_server_ptr_handle(unix_resource), GENERIC_READ | GENERIC_WRITE, &unix_fd, NULL);
+    NtClose(wine_server_ptr_handle(unix_resource));
+
+    if (status != STATUS_SUCCESS || unix_fd < 0)
+    {
+        ERR("Failed to convert Unix resource to FD for handle %p - Status: 0x%x\n", win32_handle, status);
+        return -1;
+    }
+
+    return unix_fd;
 }
 
 static const CUuuid UUID_Relay1                     = {{0x6B, 0xD5, 0xFB, 0x6C, 0x5B, 0xF4, 0xE7, 0x4A,
@@ -790,7 +889,7 @@ static void* WINAPI Relay1_func10(void *param0, void *param1)
     return Relay1_orig->func10(param0, param1);
 }
 
-struct Relay1_table Relay1_Impl =
+static struct Relay1_table Relay1_Impl =
 {
     sizeof(struct Relay1_table),
     Relay1_func0,
@@ -842,7 +941,7 @@ static void* WINAPI Relay2_func5(void *param0, void *param1)
     return Relay2_orig->func5(param0, param1);
 }
 
-struct Relay2_table Relay2_Impl =
+static struct Relay2_table Relay2_Impl =
 {
     sizeof(struct Relay2_table),
     Relay2_func0,
@@ -939,7 +1038,7 @@ static CUresult WINAPI ContextStorage_Get(void **value, CUcontext ctx, void *key
     return ret;
 }
 
-struct ContextStorage_table ContextStorage_Impl =
+static struct ContextStorage_table ContextStorage_Impl =
 {
     ContextStorage_Set,
     ContextStorage_Remove,
@@ -952,7 +1051,7 @@ static void* WINAPI Relay5_func0(void *param0, void *param1, void *param2)
     return Relay5_orig->func0(param0, param1, param2);
 }
 
-struct Relay5_table Relay5_Impl =
+static struct Relay5_table Relay5_Impl =
 {
     sizeof(struct Relay5_table),
     Relay5_func0,
@@ -1011,14 +1110,14 @@ static CUresult WINAPI TlsNotifyInterface_Remove(void *handle, void *param1)
     return ret;
 }
 
-struct TlsNotifyInterface_table TlsNotifyInterface_Impl =
+static struct TlsNotifyInterface_table TlsNotifyInterface_Impl =
 {
     sizeof(struct TlsNotifyInterface_table),
     TlsNotifyInterface_Set,
     TlsNotifyInterface_Remove,
 };
 
-extern struct Encryption_table Encryption_Impl;
+static struct Encryption_table Encryption_Impl;
 static CUresult WINAPI Encryption_encrypt0(unsigned int cudaVersion, time_t timestamp, __uint128_t *res)
 {
     TRACE("%u, (%ld, %p)\n", cudaVersion, timestamp, res);
@@ -1047,7 +1146,7 @@ static CUresult WINAPI Encryption_encrypt1(void *param0)
     return CUDA_ERROR_UNKNOWN;
 }
 
-struct Encryption_table Encryption_Impl =
+static struct Encryption_table Encryption_Impl =
 {
     sizeof(struct Encryption_table),
     Encryption_encrypt0,
@@ -2267,7 +2366,7 @@ static void* WINAPI Relay9_func93(void *param0, void *param1)
     return Relay9_orig->func93(param0, param1);
 }
 
-struct Relay9_table Relay9_Impl =
+static struct Relay9_table Relay9_Impl =
 {
     sizeof(struct Relay9_table),
     Relay9_func0,

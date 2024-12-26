@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014-2015 Michael Müller
+ * Copyright (C) 2023-2024 Sveinar Søpler
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,7 +24,9 @@
 #include "winbase.h"
 #include "cuda.h"
 
-void cuda_process_tls_callbacks(DWORD reason);
-CUresult __attribute((visibility("hidden"))) cuda_get_table(const void **table, const CUuuid *id, const void *orig_table, CUresult orig_result);
+void __attribute((visibility("hidden"))) cuda_process_tls_callbacks(DWORD reason);
+CUresult __attribute((visibility("hidden"))) cuda_get_table(const void **table, const CUuuid *uuid, const void *orig_table, CUresult orig_result);
+int __attribute((visibility("hidden"))) get_cuda_memory_fd(HANDLE win32_handle);
+HANDLE __attribute((visibility("hidden"))) open_shared_resource(HANDLE kmt_handle, LPCWSTR name);
 
 #endif

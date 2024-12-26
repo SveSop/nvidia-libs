@@ -30,11 +30,8 @@
 #include "windef.h"
 #include "winbase.h"
 #include "winternl.h"
-#include "winioctl.h"
-#include "ntstatus.h"
 #include "wine/debug.h"
 #include "wine/list.h"
-#include "wine/server.h"
 #include "wine/wgl.h"
 #include "cuda.h"
 #include "nvcuda.h"
@@ -56,9 +53,9 @@ static pthread_cond_t  stream_callback_request       = PTHREAD_COND_INITIALIZER;
 static pthread_cond_t  stream_callback_reply         = PTHREAD_COND_INITIALIZER;
 static const char      devpropkey_gpu_vulkan_uuidA[] = "Properties\\{233A9EF3-AFC4-4ABD-B564-C32F21F1535C}\\0002";
 static const char      devpropkey_gpu_luidA[]        = "Properties\\{60B193CB-5276-4D0F-96FC-F173ABAD3EC6}\\0002";
-LONG                   num_stream_callbacks;
+static LONG            num_stream_callbacks;
 
-void get_addr();
+static void get_addr();
 
 struct stream_callback_entry
 {
@@ -3908,101 +3905,6 @@ CUresult WINAPI wine_cuLaunchHostFunc_ptsz(CUstream hStream, CUhostFn fn, void *
     return pcuLaunchHostFunc_ptsz(hStream, fn, userData);
 }
 
-#define IOCTL_SHARED_GPU_RESOURCE_OPEN CTL_CODE(FILE_DEVICE_VIDEO, 1, METHOD_BUFFERED, FILE_WRITE_ACCESS)
-
-struct shared_resource_open
-{
-    obj_handle_t kmt_handle;
-    WCHAR name[1];
-};
-
-struct shared_resource_info
-{
-    UINT64 resource_size;
-};
-
-static inline void init_unicode_string(UNICODE_STRING *str, const WCHAR *data)
-{
-    str->Length = lstrlenW(data) * sizeof(WCHAR);
-    str->MaximumLength = str->Length + sizeof(WCHAR);
-    str->Buffer = (WCHAR *)data;
-}
-
-static HANDLE open_shared_resource(HANDLE kmt_handle, LPCWSTR name)
-{
-    static const WCHAR shared_gpu_resourceW[] = {'\\','?','?','\\','S','h','a','r','e','d','G','p','u','R','e','s','o','u','r','c','e',0};
-    UNICODE_STRING shared_gpu_resource_us;
-    struct shared_resource_open *inbuff;
-    HANDLE shared_resource;
-    OBJECT_ATTRIBUTES attr;
-    IO_STATUS_BLOCK iosb;
-    NTSTATUS status;
-    DWORD in_size;
-
-    init_unicode_string(&shared_gpu_resource_us, shared_gpu_resourceW);
-
-    attr.Length = sizeof(attr);
-    attr.RootDirectory = 0;
-    attr.Attributes = 0;
-    attr.ObjectName = &shared_gpu_resource_us;
-    attr.SecurityDescriptor = NULL;
-    attr.SecurityQualityOfService = NULL;
-
-    if ((status = NtCreateFile(&shared_resource, GENERIC_READ | GENERIC_WRITE, &attr, &iosb, NULL, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_OPEN, 0, NULL, 0)))
-    {
-        ERR("Failed to load open a shared resource handle, status %#lx.\n", (long int)status);
-        return INVALID_HANDLE_VALUE;
-    }
-
-    in_size = sizeof(*inbuff) + (name ? lstrlenW(name) * sizeof(WCHAR) : 0);
-    inbuff = calloc(1, in_size);
-    inbuff->kmt_handle = wine_server_obj_handle(kmt_handle);
-    if (name)
-        lstrcpyW(&inbuff->name[0], name);
-
-    status = NtDeviceIoControlFile(shared_resource, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_OPEN,
-            inbuff, in_size, NULL, 0);
-
-    free(inbuff);
-
-    if (status)
-    {
-        ERR("Failed to open video resource, status %#lx.\n", (long int)status);
-        NtClose(shared_resource);
-        return INVALID_HANDLE_VALUE;
-    }
-
-    return shared_resource;
-}
-
-#define IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE CTL_CODE(FILE_DEVICE_VIDEO, 3, METHOD_BUFFERED, FILE_READ_ACCESS)
-
-static int get_cuda_memory_fd(HANDLE win32_handle)
-{
-    IO_STATUS_BLOCK iosb;
-    obj_handle_t unix_resource;
-    NTSTATUS status;
-    int unix_fd = -1;
-
-    if (NtDeviceIoControlFile(win32_handle, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE,
-                              NULL, 0, &unix_resource, sizeof(unix_resource)))
-    {
-        ERR("NtDeviceIoControlFile failed for handle %p\n", win32_handle);
-        return -1;
-    }
-
-    status = wine_server_handle_to_fd(wine_server_ptr_handle(unix_resource), GENERIC_READ | GENERIC_WRITE, &unix_fd, NULL);
-    NtClose(wine_server_ptr_handle(unix_resource));
-
-    if (status != STATUS_SUCCESS || unix_fd < 0)
-    {
-        ERR("Failed to convert Unix resource to FD for handle %p - Status: 0x%x\n", win32_handle, status);
-        return -1;
-    }
-
-    return unix_fd;
-}
-
 CUresult WINAPI wine_cuImportExternalMemory(void *extMem_out, const CUDA_EXTERNAL_MEMORY_HANDLE_DESC *memHandleDesc)
 {
     TRACE("(%p, %p)\n", extMem_out, memHandleDesc);
@@ -5870,7 +5772,7 @@ CUresult WINAPI wine_cuGraphicsD3D11RegisterResource(CUgraphicsResource *pCudaRe
 }
 
 /* Function checker used by CUDA Runtime API */
-void get_addr(const char* symbol, int driverVersion, size_t flags, void** pfn)
+static void get_addr(const char* symbol, int driverVersion, size_t flags, void** pfn)
 {
     const FunctionMapping* bestMapping = NULL;
     for (size_t i = 0; i < mappings_count; ++i) {
