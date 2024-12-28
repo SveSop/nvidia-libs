@@ -21,6 +21,7 @@ nvcuda (wine-staging + development - [https://github.com/SveSop/nvcuda/tree/deve
 nvcuvid/nvencodeapi (wine-staging + development - [https://github.com/SveSop/nvenc/tree/devel](https://github.com/SveSop/nvenc/tree/devel))  
 nvml (wine-nvml - [https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml))  
 nvoptix (wine-nvoptix - [https://github.com/SveSop/wine-nvoptix](https://github.com/SveSop/wine-nvoptix))  
+nvofapi-relay (Alternative nvofapi for cuda - [https://github.com/SveSop/nvofapi-relay](https://github.com/SveSop/nvofapi-relay)  
 
 ## Build requirements:  
 - [WINE] (version >= 9.0) [https://www.winehq.org/](https://www.winehq.org/)  
@@ -66,6 +67,7 @@ Known games that may need override:
 Monster Hunter World : `DXVK_NVAPI_GPU_ARCH=GP100`  
 War Thunder : `DXVK_NVAPI_GPU_ARCH=GP100`  
 Ghost of Tsushima : `DXVK_NVAPI_GPU_ARCH=GA100`  
+Indiana Jones and the Great Circle: (See own section below).  
 
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
@@ -89,7 +91,7 @@ Run `./bottles-install.sh` for a list of your available bottles, and use it like
 You will want to run the script ever time you upgrade `nvidia-libs` binaries, and possibly  
 if you change/update your runner. Eg. switching from Caffe-9.7 to Caffe-9.8.  
 
-### Proton  
+## Proton  
 You can drop-in the libraries in Proton8 - Experimental or GE-Proton-8 or newer like this:
   
 `PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-8.27-GE' ./proton_setup.sh`  
@@ -100,22 +102,28 @@ The installscript is no longer compatible with older Proton-6.3 or Proton-GE-6/7
 OBS!  
 You can add:  
    `"DXVK_ENABLE_NVAPI": "1",`  
-   `"PROTON_ENABLE_NVAPI": "1",`
+   `"PROTON_ENABLE_NVAPI": "1",`  
 to your user_settings.py script in the proton folder eg:  
 `PROTON_LIBS='$HOME/.steam/compatibilitytools.d/GE-Proton-8.27/user_settings.py'`  
 
 Or you can run the game with `PROTON_ENABLE_NVAPI=1 DXVK_ENABLE_NVAPI=1 %command%`  
 
 Some additional tweaks may be required depending on game used and version of Proton.  
+It is HIGHLY RECOMMENDED that you re-create the game-prefix after installing the nvidia-libs  
+package, to make sure they are used in the new prefix. The game prefixes are typically located  
+in `$HOME/.steam/steam/steamapps/compatdata/XXXXXXX` where XXXXXXX is the steam AppID.  
 
-## Quirks
-Some older SDK samples may require specifying LD_LIBRARY_PATH to the system folder  
-where libcuda.so.1 and other libnvidia-xxx.so libraries reside. This varies depending  
-on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit and  
-`/lib/i386-linux-gnu/` for 32-bit.  
+## Indiana Jones and the Great Circle
+To have FrameGeneration when using a RTX40xx series card in this game you can use the alternative  
+nvofapi-relay library with Steam Proton by replacing the dxvk-nvapi implementation of `nvofapi64.dll`  
+in eg. `$HOME/.steam/compatibilitytools.d/Proton-9.20-GE/files/lib64/wine/nvapi/nvofapi64.dll` with  
+the included `nvofapi/x64/nvofapi64.dll` library.  
 
-For instance to get the NVIDIA SuperSonic Sled demo to run on Ubuntu you can load wine  
-with using `LD_LIBRARY_PATH=/lib/i386-linux-gnu:$LD_LIBRARY_PATH`  
+Must be used with `nvcuda.dll` you install as described above for proton!  
+You then run the game with `DXVK_NVAPI_GPU_ARCH=AD100 __GL_13ebad=0x1 %command%` option in steam.  
+
+OBS. This will replace the dxvk-nvapi version of `nvofapi64.dll` so other games that depends  
+on that implementation will not work until you change it back by running the `./proton_setup.sh` script.  
 
 ## DAZ Studio
 
@@ -125,6 +133,15 @@ show 2 "adapters" for rendering. Choose the one that show your GPU name, and NOT
 NVML can be installed by using the `setup_nvml.sh` script included in the package and for  
 DAZ Studio it is recommended.  
  
+## Quirks
+Some older SDK samples may require specifying LD_LIBRARY_PATH to the system folder  
+where libcuda.so.1 and other libnvidia-xxx.so libraries reside. This varies depending  
+on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit and  
+`/lib/i386-linux-gnu/` for 32-bit.  
+
+For instance to get the NVIDIA SuperSonic Sled demo to run on Ubuntu you can load wine  
+with using `LD_LIBRARY_PATH=/lib/i386-linux-gnu:$LD_LIBRARY_PATH`  
+
 ## Info  
 
 Loads of reference info here:  

@@ -59,6 +59,23 @@ ninja install
 
 rm -R "$NVLIBS_BUILD_DIR/build"
 
+# Built alternative nvofapi-relay
+
+NVOFAPI_SRC_DIR=$NVLIBS_SRC_DIR"/nvofapi-relay"
+cd $NVOFAPI_SRC_DIR
+
+meson --cross-file "$NVOFAPI_SRC_DIR/build-wine64.txt"  \
+      --buildtype release                               \
+      --prefix "$NVLIBS_BUILD_DIR/nvofapi"              \
+      --libdir "x64"                                    \
+      --strip                                           \
+      "$NVLIBS_BUILD_DIR/build"
+
+cd "$NVLIBS_BUILD_DIR/build"
+ninja install
+
+rm -R "$NVLIBS_BUILD_DIR/build"
+
 # Build wine-nvml
 
 NVML_SRC_DIR=$NVLIBS_SRC_DIR"/wine-nvml"
