@@ -7,3 +7,6 @@
 [submodule "wine-nvml"]
 	path = wine-nvml
 	url = https://github.com/SveSop/wine-nvml.git
+[submodule "nvofapi-relay"]
+	path = nvofapi-relay
+	url = https://github.com/SveSop/nvofapi-relay.git
