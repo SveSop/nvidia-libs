@@ -166,6 +166,7 @@ build_arch 32
 
 # Copy installscripts
 cp $NVLIBS_SRC_DIR/*.sh "$NVLIBS_BUILD_DIR/"
+rm $NVLIBS_BUILD_DIR/package-release.sh
 chmod +x $NVLIBS_BUILD_DIR/*.sh
 cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
 
