@@ -21,7 +21,7 @@ nvcuda (wine-staging + development - [https://github.com/SveSop/nvcuda/tree/deve
 nvcuvid/nvencodeapi (wine-staging + development - [https://github.com/SveSop/nvenc/tree/devel](https://github.com/SveSop/nvenc/tree/devel))  
 nvml (wine-nvml - [https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml))  
 nvoptix (wine-nvoptix - [https://github.com/SveSop/wine-nvoptix](https://github.com/SveSop/wine-nvoptix))  
-nvofapi-relay (Alternative nvofapi for cuda - [https://github.com/SveSop/nvofapi-relay](https://github.com/SveSop/nvofapi-relay)  
+nvofapi64_cuda - relay (nvofapi for cuda - [https://github.com/SveSop/nvofapi-relay](https://github.com/SveSop/nvofapi-relay)  
 
 ## Build requirements:  
 - [WINE] (version >= 9.0) [https://www.winehq.org/](https://www.winehq.org/)  
@@ -114,16 +114,11 @@ package, to make sure they are used in the new prefix. The game prefixes are typ
 in `$HOME/.steam/steam/steamapps/compatdata/XXXXXXX` where XXXXXXX is the steam AppID.  
 
 ## Indiana Jones and the Great Circle
-To have FrameGeneration when using a RTX40xx series card in this game you can use the alternative  
-nvofapi-relay library with Steam Proton by replacing the dxvk-nvapi implementation of `nvofapi64.dll`  
-in eg. `$HOME/.steam/compatibilitytools.d/Proton-9.20-GE/files/lib64/wine/nvapi/nvofapi64.dll` with  
-the included `nvofapi/x64/nvofapi64.dll` library.  
+To have FrameGeneration when using a RTX40xx series card in this game you can use the included install  
+script for proton (see Proton section above). This will then install `nvcuda.dll`,  
+`nvofapi64_cuda.dll` and a custom version of `nvofapi64.dll` in the the Proton binary tree.  
 
-Must be used with `nvcuda.dll` you install as described above for proton!  
 You then run the game with `DXVK_NVAPI_GPU_ARCH=AD100 __GL_13ebad=0x1 %command%` option in steam.  
-
-OBS. This will replace the dxvk-nvapi version of `nvofapi64.dll` so other games that depends  
-on that implementation will not work until you change it back by running the `./proton_setup.sh` script.  
 
 ## DAZ Studio
 

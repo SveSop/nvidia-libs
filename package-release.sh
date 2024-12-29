@@ -59,14 +59,14 @@ ninja install
 
 rm -R "$NVLIBS_BUILD_DIR/build"
 
-# Built alternative nvofapi-relay
+# Build nvofapi-relay
 
 NVOFAPI_SRC_DIR=$NVLIBS_SRC_DIR"/nvofapi-relay"
 cd $NVOFAPI_SRC_DIR
 
 meson --cross-file "$NVOFAPI_SRC_DIR/build-wine64.txt"  \
       --buildtype release                               \
-      --prefix "$NVLIBS_BUILD_DIR/nvofapi"              \
+      --prefix "$NVLIBS_BUILD_DIR"                      \
       --libdir "x64"                                    \
       --strip                                           \
       "$NVLIBS_BUILD_DIR/build"
