@@ -36,6 +36,8 @@ $fun nvcuda.dll
 $fun nvcuvid.dll
 $fun nvencodeapi64.dll
 $fun nvoptix.dll
+$fun nvofapi64.dll
+$fun nvofapi64_cuda.dll
 
 win='drive_c/windows/syswow64'
 lib='x32'
@@ -45,5 +47,30 @@ $fun nvcuvid.dll
 $fun nvencodeapi.dll
 
 echo -ne "All done - NVIDIA libraries copied to $BOTTLE\n"
+
+echo -ne "Do you want to add the experimental version of nvapi to Bottles? (Y/N):\n"
+read -n 1 -r response
+echo
+if [[ "$response" =~ ^[Yy]$ ]]; then
+    lib='x64'
+    nvapi_ver="dxvk-nvapi-$(<version)"
+    nvapi_dir="$HOME/.var/app/com.usebottles.bottles/data/bottles/nvapi/$nvapi_ver"
+    if [ -f "$nvapi_dir/$lib/nvapi64.dll" ]; then
+        echo -ne "Already installed! Skipping\n" >&2
+    else
+        echo -ne "Adding NVAPI to:\n    $nvapi_dir\n\n"
+        mkdir -p "$nvapi_dir/$lib"
+        cp -f "$nvlibs_dir/$lib/nvapi64.dll" "$nvapi_dir/$lib"
+        cp -f "$nvlibs_dir/$lib/nvofapi64.dll" "$nvapi_dir/$lib"
+        cp -f "$nvlibs_dir/bin/nvapi64-tests.exe" "$nvapi_dir/$lib"
+        lib='x32'
+        mkdir -p "$nvapi_dir/$lib"
+        cp -f "$nvlibs_dir/$lib/nvapi.dll" "$nvapi_dir/$lib"
+        echo -ne "To use the custom nvapi version you need to select:\n    $nvapi_ver\nAs your nvapi version in bottles settings!\n\n"
+    fi
+else
+    echo -ne "Skipping experimental version of nvapi\n\n"
+fi
+
 echo -ne "Remeber! You need to run this script every time you upgrade the nvidia-libs package\n"
 echo -ne "and probably should if you upgrade/change your runner\n"
