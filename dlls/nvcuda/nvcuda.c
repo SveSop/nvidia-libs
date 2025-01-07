@@ -527,7 +527,7 @@ static CUresult (*pcuImportExternalMemory)(void *extMem_out, const CUDA_EXTERNAL
 static CUresult (*pcuExternalMemoryGetMappedBuffer)(CUdeviceptr_v2 *devPtr, void *extMem, const void *bufferDesc);
 static CUresult (*pcuExternalMemoryGetMappedMipmappedArray)(CUmipmappedArray *mipmap, void *extMem, const void *mipmapDesc);
 static CUresult (*pcuDestroyExternalMemory)(void *extMem);
-static CUresult (*pcuImportExternalSemaphore)(void *extSem_out, const void *semHandleDesc);
+static CUresult (*pcuImportExternalSemaphore)(void *extSem_out, const CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC *semHandleDesc);
 static CUresult (*pcuSignalExternalSemaphoresAsync)(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream);
 static CUresult (*pcuSignalExternalSemaphoresAsync_ptsz)(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream);
 static CUresult (*pcuWaitExternalSemaphoresAsync)(const void *extSemArray, const void *paramsArray, unsigned int numExtSems, CUstream stream);
@@ -3920,7 +3920,7 @@ CUresult WINAPI wine_cuImportExternalMemory(void *extMem_out, const CUDA_EXTERNA
             linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
             break;
         case CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT:
-            handle = open_shared_resource(linuxHandleDesc.handle.win32.handle, linuxHandleDesc.handle.win32.name);
+            handle = get_shared_resource_kmt_handle(linuxHandleDesc.handle.win32.handle);
             linuxHandleDesc.handle.fd = get_shared_resource_fd(handle);
             linuxHandleDesc.type = CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD;
         default:
@@ -3964,7 +3964,7 @@ CUresult WINAPI wine_cuImportExternalSemaphore(void *extSem_out, const CUDA_EXTE
             linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD;
             break;
         case CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT:
-            handle = open_shared_resource(linuxHandleDesc.handle.win32.handle, linuxHandleDesc.handle.win32.name);
+            handle = get_shared_resource_kmt_handle(linuxHandleDesc.handle.win32.handle);
             linuxHandleDesc.handle.fd = get_shared_resource_fd(handle);
             linuxHandleDesc.type = CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD;
             break;

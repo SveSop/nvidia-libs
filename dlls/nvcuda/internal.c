@@ -96,72 +96,22 @@ void cuda_process_tls_callbacks(DWORD reason)
     LeaveCriticalSection( &tls_callback_section );
 }
 
-#define IOCTL_SHARED_GPU_RESOURCE_OPEN CTL_CODE(FILE_DEVICE_VIDEO, 1, METHOD_BUFFERED, FILE_WRITE_ACCESS)
 #define IOCTL_SHARED_GPU_RESOURCE_GET_UNIX_RESOURCE CTL_CODE(FILE_DEVICE_VIDEO, 3, METHOD_BUFFERED, FILE_READ_ACCESS)
+#define IOCTL_SHARED_GPU_RESOURCE_GETKMT CTL_CODE(FILE_DEVICE_VIDEO, 2, METHOD_BUFFERED, FILE_READ_ACCESS)
 
-struct shared_resource_open
+HANDLE get_shared_resource_kmt_handle(HANDLE shared_resource)
 {
-    obj_handle_t kmt_handle;
-    WCHAR name[1];
-};
-
-struct shared_resource_info
-{
-    UINT64 resource_size;
-};
-
-static inline void init_unicode_string(UNICODE_STRING *str, const WCHAR *data)
-{
-    str->Length = lstrlenW(data) * sizeof(WCHAR);
-    str->MaximumLength = str->Length + sizeof(WCHAR);
-    str->Buffer = (WCHAR *)data;
-}
-
-HANDLE open_shared_resource(HANDLE kmt_handle, LPCWSTR name)
-{
-    static const WCHAR shared_gpu_resourceW[] = {'\\','?','?','\\','S','h','a','r','e','d','G','p','u','R','e','s','o','u','r','c','e',0};
-    UNICODE_STRING shared_gpu_resource_us;
-    struct shared_resource_open *inbuff;
-    HANDLE shared_resource;
-    OBJECT_ATTRIBUTES attr;
     IO_STATUS_BLOCK iosb;
-    NTSTATUS status;
-    DWORD in_size;
+    obj_handle_t kmt_handle;
 
-    init_unicode_string(&shared_gpu_resource_us, shared_gpu_resourceW);
-
-    attr.Length = sizeof(attr);
-    attr.RootDirectory = 0;
-    attr.Attributes = 0;
-    attr.ObjectName = &shared_gpu_resource_us;
-    attr.SecurityDescriptor = NULL;
-    attr.SecurityQualityOfService = NULL;
-
-    if ((status = NtCreateFile(&shared_resource, GENERIC_READ | GENERIC_WRITE, &attr, &iosb, NULL, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_OPEN, 0, NULL, 0)))
+    if (NtDeviceIoControlFile(shared_resource, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_GETKMT,
+            NULL, 0, &kmt_handle, sizeof(kmt_handle)))
     {
-        ERR("Failed to load open a shared resource handle, status %#lx.\n", (long int)status);
+        ERR("NtDeviceIoControlFile failed for ktm object %p\n", shared_resource);
         return INVALID_HANDLE_VALUE;
     }
 
-    in_size = sizeof(*inbuff) + (name ? lstrlenW(name) * sizeof(WCHAR) : 0);
-    inbuff = calloc(1, in_size);
-    inbuff->kmt_handle = wine_server_obj_handle(kmt_handle);
-    if (name)
-        lstrcpyW(&inbuff->name[0], name);
-
-    status = NtDeviceIoControlFile(shared_resource, NULL, NULL, NULL, &iosb, IOCTL_SHARED_GPU_RESOURCE_OPEN,
-            inbuff, in_size, NULL, 0);
-
-    free(inbuff);
-
-    if (status)
-    {
-        ERR("Failed to open video resource, status %#lx.\n", (long int)status);
-        NtClose(shared_resource);
-        return INVALID_HANDLE_VALUE;
-    }
-
-    return shared_resource;
+    return wine_server_ptr_handle(kmt_handle);
 }
 
 int get_shared_resource_fd(HANDLE win32_handle)
@@ -177,9 +127,10 @@ int get_shared_resource_fd(HANDLE win32_handle)
         ERR("NtDeviceIoControlFile failed for handle %p\n", win32_handle);
         return -1;
     }
+    if(NtClose(win32_handle)) FIXME("Failed to close handle %p\n", win32_handle);
 
-    status = wine_server_handle_to_fd(wine_server_ptr_handle(unix_resource), GENERIC_READ | GENERIC_WRITE, &unix_fd, NULL);
-    NtClose(wine_server_ptr_handle(unix_resource));
+    status = wine_server_handle_to_fd(wine_server_ptr_handle(unix_resource), FILE_READ_DATA, &unix_fd, NULL);
+    if(NtClose(wine_server_ptr_handle(unix_resource))) FIXME("Failed to close resource %p\n", wine_server_ptr_handle(unix_resource));
 
     if (status != STATUS_SUCCESS || unix_fd < 0)
     {
