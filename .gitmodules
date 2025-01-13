@@ -10,3 +10,9 @@
 [submodule "nvofapi-relay"]
 	path = nvofapi-relay
 	url = https://github.com/SveSop/nvofapi-relay.git
+[submodule "nvcuda"]
+	path = nvcuda
+	url = https://github.com/SveSop/nvcuda.git
+[submodule "nvenc"]
+	path = nvenc
+	url = https://github.com/SveSop/nvenc.git

@@ -20,12 +20,26 @@ if [ -e "$NVLIBS_BUILD_DIR" ]; then
   exit 1
 fi
 
-# build nvcuda
+# Make version file
+
+meson --prefix "$NVLIBS_BUILD_DIR" \
+      --strip                      \
+      "$NVLIBS_BUILD_DIR/build"
+
+cd "$NVLIBS_BUILD_DIR/build"
+ninja
+
+cp "$NVLIBS_BUILD_DIR/build/version" "$NVLIBS_BUILD_DIR/version"
+rm -R "$NVLIBS_BUILD_DIR/build"
+
+# Build NVCUDA
+
+NVCUDA_SRC_DIR=$NVLIBS_SRC_DIR"/nvcuda"
 
 function build_arch {
-  cd "$NVLIBS_SRC_DIR"
+  cd "$NVCUDA_SRC_DIR"
 
-  meson --cross-file "$NVLIBS_SRC_DIR/build-wine$1.txt"  \
+  meson --cross-file "$NVCUDA_SRC_DIR/build-wine$1.txt"  \
         --buildtype release                              \
         --prefix "$NVLIBS_BUILD_DIR"                     \
         --libdir "x$1"                                   \
@@ -35,7 +49,29 @@ function build_arch {
   cd "$NVLIBS_BUILD_DIR/build.$1"
   ninja install
 
-  cp "$NVLIBS_BUILD_DIR/build.$1/version" "$NVLIBS_BUILD_DIR/version"
+  rm -R "$NVLIBS_BUILD_DIR/build.$1"
+}
+
+build_arch 64
+build_arch 32
+
+# Build NVENC
+
+NVENC_SRC_DIR=$NVLIBS_SRC_DIR"/nvenc"
+
+function build_arch {
+  cd "$NVENC_SRC_DIR"
+
+  meson --cross-file "$NVENC_SRC_DIR/build-wine$1.txt"  \
+        --buildtype release                             \
+        --prefix "$NVLIBS_BUILD_DIR"                    \
+        --libdir "x$1"                                  \
+        --strip                                         \
+        "$NVLIBS_BUILD_DIR/build.$1"
+
+  cd "$NVLIBS_BUILD_DIR/build.$1"
+  ninja install
+
   rm -R "$NVLIBS_BUILD_DIR/build.$1"
 }
 
