@@ -17,8 +17,8 @@ Also see notes about DXVK-NVAPI below for additional logging.
 
 Library contains:  
 nvapi (dxvk-nvapi + additions - [https://github.com/SveSop/dxvk-nvapi/tree/experimental](https://github.com/SveSop/dxvk-nvapi/tree/experimental))  
-nvcuda (wine-staging + development - [https://github.com/SveSop/nvcuda/tree/devel](https://github.com/SveSop/nvcuda/tree/devel))  
-nvcuvid/nvencodeapi (wine-staging + development - [https://github.com/SveSop/nvenc/tree/devel](https://github.com/SveSop/nvenc/tree/devel))  
+nvcuda (wine-staging + development - [https://github.com/SveSop/nvcuda](https://github.com/SveSop/nvcuda))  
+nvcuvid/nvencodeapi (wine-staging + development - [https://github.com/SveSop/nvenc](https://github.com/SveSop/nvenc))  
 nvml (wine-nvml - [https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml))  
 nvoptix (wine-nvoptix - [https://github.com/SveSop/wine-nvoptix](https://github.com/SveSop/wine-nvoptix))  
 nvofapi64_cuda - relay (nvofapi for cuda - [https://github.com/SveSop/nvofapi-relay](https://github.com/SveSop/nvofapi-relay)  
