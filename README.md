@@ -69,6 +69,11 @@ War Thunder : `DXVK_NVAPI_GPU_ARCH=GP100`
 Ghost of Tsushima : `DXVK_NVAPI_GPU_ARCH=GA100`  
 Indiana Jones and the Great Circle: (See own section below).  
 
+### Vulkan Reflex Layer
+This includes the Vulkan Reflex layer in /layer subfolder.  
+Read about usage here:  
+[https://github.com/jp7677/dxvk-nvapi#vulkan-reflex-layer](https://github.com/jp7677/dxvk-nvapi#vulkan-reflex-layer)  
+
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  

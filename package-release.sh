@@ -166,6 +166,7 @@ function prepare {
     src/nvapi_d3d.cpp             \
     src/nvapi_d3d11.cpp           \
     src/nvapi_d3d12.cpp           \
+    src/nvapi_vulkan.cpp          \
     src/nvapi_interface.cpp       \
     src/nvapi_interface_private.h \
     external/nvapi/nvapi_interface.h
@@ -200,11 +201,33 @@ prepare
 build_arch 64
 build_arch 32
 
-# Copy installscripts
+# Build Vulkan reflax layer
+cd "$NVAPI_SRC_DIR"
+rm -f "$NVAPI_SRC_DIR"/layer/{version,config}.h
+
+meson setup                            \
+  --buildtype "release"                \
+  --prefix "$NVLIBS_BUILD_DIR/layer"   \
+  --libdir ''                          \
+  --strip                              \
+  -Dabsolute_library_path=false        \
+  -Dlibrary_path_prefix=./             \
+  -Dmanifest_install_dir=.             \
+  "$NVLIBS_BUILD_DIR/build.layer"      \
+  "$NVAPI_SRC_DIR/layer"
+
+cd "$NVLIBS_BUILD_DIR/build.layer"
+ninja install
+
+cp "$NVLIBS_BUILD_DIR"/build.layer/{version,config}.h "$NVAPI_SRC_DIR/layer"
+rm -R "$NVLIBS_BUILD_DIR/build.layer"
+
+# Copy installscripts and README
 cp $NVLIBS_SRC_DIR/*.sh "$NVLIBS_BUILD_DIR/"
 rm $NVLIBS_BUILD_DIR/package-release.sh
 chmod +x $NVLIBS_BUILD_DIR/*.sh
 cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
+cp "$NVLIBS_SRC_DIR/README.md" "$NVLIBS_BUILD_DIR/README.md"
 
 # Move test
 mkdir -p "$NVLIBS_BUILD_DIR/bin" && mv "$NVLIBS_BUILD_DIR/x64/nvapi64-tests.exe" "$NVLIBS_BUILD_DIR/bin/"
