@@ -230,7 +230,7 @@ cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
 cp "$NVLIBS_SRC_DIR/README.md" "$NVLIBS_BUILD_DIR/README.md"
 
 # Move test
-mkdir -p "$NVLIBS_BUILD_DIR/bin" && mv "$NVLIBS_BUILD_DIR/x64/nvapi64-tests.exe" "$NVLIBS_BUILD_DIR/bin/"
+mkdir -p "$NVLIBS_BUILD_DIR/bin" && mv "$NVLIBS_BUILD_DIR/x64/*.exe" "$NVLIBS_BUILD_DIR/bin/"
 
 # cleanup
 cd $NVLIBS_BUILD_DIR
