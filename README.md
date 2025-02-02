@@ -125,6 +125,8 @@ script for proton (see Proton section above). This will then install `nvcuda.dll
 
 You then run the game with `DXVK_NVAPI_GPU_ARCH=AD100 __GL_13ebad=0x1 %command%` option in steam.  
 
+PS: This is for archival reference only! In case it is needed in the future.  
+
 ## DAZ Studio
 
 In case you do NOT use nvml (wine-nvml) library to emulate nvml.dll, DAZ Studio MAY  
