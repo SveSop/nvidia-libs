@@ -36,7 +36,6 @@ cp -f "$nvlibs_dir/x64/nvcuda.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvcuda
 cp -f "$nvlibs_dir/x64/nvcuvid.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvcuvid.dll"
 cp -f "$nvlibs_dir/x64/nvencodeapi64.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvencodeapi64.dll"
 cp -f "$nvlibs_dir/x64/nvoptix.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvoptix.dll"
-cp -f "$nvlibs_dir/x64/nvofapi64_cuda.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvofapi64_cuda.dll"
 cp -f "$nvlibs_dir/x64/nvapi64.dll" "$PROTON_LIBS/files/$lib/nvapi"
 cp -f "$nvlibs_dir/x64/nvofapi64.dll" "$PROTON_LIBS/files/$lib/nvapi"
 
@@ -44,7 +43,6 @@ cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32"
 ln -sf "../../../../../lib64/wine/$arch-windows/nvcuvid.dll" "nvcuvid.dll"
 ln -sf "../../../../../lib64/wine/$arch-windows/nvencodeapi64.dll" "nvencodeapi64.dll"
 ln -sf "../../../../../lib64/wine/$arch-windows/nvoptix.dll" "nvoptix.dll"
-ln -sf "../../../../../lib64/wine/$arch-windows/nvofapi64_cuda.dll" "nvofapi64_cuda.dll"
 
 echo -n "Do you want to copy NVML files to proton? (This can break games like Portal RTX!) (Y/N): "
 read -n 1 -r response

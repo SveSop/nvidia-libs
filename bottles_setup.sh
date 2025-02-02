@@ -37,7 +37,6 @@ $fun nvcuvid.dll
 $fun nvencodeapi64.dll
 $fun nvoptix.dll
 $fun nvofapi64.dll
-$fun nvofapi64_cuda.dll
 
 win='drive_c/windows/syswow64'
 lib='x32'
@@ -63,6 +62,7 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
         cp -f "$nvlibs_dir/$lib/nvapi64.dll" "$nvapi_dir/$lib"
         cp -f "$nvlibs_dir/$lib/nvofapi64.dll" "$nvapi_dir/$lib"
         cp -f "$nvlibs_dir/bin/nvapi64-tests.exe" "$nvapi_dir/$lib"
+        cp -f "$nvlibs_dir/bin/nvofapi64-tests.exe" "$nvapi_dir/$lib"
         lib='x32'
         mkdir -p "$nvapi_dir/$lib"
         cp -f "$nvlibs_dir/$lib/nvapi.dll" "$nvapi_dir/$lib"

@@ -106,20 +106,18 @@ $fun nvapi
 wine="wine64"
 lib='x64'
 unix_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
-echo '[1/7] 64 bit nvcuda :'
+echo '[1/6] 64 bit nvcuda :'
 $fun nvcuda
-echo '[2/7] 64 bit nvoptix :'
+echo '[2/6] 64 bit nvoptix :'
 $fun nvoptix
-echo '[3/7] 64 bit nvcuvid :'
+echo '[3/6] 64 bit nvcuvid :'
 $fun nvcuvid
-echo '[4/7] 64 bit nvencodeapi64 :'
+echo '[4/6] 64 bit nvencodeapi64 :'
 $fun nvencodeapi64
-echo '[5/7] 64 bit nvapi64 :'
+echo '[5/6] 64 bit nvapi64 :'
 $fun nvapi64
-echo '[6/7] 64 bit nvofapi64 :'
+echo '[6/6] 64 bit nvofapi64 :'
 $fun nvofapi64
-echo '[7/7] 64 bit nvofapi64_cuda :'
-$fun nvofapi64_cuda
 
 if [ "$fun" = removeOverride ]; then
    echo "Rebooting prefix!"
