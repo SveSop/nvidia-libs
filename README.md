@@ -21,7 +21,6 @@ nvcuda (wine-staging + development - [https://github.com/SveSop/nvcuda](https://
 nvcuvid/nvencodeapi (wine-staging + development - [https://github.com/SveSop/nvenc](https://github.com/SveSop/nvenc))  
 nvml (wine-nvml - [https://github.com/Saancreed/wine-nvml](https://github.com/Saancreed/wine-nvml))  
 nvoptix (wine-nvoptix - [https://github.com/SveSop/wine-nvoptix](https://github.com/SveSop/wine-nvoptix))  
-nvofapi64_cuda - relay (nvofapi for cuda - [https://github.com/SveSop/nvofapi-relay](https://github.com/SveSop/nvofapi-relay)  
 
 ## Build requirements:  
 - [WINE] (version >= 9.0) [https://www.winehq.org/](https://www.winehq.org/)  
@@ -119,11 +118,19 @@ package, to make sure they are used in the new prefix. The game prefixes are typ
 in `$HOME/.steam/steam/steamapps/compatdata/XXXXXXX` where XXXXXXX is the steam AppID.  
 
 ## Indiana Jones and the Great Circle
-To have FrameGeneration when using a RTX40xx series card in this game you can use the included install  
-script for proton (see Proton section above). This will then install `nvcuda.dll`,  
-`nvofapi64_cuda.dll` and a custom version of `nvofapi64.dll` in the the Proton binary tree.  
+To have FrameGeneration when using a RTX40xx series card in this game you need to use DLSS4  
+binaries. These can be found in various places around the internet.  
+The required driver for DLSS4 is 570.xx or newer and currently the bleeding-edge version of  
+`Proton - Experimental`.
 
-You then run the game with `DXVK_NVAPI_GPU_ARCH=AD100 __GL_13ebad=0x1 %command%` option in steam.  
+You must then run the game with `DXVK_NVAPI_GPU_ARCH=AD100 %command%` option in steam.  
+
+## OpticalFlow usage
+OpticalFlow for use with DLSS seems to have been discontinued with NVIDIA DLSS4.  
+
+If OpticalFlow is required for some app or program, there is a archived version that can be  
+used in the `nvofapi-workaround` branch if needed. This will however build an old version  
+of nvapi & friends, and will (for now) not be updated.  
 
 ## DAZ Studio
 
