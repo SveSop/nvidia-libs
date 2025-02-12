@@ -1,12 +1,12 @@
 # NVIDIA Libs
 
-Release: 0.8.1  
+Release: 0.8.2  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK >12.x should now mostly be supported. There can still be missing functions  
-Up to OptiX ABI 93 (SDK 8.1.0) should be supported. Additional logging: `WINEDEBUG=+nvoptix`  
+Up to OptiX ABI 105 (SDK 9.0.0) should be supported. Additional logging: `WINEDEBUG=+nvoptix`  
 
-Older drivers that does not support SDK 10 and older may also fail/crash. Report any crashes with  
+Older drivers that does not support CUDA SDK 10 and older may also fail/crash. Report any crashes with  
 logs on the issue page. However these are highly outdated drivers in general and will probably not  
 see too much attention in that regard.  
 
