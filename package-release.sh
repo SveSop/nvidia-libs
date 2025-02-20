@@ -154,15 +154,14 @@ function prepare {
     src/nvapi_interface.cpp       \
     src/nvapi_interface_private.h \
     external/nvapi/nvapi_interface.h
-
-  # remove existing version.h, because otherwise the existing one gets into the build instead of the generated one
-  if [ -e version.h ]; then
-    rm version.h
-  fi
 }
 
 function build_arch {
   cd "$NVAPI_SRC_DIR"
+
+  # remove generated files, because otherwise the existing
+  # files get into the build instead of the generated ones
+  rm -f version.h config.h
 
   meson --cross-file "$NVAPI_SRC_DIR/$crossfile$1.txt" \
         --buildtype release                            \
@@ -177,15 +176,18 @@ function build_arch {
   ninja install
 
   cp version.h "$NVAPI_SRC_DIR"
+  cp config.h "$NVAPI_SRC_DIR"
   rm -R "$NVLIBS_BUILD_DIR/build.$1"
-
 }
 
 prepare
 build_arch 64
 build_arch 32
 
-# Build Vulkan reflax layer
+# Save the DXVK-NVAPI version to nvidia libs versionfile
+cat "$NVAPI_SRC_DIR"/version.h | grep DXVK | cut -d' ' -f2- >> "$NVLIBS_BUILD_DIR"/version
+
+# Build Vulkan reflex layer
 cd "$NVAPI_SRC_DIR"
 rm -f "$NVAPI_SRC_DIR"/layer/{version,config}.h
 
@@ -203,7 +205,6 @@ meson setup                            \
 cd "$NVLIBS_BUILD_DIR/build.layer"
 ninja install
 
-cp "$NVLIBS_BUILD_DIR"/build.layer/{version,config}.h "$NVAPI_SRC_DIR/layer"
 rm -R "$NVLIBS_BUILD_DIR/build.layer"
 
 # Copy installscripts and README
