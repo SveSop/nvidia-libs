@@ -52,7 +52,7 @@ read -n 1 -r response
 echo
 if [[ "$response" =~ ^[Yy]$ ]]; then
     lib='x64'
-    nvapi_ver="dxvk-nvapi-$(<version)"
+    nvapi_ver="dxvk-nvapi-$(cat version | grep DXVK | cut -d' ' -f2- | tr -d '\"')"
     nvapi_dir="$HOME/.var/app/com.usebottles.bottles/data/bottles/nvapi/$nvapi_ver"
     if [ -f "$nvapi_dir/$lib/nvapi64.dll" ]; then
         echo -ne "Already installed! Skipping\n" >&2
