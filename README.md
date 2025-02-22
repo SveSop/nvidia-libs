@@ -73,6 +73,10 @@ This includes the Vulkan Reflex layer in /layer subfolder.
 Read about usage here:  
 [https://github.com/jp7677/dxvk-nvapi#vulkan-reflex-layer](https://github.com/jp7677/dxvk-nvapi#vulkan-reflex-layer)  
 
+### DXVK-NVAPI DLSS Settings
+Various DLSS settings has been added to dxvk-nvapi. You can read more about various settings here:  
+[https://github.com/jp7677/dxvk-nvapi/wiki/Passing-driver-settings](https://github.com/jp7677/dxvk-nvapi/wiki/Passing-driver-settings)  
+
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  
@@ -120,10 +124,8 @@ in `$HOME/.steam/steam/steamapps/compatdata/XXXXXXX` where XXXXXXX is the steam 
 ## Indiana Jones and the Great Circle
 To have FrameGeneration when using a RTX40xx series card in this game you need to use DLSS4  
 binaries. These can be found in various places around the internet.  
-The required driver for DLSS4 is 570.xx or newer and currently the bleeding-edge version of  
+The required driver for DLSS4 is 570.xx or newer and probably the bleeding-edge version of  
 `Proton - Experimental`.
-
-You must then run the game with `DXVK_NVAPI_GPU_ARCH=AD100 %command%` option in steam.  
 
 ## OpticalFlow usage
 OpticalFlow for use with DLSS seems to have been discontinued with NVIDIA DLSS4.  
