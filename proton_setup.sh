@@ -44,17 +44,32 @@ ln -sf "../../../../../lib64/wine/$arch-windows/nvcuvid.dll" "nvcuvid.dll"
 ln -sf "../../../../../lib64/wine/$arch-windows/nvencodeapi64.dll" "nvencodeapi64.dll"
 ln -sf "../../../../../lib64/wine/$arch-windows/nvoptix.dll" "nvoptix.dll"
 
-echo -n "Do you want to copy NVML files to proton? (This can break games like Portal RTX!) (Y/N): "
+echo -n "Do you want to install 64-bit NVML files to proton? (This can break games like Portal RTX!) (Y/N): "
 read -n 1 -r response
 echo
 if [[ "$response" =~ ^[Yy]$ ]]; then
-    echo "Copying NVML files..."
+    echo -ne "Copying 64-bit NVML files..."
     cp -f "$nvlibs_dir/x64/wine/$arch-unix/nvml.so" "$PROTON_LIBS/files/$lib/$arch-unix"
     cp -f "$nvlibs_dir/x64/wine/$arch-windows/nvml.dll" "$PROTON_LIBS/files/$lib/$arch-windows"
     ln -sf "../../../../../lib64/wine/$arch-windows/nvml.dll" "nvml.dll"
-    echo "NVML Copied successfully"
+    echo -ne "NVML Copied successfully\n"
+    echo -ne "Do you want to install 32-bit NVML libraries? (Y/N): "
+    read -n 1 -r response
+    echo
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        echo -ne "Copying 32-bit NVML files..."
+        arch='i386'
+        lib='lib/wine'
+        cd "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64"
+        cp -f "$nvlibs_dir/x32/wine/$arch-unix/nvml.so" "$PROTON_LIBS/files/$lib/$arch-unix"
+        cp -f "$nvlibs_dir/x32/wine/$arch-windows/nvml.dll" "$PROTON_LIBS/files/$lib/$arch-windows"
+        ln -sf "../../../../../lib/wine/$arch-windows/nvml.dll" "nvml.dll"
+        echo -ne "NVML Copied successfully\n"
+    else
+        echo -ne "Skipping 32-bit NVML files\n"
+    fi
 else
-    echo "Skipping NVML files"
+    echo -ne "Skipping NVML files\n"
 fi
 
 cd "$nvlibs_dir"

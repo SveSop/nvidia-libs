@@ -2,10 +2,11 @@
 
 nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
 arch='x86_64'
+bits='x64'
 lib='lib64/wine'
 
-if [ ! -f "$nvlibs_dir/x64/wine/$arch-unix/nvml.so" ]; then
-    echo "Files not found in $nvlibs_dir/x64/wine/$arch-unix" >&2
+if [ ! -f "$nvlibs_dir/$bits/wine/$arch-unix/nvml.so" ]; then
+    echo "Files not found in $nvlibs_dir/$bits/wine/$arch-unix" >&2
     exit 1
 fi
 
@@ -23,18 +24,30 @@ if [ ! -f "$WINE_BIN/$lib/$arch-windows/dxgi.dll" ]; then
 fi
 
 function win_install {
-    cp -f "$nvlibs_dir/x64/wine/$arch-windows/$1" "$WINE_BIN/$lib/$arch-windows/"
+    cp -f "$nvlibs_dir/$bits/wine/$arch-windows/$1" "$WINE_BIN/$lib/$arch-windows/"
 }
 
 function install {
-    cp -f "$nvlibs_dir/x64/wine/$arch-unix/$1" "$WINE_BIN/$lib/$arch-unix/"
+    cp -f "$nvlibs_dir/$bits/wine/$arch-unix/$1" "$WINE_BIN/$lib/$arch-unix/"
 }
 
-fun=win_install
-$fun nvml.dll
+win_install nvml.dll
+install nvml.so
 
-fun=install
-$fun nvml.so
+echo -ne "Do you want to install 32-bit NVML libraries? (Y/N): "
+read -n 1 -r response
+echo
+if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo -ne "Copying 32-bit files..."
+    arch='i386'
+    bits='x32'
+    lib='lib/wine'
+    win_install nvml.dll
+    install nvml.so
+    echo -ne "32-bit NVML copied successfully\n"
+else
+    echo -ne "Skipping 32-bit NVML libraries\n"
+fi
 
 echo -ne "All done - NVML copied to $WINE_BIN\n"
 echo -ne "You need to run wineboot -u with a wineprefix to use nvml!\n"

@@ -66,7 +66,6 @@ Known games that may need override:
 Monster Hunter World : `DXVK_NVAPI_GPU_ARCH=GP100`  
 War Thunder : `DXVK_NVAPI_GPU_ARCH=GP100`  
 Ghost of Tsushima : `DXVK_NVAPI_GPU_ARCH=GA100`  
-Indiana Jones and the Great Circle: (See own section below).  
 
 ### Vulkan Reflex Layer
 This includes the Vulkan Reflex layer in /layer subfolder.  
@@ -80,7 +79,7 @@ Various DLSS settings has been added to dxvk-nvapi. You can read more about vari
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  
-running the included `nvml_setup.sh` script. NVML is only available as 64-bit  
+running the included `nvml_setup.sh` script.  
 See the Readme_nvml.txt file.  
 
 ### Tests  
@@ -99,9 +98,13 @@ Run `./bottles-install.sh` for a list of your available bottles, and use it like
 You will want to run the script ever time you upgrade `nvidia-libs` binaries, and possibly  
 if you change/update your runner. Eg. switching from Caffe-9.7 to Caffe-9.8.  
 
+## 32-Bit
+The 32-bit versions of `nvcuda.dll`, `nvencodeapi.dll`, `nvcuvid.dll` and `nvml.dll` all requires  
+that the 32-bit driver libraries are installed. Depending on distro these can have separate  
+packages that needs to be installed with the driver.  
+
 ## Proton  
-You can drop-in the libraries in Proton8 - Experimental or GE-Proton-8 or newer like this:
-  
+You can drop-in the libraries in Proton8 - Experimental or GE-Proton-8 or newer like this:  
 `PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-8.27-GE' ./proton_setup.sh`  
 
 This will replace or add the libs to Proton for use with games.  
@@ -120,12 +123,6 @@ Some additional tweaks may be required depending on game used and version of Pro
 It is HIGHLY RECOMMENDED that you re-create the game-prefix after installing the nvidia-libs  
 package, to make sure they are used in the new prefix. The game prefixes are typically located  
 in `$HOME/.steam/steam/steamapps/compatdata/XXXXXXX` where XXXXXXX is the steam AppID.  
-
-## Indiana Jones and the Great Circle
-To have FrameGeneration when using a RTX40xx series card in this game you need to use DLSS4  
-binaries. These can be found in various places around the internet.  
-The required driver for DLSS4 is 570.xx or newer and probably the bleeding-edge version of  
-`Proton - Experimental`.
 
 ## OpticalFlow usage
 OpticalFlow for use with DLSS seems to have been discontinued with NVIDIA DLSS4.  

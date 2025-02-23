@@ -129,6 +129,7 @@ function build_arch {
 }
 
 build_arch 64
+build_arch 32
 
 # Build dxvk-nvapi
 
