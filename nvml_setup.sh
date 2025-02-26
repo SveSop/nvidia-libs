@@ -46,7 +46,7 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     echo -ne "Copying 32-bit files..."
     arch='i386'
     lib="lib/wine"
-    if ! [[ -d "$WINE_BIN/$lib/wine/$arch-windows" ]]; then
+    if ! [[ -d "$WINE_BIN/$lib/$arch-windows" ]]; then
         echo -ne "Cant find 32-bit libraries! Exiting\n"
         exit 1
     fi
