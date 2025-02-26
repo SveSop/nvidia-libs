@@ -37,21 +37,44 @@ else
     fi
 fi
 
-unix_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
+# Since wine < 10.2 will cause 'wine' to resolve 32-bit 'system32' as 'syswow64', do
+# some checking. This safeguard is when wine < 10.1 is installed systemwide, but the
+# user is using a custom version of wine that is >= 10.2. It will compare both binaries
+# and that they are in the same 'bin' folder. If not it is then assuming wine >=10.2
+wine_path=$(command -v wine 2>/dev/null)
+wine64_path=$(command -v wine64 2>/dev/null)
+if [[ -n "$wine64_path" && "$(dirname "$wine_path")" == "$(dirname "$wine64_path")" ]]; then
+    wine=wine64
+else
+    wine=wine
+fi
 
-if [ -z "$unix_sys_path" ]; then
+# $PATH is the way for user to control where wine is located (including custom Wine versions).
+# Pure 64-bit Wine (non Wow64) requries skipping 32-bit steps.
+win64_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
+win64_sys_path="${win64_sys_path/$'\r'/}"
+win32_sys_path=$(wine winepath -u 'C:\windows\syswow64' 2> /dev/null)
+win32_sys_path="${win32_sys_path/$'\r'/}"
+
+# Check if we are using wow64 mode
+wow64=false
+if file $win32_sys_path/ntdll.dll | grep -q 'PE32'; then
+    wow64=true
+fi
+
+if [ -z "$win32_sys_path" ] && [ -z "$win64_sys_path" ]; then
   echo 'Failed to resolve C:\windows\system32.' >&2
   exit 1
 fi
 
 function removeOverride {
     echo "    Removing override... "
-    $wine reg delete 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /f > /dev/null 2>&1
+    wine reg delete 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /f > /dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo "    Override does not exist for $1, trying next..."
         exit=2
     fi
-    local dll="$unix_sys_path/$1.dll"
+    local dll="$sys_path/$1.dll"
     echo "    Removing symlink... "
     if [ -h "$dll" ]; then
         out=$(rm "$dll" 2>&1)
@@ -67,13 +90,13 @@ function removeOverride {
 
 function createOverride {
     echo "    Creating DLL override... "
-    $wine reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /d native /f >/dev/null 2>&1
+    wine reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v "$1" /d native /f >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo -e "    Failed to create override"
         exit 1
     fi
     echo "    Creating symlink to $1.dll... "
-    ln -sf "$nvlibs_dir/$lib/$1.dll" "$unix_sys_path/$1.dll"
+    ln -sf "$nvlibs_dir/$lib/$1.dll" "$sys_path/$1.dll"
     if [ $? -ne 0 ]; then
         echo -e "    Failed to create override"
         exit 1
@@ -94,18 +117,22 @@ install)
     ;;
 esac
 
-echo '[1/4] nvcuda :'
-$fun nvcuda
-echo '[2/4] nvcuvid :'
-$fun nvcuvid
-echo '[3/4] nvencodeapi :'
-$fun nvencodeapi
-echo '[4/4] nvapi :'
-$fun nvapi
+if $wow64; then
+    sys_path="$win32_sys_path"
 
-wine="wine64"
+    echo '[1/4] nvcuda :'
+    $fun nvcuda
+    echo '[2/4] nvcuvid :'
+    $fun nvcuvid
+    echo '[3/4] nvencodeapi :'
+    $fun nvencodeapi
+    echo '[4/4] nvapi :'
+    $fun nvapi
+fi
+
 lib='x64'
-unix_sys_path=$($wine winepath -u 'C:\windows\system32' 2> /dev/null)
+sys_path="$win64_sys_path"
+
 echo '[1/6] 64 bit nvcuda :'
 $fun nvcuda
 echo '[2/6] 64 bit nvoptix :'
