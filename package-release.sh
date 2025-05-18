@@ -55,6 +55,23 @@ function build_arch {
 build_arch 64
 build_arch 32
 
+# Build cuda tests executable
+
+export WINEARCH="win64"
+
+cd "$NVCUDA_SRC_DIR"
+meson  --cross-file "$NVCUDA_SRC_DIR/tests/build-win64.txt" \
+       --buildtype release                                  \
+       --prefix "$NVLIBS_BUILD_DIR"                         \
+       --libdir bin                                         \
+       --strip                                              \
+       "$NVLIBS_BUILD_DIR/build.tests"                      \
+
+cd "$NVLIBS_BUILD_DIR/build.tests"
+ninja install
+
+rm -R "$NVLIBS_BUILD_DIR/build.tests"
+
 # Build NVENC
 
 NVENC_SRC_DIR=$NVLIBS_SRC_DIR"/nvenc"

@@ -85,6 +85,8 @@ See the Readme_nvml.txt file.
 ### Tests  
 You can run tests of your adapter and functions by running the test case file:  
 `WINEPREFIX=/your/wine/prefix wine bin/nvapi64-tests.exe`  
+and you can run some small CUDA tests to verify your CUDA adapter like this:  
+`WINEPREFIX=/your/wine/prefix wine bin/cudatest.exe`  
 
 PS. You must install said libraryfile in your WINEPREFIX (see above)  
 
