@@ -1,9 +1,9 @@
 # NVIDIA Libs
 
-Release: 0.8.3  
+Release: 0.8.4  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
-CUDA SDK >12.x should now mostly be supported. There can still be missing functions  
+CUDA SDK up to 12.9 should now mostly be supported. There can still be missing functions  
 Up to OptiX ABI 105 (SDK 9.0.0) should be supported. Additional logging: `WINEDEBUG=+nvoptix`  
 
 Older drivers that does not support CUDA SDK 10 and older may also fail/crash. Report any crashes with  
@@ -61,6 +61,7 @@ the detected architecture, you can override detected architecture like this:
 `TU100` (Turing)  
 `GA100` (Ampere)  
 `AD100` (Ada)  
+`GB200` (Blackwell)  
 
 Known games that may need override:  
 Monster Hunter World : `DXVK_NVAPI_GPU_ARCH=GP100`  
