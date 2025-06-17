@@ -37,7 +37,7 @@ jobs:
       uses: Joshua-Ashton/gcc-problem-matcher@v3
 
     - name: Build
-      uses: Joshua-Ashton/arch-mingw-github-action@v8
+      uses: SveSop/ubuntu-mingw-github-action@v1
       with:
         command: |
           ./package-release.sh "${{ env.VERSION }}" build
