@@ -1,7 +1,7 @@
 #!/bin/bash
 
 nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
-lib='x32'
+lib='x64'
 
 if [ ! -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
     echo "Files not found in $nvlibs_dir/$lib" >&2
@@ -137,15 +137,18 @@ install)
 esac
 
 if [ $win32 = "true" ]; then
+    lib='x32'
     sys_path="$win32_sys_path"
 
-    echo '[1/4] nvcuda :'
-    $fun nvcuda
-    echo '[2/4] nvcuvid :'
-    $fun nvcuvid
-    echo '[3/4] nvencodeapi :'
-    $fun nvencodeapi
-    echo '[4/4] nvapi :'
+    if [ -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
+        echo '[1/4] 32 bit nvcuda :'
+        $fun nvcuda
+        echo '[2/4] 32 bit nvcuvid :'
+        $fun nvcuvid
+        echo '[3/4] 32 bit nvencodeapi :'
+        $fun nvencodeapi
+    fi
+    echo '[4/4] 32 bit nvapi :'
     $fun nvapi
 fi
 

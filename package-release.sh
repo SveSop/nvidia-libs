@@ -5,7 +5,7 @@ set -e
 shopt -s extglob
 
 if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "Usage: $0 release destdir"
+  echo "Usage: $0 release destdir [--no32]"
   exit 1
 fi
 
@@ -19,6 +19,22 @@ if [ -e "$NVLIBS_BUILD_DIR" ]; then
   echo "Build directory $NVLIBS_BUILD_DIR already exists"
   exit 1
 fi
+
+shift 2
+
+opt_no_32=0
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  "--no32")
+    opt_no_32=1
+    ;;
+  *)
+    echo "Unrecognized option: $1" >&2
+    exit 1
+  esac
+  shift
+done
 
 # Make version file
 
@@ -53,7 +69,9 @@ function build_arch {
 }
 
 build_arch 64
-build_arch 32
+if [ $opt_no_32 -eq 0 ]; then
+  build_arch 32
+fi
 
 # Build cuda tests executable
 
@@ -93,7 +111,9 @@ function build_arch {
 }
 
 build_arch 64
-build_arch 32
+if [ $opt_no_32 -eq 0 ]; then
+  build_arch 32
+fi
 
 # Build wine-nvoptix
 
@@ -146,7 +166,9 @@ function build_arch {
 }
 
 build_arch 64
-build_arch 32
+if [ $opt_no_32 -eq 0 ]; then
+  build_arch 32
+fi
 
 # Build dxvk-nvapi
 

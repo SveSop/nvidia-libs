@@ -38,12 +38,13 @@ $fun nvencodeapi64.dll
 $fun nvoptix.dll
 $fun nvofapi64.dll
 
-win='drive_c/windows/syswow64'
 lib='x32'
-
-$fun nvcuda.dll
-$fun nvcuvid.dll
-$fun nvencodeapi.dll
+if [ -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
+    win='drive_c/windows/syswow64'
+    $fun nvcuda.dll
+    $fun nvcuvid.dll
+    $fun nvencodeapi.dll
+fi
 
 echo -ne "All done - NVIDIA libraries copied to $BOTTLE\n"
 
