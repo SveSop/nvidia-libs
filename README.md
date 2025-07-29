@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.8.4  
+Release: 0.8.5  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK up to 12.9 should now mostly be supported. There can still be missing functions  
