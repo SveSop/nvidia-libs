@@ -153,6 +153,13 @@ on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit and
 For instance to get the NVIDIA SuperSonic Sled demo to run on Ubuntu you can load wine  
 with using `LD_LIBRARY_PATH=/lib/i386-linux-gnu:$LD_LIBRARY_PATH`  
 
+In cases where virtual or emulated hardware is used for nvcuda, wine may have issues getting  
+the correct PCI ID from wine to obtain LUID from the cuDeviceGetLuid function. In those cases  
+you can use a env variable to override this and generate a fake LUID like this:  
+`CUDA_FAKE_LUID=1`  
+Keep in mind that this should ONLY be used in the cases where the call to cuDeviceGetLuid  
+fails, as this can introduce issues with apps using LUID from the CUDA adapter.  
+
 ## Info  
 
 Loads of reference info here:  
