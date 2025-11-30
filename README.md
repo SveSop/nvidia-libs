@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 0.8.5  
+Release: 0.8.6  
 Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
 
 CUDA SDK up to 12.9 should now mostly be supported. There can still be missing functions  
@@ -159,6 +159,10 @@ you can use a env variable to override this and generate a fake LUID like this:
 `CUDA_FAKE_LUID=1`  
 Keep in mind that this should ONLY be used in the cases where the call to cuDeviceGetLuid  
 fails, as this can introduce issues with apps using LUID from the CUDA adapter.  
+
+SDK 13+ needs to use the file `nvcudart_hybrid64.dll`. This is a file included in the  
+windows version of the NVIDIA driver, and must be extracted from the driver archive. I cannot  
+provide the binary here.  
 
 ## Info  
 
