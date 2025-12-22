@@ -1,9 +1,18 @@
 # NVIDIA Libs
 
-Release: 0.8.6  
-Recommended nVidia proprietary driver branch 550+ for best compatibility with OptiX and CUDA.  
+Release: 0.9.0  
+Recommended nVidia proprietary driver branch 580+ for best compatibility with OptiX and CUDA.  
 
-CUDA SDK up to 12.9 should now mostly be supported. There can still be missing functions  
+## Important info:
+This will be the last release which includes 32bit library support. From release v1.0.0 and onward  
+the only library included will be 32bit nvapi.dll. 32bit versions of nvcuda, nvcuvid, nvencodeapi  
+and nvml will all be removed and not built, and the installscripts will be updated for this.  
+
+This release will be branched and saved for backward compatibility, but will not receive further  
+updates. (No reasonable 32bit game/app has been made in years anyway).  
+
+## Support:
+CUDA SDK up to 13.0 should now mostly be supported. There can still be missing functions  
 Up to OptiX ABI 105 (SDK 9.0.0) should be supported. Additional logging: `WINEDEBUG=+nvoptix`  
 
 Older drivers that does not support CUDA SDK 10 and older may also fail/crash. Report any crashes with  
@@ -107,10 +116,11 @@ if you change/update your runner. Eg. switching from Caffe-9.7 to Caffe-9.8.
 The 32-bit versions of `nvcuda.dll`, `nvencodeapi.dll`, `nvcuvid.dll` and `nvml.dll` all requires  
 that the 32-bit driver libraries are installed. Depending on distro these can have separate  
 packages that needs to be installed with the driver.  
+Be aware that NVIDIA 50 series cards does NOT support 32bit CUDA.  
 
 ## Proton  
-You can drop-in the libraries in Proton8 - Experimental or GE-Proton-8 or newer like this:  
-`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-8.27-GE' ./proton_setup.sh`  
+You can drop-in the libraries in Proton10 - Experimental or GE-Proton-10 or newer like this:  
+`PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-10.25-GE' ./proton_setup.sh`  
 
 This will replace or add the libs to Proton for use with games.  
 The installscript is no longer compatible with older Proton-6.3 or Proton-GE-6/7 versions.  
