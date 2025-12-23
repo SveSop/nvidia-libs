@@ -39,25 +39,5 @@ function install {
 win_install nvml.dll
 install nvml.so
 
-echo -ne "Do you want to install 32-bit NVML libraries? (Y/N): "
-read -n 1 -r response
-echo
-if [[ "$response" =~ ^[Yy]$ ]]; then
-    echo -ne "Copying 32-bit files..."
-    arch='i386'
-    lib="lib/wine"
-    if ! [[ -d "$WINE_BIN/$lib/$arch-windows" ]]; then
-        echo -ne "Cant find 32-bit libraries! Exiting\n"
-        exit 1
-    fi
-    bits='x32'
-    lib='lib/wine'
-    win_install nvml.dll
-    install nvml.so
-    echo -ne "32-bit NVML copied successfully\n"
-else
-    echo -ne "Skipping 32-bit NVML libraries\n"
-fi
-
 echo -ne "All done - NVML copied to $WINE_BIN\n"
 echo -ne "You need to run wineboot -u with a wineprefix to use nvml!\n"

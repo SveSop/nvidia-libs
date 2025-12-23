@@ -72,20 +72,6 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     cp -f "$nvlibs_dir/x64/wine/$arch-windows/nvml.dll" "$PROTON_LIBS/files/$lib/$arch-windows"
     ln -sfr "$PROTON_LIBS/files/$lib/$arch-windows/nvml.dll" "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32/nvml.dll"
     echo -ne "NVML Copied successfully\n"
-    echo -ne "Do you want to install 32-bit NVML libraries? (Y/N): "
-    read -n 1 -r response
-    echo
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-        echo -ne "Copying 32-bit NVML files..."
-        arch='i386'
-        lib='lib/wine'
-        cp -f "$nvlibs_dir/x32/wine/$arch-unix/nvml.so" "$PROTON_LIBS/files/$lib/$arch-unix"
-        cp -f "$nvlibs_dir/x32/wine/$arch-windows/nvml.dll" "$PROTON_LIBS/files/$lib/$arch-windows"
-        ln -sfr "$PROTON_LIBS/files/$lib/$arch-windows/nvml.dll" "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64/nvml.dll"
-        echo -ne "NVML Copied successfully\n"
-    else
-        echo -ne "Skipping 32-bit NVML files\n"
-    fi
 else
     echo -ne "Skipping NVML files\n"
 fi

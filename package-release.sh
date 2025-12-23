@@ -166,9 +166,6 @@ function build_arch {
 }
 
 build_arch 64
-if [ $opt_no_32 -eq 0 ]; then
-  build_arch 32
-fi
 
 # Build dxvk-nvapi
 
