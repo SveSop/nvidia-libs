@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: x.x.x  
+Release: 1.0.0  
 Recommended nVidia proprietary driver branch 580+ for best compatibility with OptiX and CUDA.  
 
 ## Important info:
@@ -11,7 +11,7 @@ There is also a 32bit released package for nvcuda v0.3 with installscripts under
 [https://github.com/SveSop/nvcuda/releases](https://github.com/SveSop/nvcuda/releases)  
 
 ## Support:
-CUDA SDK up to 13.0 should now mostly be supported. There can still be missing functions  
+CUDA SDK up to 13.1 should now mostly be supported. There can still be missing functions  
 Up to OptiX ABI 105 (SDK 9.0.0) should be supported. Additional logging: `WINEDEBUG=+nvoptix`  
 
 Older drivers that does not support CUDA SDK 10 and older may also fail/crash. Report any crashes with  
@@ -39,9 +39,9 @@ nvoptix (wine-nvoptix - [https://github.com/SveSop/wine-nvoptix](https://github.
 
 ## How to build  
 
-./package-release.sh name destdir [--no32]  
-The `--no32` build option only build 64-bit version of nvcuda/nvenc/nvml, but still  
-maintain the 32-bit version of nvapi.dll.  
+./package-release.sh name destdir  
+eg. `./package-release.sh latest /home/yourname/`  
+Will create a folder containing the libraries in `/home/yourname/nvidia-libs-latest`
 
 ## How to install  
 
@@ -91,7 +91,7 @@ Various DLSS settings has been added to dxvk-nvapi. You can read more about vari
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  
 running the included `nvml_setup.sh` script, or by using the `WINEDLLPATH` env variable like this:  
-`export WINEDLLPATH=/home/yourname/nvidia-libs-vx.x.x/x64/wine`  
+`export WINEDLLPATH=/home/yourname/nvidia-libs-v1.0.0/x64/wine`  
 Also see the Readme_nvml.txt file.  
 
 ### Tests  
