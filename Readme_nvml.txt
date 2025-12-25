@@ -9,7 +9,7 @@ as using system wine install requires root access and file placements MAY
 differ from various distros.
 
 You can use WINEDLLPATH env variable with wine.
-eg. WINEDLLPATH='/home/my-user/nvidia-libs/x64/wine'
+eg. WINEDLLPATH='/home/my-user/nvidia-libs-vx.x.x/x64/wine'
 
 When using >= wine-10, this will make the PE version (nvml.dll) install into
 the WINEPREFIX. With older versions of wine, this needs manual copy/symlink

@@ -38,14 +38,6 @@ $fun nvencodeapi64.dll
 $fun nvoptix.dll
 $fun nvofapi64.dll
 
-lib='x32'
-if [ -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
-    win='drive_c/windows/syswow64'
-    $fun nvcuda.dll
-    $fun nvcuvid.dll
-    $fun nvencodeapi.dll
-fi
-
 echo -ne "All done - NVIDIA libraries copied to $BOTTLE\n"
 
 echo -ne "Do you want to add the experimental version of nvapi to Bottles? (Y/N):\n"

@@ -4,7 +4,7 @@ nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
 lib='lib/wine'
 arch='i386'
 
-if [ ! -f "$nvlibs_dir/x32/nvcuda.dll" ]; then
+if [ ! -f "$nvlibs_dir/x64/nvcuda.dll" ]; then
     echo "Files not found in $nvlibs_dir" >&2
     exit 1
 fi
@@ -28,11 +28,6 @@ if [ -d "$PROTON_LIBS/files/$lib/nvapi/$arch-windows" ]; then
 else
     cp -f "$nvlibs_dir/x32/nvapi.dll" "$PROTON_LIBS/files/$lib/nvapi"
 fi
-cp -f "$nvlibs_dir/x32/nvcuda.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvcuda.dll"
-cp -f "$nvlibs_dir/x32/nvcuvid.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvcuvid.dll"
-cp -f "$nvlibs_dir/x32/nvencodeapi.dll" "$PROTON_LIBS/files/$lib/$arch-windows/nvencodeapi.dll"
-ln -sfr "$PROTON_LIBS/files/$lib/$arch-windows/nvcuvid.dll" "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64/nvcuvid.dll"
-ln -sfr "$PROTON_LIBS/files/$lib/$arch-windows/nvencodeapi.dll" "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/syswow64/nvencodeapi.dll"
 
 arch='x86_64'
 

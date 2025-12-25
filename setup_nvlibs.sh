@@ -140,16 +140,10 @@ if [ $win32 = "true" ]; then
     lib='x32'
     sys_path="$win32_sys_path"
 
-    if [ -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
-        echo '[1/4] 32 bit nvcuda :'
-        $fun nvcuda
-        echo '[2/4] 32 bit nvcuvid :'
-        $fun nvcuvid
-        echo '[3/4] 32 bit nvencodeapi :'
-        $fun nvencodeapi
+    if [ -f "$nvlibs_dir/$lib/nvapi.dll" ]; then
+        echo '[1/1] 32 bit nvapi :'
+        $fun nvapi
     fi
-    echo '[4/4] 32 bit nvapi :'
-    $fun nvapi
 fi
 
 if [ $win64 = "true" ]; then
@@ -177,5 +171,6 @@ if [ "$fun" = removeOverride ]; then
 else
    echo "Symlinks created in $WINEPREFIX. Do NOT remove this source folder!"
    echo "OBS! NVML is NOT enabled by default. See Readme_nvml.txt for info or run nvml_setup.sh"
+   echo "You can also use: WINEDLLPATH='$nvlibs_dir/x64/wine' env variable to use NVML"
    echo "You need to REMOVE old overrides if older version of nvml have been used in $WINEPREFIX"
 fi
