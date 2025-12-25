@@ -1,15 +1,14 @@
 # NVIDIA Libs
 
-Release: 0.9.0  
+Release: x.x.x  
 Recommended nVidia proprietary driver branch 580+ for best compatibility with OptiX and CUDA.  
 
 ## Important info:
-This will be the last release which includes 32bit library support. From release v1.0.0 and onward  
-the only library included will be 32bit nvapi.dll. 32bit versions of nvcuda, nvcuvid, nvencodeapi  
-and nvml will all be removed and not built, and the installscripts will be updated for this.  
-
-This release will be branched and saved for backward compatibility, but will not receive further  
-updates. (No reasonable 32bit game/app has been made in years anyway).  
+This provides 32bit library of dxvk-nvapi, but ALL other libraries are now 64bit.  
+If 32bit nvcuda is needed, a separate package can be obtained from this branch:  
+[https://github.com/SveSop/nvcuda/tree/32bit_only](https://github.com/SveSop/nvcuda/tree/32bit_only)  
+There is also a 32bit released package for nvcuda v0.3 with installscripts under releases:
+[https://github.com/SveSop/nvcuda/releases](https://github.com/SveSop/nvcuda/releases)  
 
 ## Support:
 CUDA SDK up to 13.0 should now mostly be supported. There can still be missing functions  
@@ -91,8 +90,9 @@ Various DLSS settings has been added to dxvk-nvapi. You can read more about vari
 ### WINE-NVML  
 In order to use DXVK-NVAPI (NvAPI) with some extra GPU information (temps and the likes)  
 you need to copy the NVML binaries to your wine binaries folder. You can do this by  
-running the included `nvml_setup.sh` script.  
-See the Readme_nvml.txt file.  
+running the included `nvml_setup.sh` script, or by using the `WINEDLLPATH` env variable like this:  
+`export WINEDLLPATH=/home/yourname/nvidia-libs-vx.x.x/x64/wine`  
+Also see the Readme_nvml.txt file.  
 
 ### Tests  
 You can run tests of your adapter and functions by running the test case file:  
@@ -100,7 +100,7 @@ You can run tests of your adapter and functions by running the test case file:
 and you can run some small CUDA tests to verify your CUDA adapter like this:  
 `WINEPREFIX=/your/wine/prefix wine bin/cudatest.exe`  
 
-PS. You must install said libraryfile in your WINEPREFIX (see above)  
+PS. You must install said libraryfiles in your WINEPREFIX (see above)  
 
 ### Bottles
 Added a script that will install the libraries in a bottle.  
@@ -111,12 +111,6 @@ Run `./bottles-install.sh` for a list of your available bottles, and use it like
 
 You will want to run the script ever time you upgrade `nvidia-libs` binaries, and possibly  
 if you change/update your runner. Eg. switching from Caffe-9.7 to Caffe-9.8.  
-
-## 32-Bit
-The 32-bit versions of `nvcuda.dll`, `nvencodeapi.dll`, `nvcuvid.dll` and `nvml.dll` all requires  
-that the 32-bit driver libraries are installed. Depending on distro these can have separate  
-packages that needs to be installed with the driver.  
-Be aware that NVIDIA 50 series cards does NOT support 32bit CUDA.  
 
 ## Proton  
 You can drop-in the libraries in Proton10 - Experimental or GE-Proton-10 or newer like this:  
@@ -151,14 +145,12 @@ of nvapi & friends, and will (for now) not be updated.
 In case you do NOT use nvml (wine-nvml) library to emulate nvml.dll, DAZ Studio MAY  
 show 2 "adapters" for rendering. Choose the one that show your GPU name, and NOT the other.  
 
-NVML can be installed by using the `setup_nvml.sh` script included in the package and for  
-DAZ Studio it is recommended.  
+See above for installing or using the NVML library.  
  
 ## Quirks
 Some older SDK samples may require specifying LD_LIBRARY_PATH to the system folder  
 where libcuda.so.1 and other libnvidia-xxx.so libraries reside. This varies depending  
-on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit and  
-`/lib/i386-linux-gnu/` for 32-bit.  
+on distro. Ubuntu typicall uses `/lib/x86-64-linux-gnu/` for 64-bit.  
 
 In cases where virtual or emulated hardware is used for nvcuda, wine may have issues getting  
 the correct PCI ID from wine to obtain LUID from the cuDeviceGetLuid function. In those cases  

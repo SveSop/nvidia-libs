@@ -5,7 +5,7 @@ set -e
 shopt -s extglob
 
 if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "Usage: $0 release destdir [--no32]"
+  echo "Usage: $0 release destdir"
   exit 1
 fi
 
@@ -21,20 +21,6 @@ if [ -e "$NVLIBS_BUILD_DIR" ]; then
 fi
 
 shift 2
-
-opt_no_32=0
-
-while [ $# -gt 0 ]; do
-  case "$1" in
-  "--no32")
-    opt_no_32=1
-    ;;
-  *)
-    echo "Unrecognized option: $1" >&2
-    exit 1
-  esac
-  shift
-done
 
 # Make version file
 
@@ -52,38 +38,33 @@ rm -R "$NVLIBS_BUILD_DIR/build"
 
 NVCUDA_SRC_DIR=$NVLIBS_SRC_DIR"/nvcuda"
 
-function build_arch {
-  cd "$NVCUDA_SRC_DIR"
+cd "$NVCUDA_SRC_DIR"
 
-  meson --cross-file "$NVCUDA_SRC_DIR/build-wine$1.txt"  \
-        --buildtype release                              \
-        --prefix "$NVLIBS_BUILD_DIR"                     \
-        --libdir "x$1"                                   \
-	--strip                                          \
-        "$NVLIBS_BUILD_DIR/build.$1"
+meson setup                                          \
+    --cross-file "$NVCUDA_SRC_DIR/build-wine64.txt"  \
+    --buildtype release                              \
+    --prefix "$NVLIBS_BUILD_DIR"                     \
+    --libdir "x64"                                   \
+    --strip                                          \
+    "$NVLIBS_BUILD_DIR/build.64"
 
-  cd "$NVLIBS_BUILD_DIR/build.$1"
-  ninja install
+cd "$NVLIBS_BUILD_DIR/build.64"
+ninja install
 
-  rm -R "$NVLIBS_BUILD_DIR/build.$1"
-}
-
-build_arch 64
-if [ $opt_no_32 -eq 0 ]; then
-  build_arch 32
-fi
+rm -R "$NVLIBS_BUILD_DIR/build.64"
 
 # Build cuda tests executable
 
 export WINEARCH="win64"
 
 cd "$NVCUDA_SRC_DIR"
-meson  --cross-file "$NVCUDA_SRC_DIR/tests/build-win64.txt" \
-       --buildtype release                                  \
-       --prefix "$NVLIBS_BUILD_DIR"                         \
-       --libdir bin                                         \
-       --strip                                              \
-       "$NVLIBS_BUILD_DIR/build.tests"                      \
+meson setup                                              \
+    --cross-file "$NVCUDA_SRC_DIR/tests/build-win64.txt" \
+    --buildtype release                                  \
+    --prefix "$NVLIBS_BUILD_DIR"                         \
+    --libdir bin                                         \
+    --strip                                              \
+    "$NVLIBS_BUILD_DIR/build.tests"                      \
 
 cd "$NVLIBS_BUILD_DIR/build.tests"
 ninja install
@@ -94,38 +75,33 @@ rm -R "$NVLIBS_BUILD_DIR/build.tests"
 
 NVENC_SRC_DIR=$NVLIBS_SRC_DIR"/nvenc"
 
-function build_arch {
-  cd "$NVENC_SRC_DIR"
+cd "$NVENC_SRC_DIR"
 
-  meson --cross-file "$NVENC_SRC_DIR/build-wine$1.txt"  \
-        --buildtype release                             \
-        --prefix "$NVLIBS_BUILD_DIR"                    \
-        --libdir "x$1"                                  \
-        --strip                                         \
-        "$NVLIBS_BUILD_DIR/build.$1"
+meson setup                                         \
+    --cross-file "$NVENC_SRC_DIR/build-wine64.txt"  \
+    --buildtype release                             \
+    --prefix "$NVLIBS_BUILD_DIR"                    \
+    --libdir "x64"                                  \
+    --strip                                         \
+    "$NVLIBS_BUILD_DIR/build.64"
 
-  cd "$NVLIBS_BUILD_DIR/build.$1"
-  ninja install
+cd "$NVLIBS_BUILD_DIR/build.64"
+ninja install
 
-  rm -R "$NVLIBS_BUILD_DIR/build.$1"
-}
-
-build_arch 64
-if [ $opt_no_32 -eq 0 ]; then
-  build_arch 32
-fi
+rm -R "$NVLIBS_BUILD_DIR/build.64"
 
 # Build wine-nvoptix
 
 NVOPTIX_SRC_DIR=$NVLIBS_SRC_DIR"/wine-nvoptix"
 cd $NVOPTIX_SRC_DIR
 
-meson --cross-file "$NVOPTIX_SRC_DIR/build-wine64.txt"  \
-      --buildtype release                               \
-      --prefix "$NVLIBS_BUILD_DIR"                      \
-      --libdir x64                                      \
-      --strip                                           \
-      "$NVLIBS_BUILD_DIR/build"
+meson setup                                           \
+    --cross-file "$NVOPTIX_SRC_DIR/build-wine64.txt"  \
+    --buildtype release                               \
+    --prefix "$NVLIBS_BUILD_DIR"                      \
+    --libdir x64                                      \
+    --strip                                           \
+    "$NVLIBS_BUILD_DIR/build"
 
 cd "$NVLIBS_BUILD_DIR/build"
 ninja install
@@ -138,34 +114,32 @@ NVML_SRC_DIR=$NVLIBS_SRC_DIR"/wine-nvml"
 cd $NVML_SRC_DIR"/src"
 ./make_nvml
 
-function build_arch {
-  cd $NVML_SRC_DIR
-  meson --cross-file "$NVML_SRC_DIR/cross-mingw$1.txt"  \
-        --buildtype release                             \
-        --prefix "$NVLIBS_BUILD_DIR"                    \
-        --libdir "x$1"                                  \
-        --strip                                         \
-        "$NVLIBS_BUILD_DIR/build.mingw$1"
+cd $NVML_SRC_DIR
+meson setup                                         \
+    --cross-file "$NVML_SRC_DIR/cross-mingw64.txt"  \
+    --buildtype release                             \
+    --prefix "$NVLIBS_BUILD_DIR"                    \
+    --libdir "x64"                                  \
+    --strip                                         \
+    "$NVLIBS_BUILD_DIR/build.mingw64"
 
-  cd "$NVLIBS_BUILD_DIR/build.mingw$1"
-  ninja install
+cd "$NVLIBS_BUILD_DIR/build.mingw64"
+ninja install
 
-  cd $NVML_SRC_DIR
-  meson --cross-file "$NVML_SRC_DIR/cross-wine$1.txt"  \
-        --buildtype release                            \
-        --prefix "$NVLIBS_BUILD_DIR"                   \
-        --libdir "x$1"                                 \
-        --strip                                        \
-        "$NVLIBS_BUILD_DIR/build.wine$1"
+cd $NVML_SRC_DIR
+meson setup                                        \
+    --cross-file "$NVML_SRC_DIR/cross-wine64.txt"  \
+    --buildtype release                            \
+    --prefix "$NVLIBS_BUILD_DIR"                   \
+    --libdir "x64"                                 \
+    --strip                                        \
+    "$NVLIBS_BUILD_DIR/build.wine64"
 
-  cd "$NVLIBS_BUILD_DIR/build.wine$1"
-  ninja install
+cd "$NVLIBS_BUILD_DIR/build.wine64"
+ninja install
 
-  rm -R "$NVLIBS_BUILD_DIR/build.mingw$1"
-  rm -R "$NVLIBS_BUILD_DIR/build.wine$1"
-}
-
-build_arch 64
+rm -R "$NVLIBS_BUILD_DIR/build.mingw64"
+rm -R "$NVLIBS_BUILD_DIR/build.wine64"
 
 # Build dxvk-nvapi
 
@@ -200,7 +174,8 @@ function build_arch {
   # files get into the build instead of the generated ones
   rm -f version.h config.h
 
-  meson --cross-file "$NVAPI_SRC_DIR/$crossfile$1.txt" \
+  meson setup                                          \
+        --cross-file "$NVAPI_SRC_DIR/$crossfile$1.txt" \
         --buildtype release                            \
         --prefix "$NVLIBS_BUILD_DIR"                   \
         --strip                                        \
