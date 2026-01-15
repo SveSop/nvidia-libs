@@ -43,6 +43,24 @@ nvoptix (wine-nvoptix - [https://github.com/SveSop/wine-nvoptix](https://github.
 eg. `./package-release.sh latest /home/yourname/`  
 Will create a folder containing the libraries in `/home/yourname/nvidia-libs-latest`
 
+### Optional build variables
+
+If you put `--fakedll` after the buildscript like this:  
+`./package-release.sh latest /home/yourname --fakedll`  
+The library will be built as a winelib dll.so and a fakedll .dll placed in the  
+output folder in typical wine folderstructure eg.  
+`nvidia-libs-latest/lib/wine/x86_64-windows` and `nvidia-libs-latest/lib/wine/x86_64-unix`  
+These can preferrably be used with the wine env variable `WINEDLLPATH` like this:  
+`export WINEDLLPATH=/home/yourname/nvidia-libs-latest/lib/wine`  
+
+This should make `wineboot -u` copy the fakedlls to your WINEPREFIX automatically if you  
+use wine > 10.0. Be aware that you must use this ENV variable whenever you use that  
+WINEPREFIX.  
+This is true also for `dxvk-nvapi` dll's and `wine-nvml` library in the filestructure.  
+The files can also be copied directly into the wine binary folders in the same folderstructure,  
+and it should work the same way.  
+OBS: No WINEPREFIX or PROTON install scripts will be available with this build method (for now).  
+
 ## How to install  
 
 ### Wineprefix  

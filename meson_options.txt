@@ -1,0 +1,1 @@
+option('fakedll', type: 'boolean', value: false)

@@ -4,23 +4,39 @@ set -e
 
 shopt -s extglob
 
-if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "Usage: $0 release destdir"
+if [ $# -lt 2 ]; then
+  echo "Usage: $0 releasename destdir [--fakedll]"
   exit 1
 fi
 
 git submodule update --init --recursive
 
 VERSION="$1"
+DESTDIR="$2"
 NVLIBS_SRC_DIR=$(dirname "$(readlink -f "$0")")
 NVLIBS_BUILD_DIR=$(realpath "$2")"/nvidia-libs-$VERSION"
+shift 2
+
+FAKEDLL=""
+LIBDIR='x64'
+
+for arg in "$@"; do
+  case "$arg" in
+    --fakedll)
+      FAKEDLL="-Dfakedll=true"
+      LIBDIR='lib'
+      ;;
+    *)
+      echo "Error: unknown option '$arg'"
+      exit 1
+      ;;
+  esac
+done
 
 if [ -e "$NVLIBS_BUILD_DIR" ]; then
   echo "Build directory $NVLIBS_BUILD_DIR already exists"
   exit 1
 fi
-
-shift 2
 
 # Make version file
 
@@ -44,8 +60,9 @@ meson setup                                          \
     --cross-file "$NVCUDA_SRC_DIR/build-wine64.txt"  \
     --buildtype release                              \
     --prefix "$NVLIBS_BUILD_DIR"                     \
-    --libdir "x64"                                   \
+    --libdir $LIBDIR                                 \
     --strip                                          \
+    $FAKEDLL                                         \
     "$NVLIBS_BUILD_DIR/build.64"
 
 cd "$NVLIBS_BUILD_DIR/build.64"
@@ -81,8 +98,9 @@ meson setup                                         \
     --cross-file "$NVENC_SRC_DIR/build-wine64.txt"  \
     --buildtype release                             \
     --prefix "$NVLIBS_BUILD_DIR"                    \
-    --libdir "x64"                                  \
+    --libdir $LIBDIR                                \
     --strip                                         \
+    $FAKEDLL                                        \
     "$NVLIBS_BUILD_DIR/build.64"
 
 cd "$NVLIBS_BUILD_DIR/build.64"
@@ -99,8 +117,9 @@ meson setup                                           \
     --cross-file "$NVOPTIX_SRC_DIR/build-wine64.txt"  \
     --buildtype release                               \
     --prefix "$NVLIBS_BUILD_DIR"                      \
-    --libdir x64                                      \
+    --libdir $LIBDIR                                  \
     --strip                                           \
+    $FAKEDLL                                          \
     "$NVLIBS_BUILD_DIR/build"
 
 cd "$NVLIBS_BUILD_DIR/build"
@@ -119,7 +138,7 @@ meson setup                                         \
     --cross-file "$NVML_SRC_DIR/cross-mingw64.txt"  \
     --buildtype release                             \
     --prefix "$NVLIBS_BUILD_DIR"                    \
-    --libdir "x64"                                  \
+    --libdir $LIBDIR                                \
     --strip                                         \
     "$NVLIBS_BUILD_DIR/build.mingw64"
 
@@ -131,7 +150,7 @@ meson setup                                        \
     --cross-file "$NVML_SRC_DIR/cross-wine64.txt"  \
     --buildtype release                            \
     --prefix "$NVLIBS_BUILD_DIR"                   \
-    --libdir "x64"                                 \
+    --libdir $LIBDIR                               \
     --strip                                        \
     "$NVLIBS_BUILD_DIR/build.wine64"
 
@@ -179,8 +198,8 @@ function build_arch {
         --buildtype release                            \
         --prefix "$NVLIBS_BUILD_DIR"                   \
         --strip                                        \
-        --bindir "x$1"                                 \
-        --libdir "x$1"                                 \
+        --bindir $LIBDIR                               \
+        --libdir $LIBDIR                               \
         -Denable_tests=true                            \
         "$NVLIBS_BUILD_DIR/build.$1"
 
@@ -220,19 +239,31 @@ ninja install
 rm -R "$NVLIBS_BUILD_DIR/build.layer"
 
 # Copy installscripts and README
-cp $NVLIBS_SRC_DIR/*.sh "$NVLIBS_BUILD_DIR/"
-rm $NVLIBS_BUILD_DIR/package-release.sh
-chmod +x $NVLIBS_BUILD_DIR/*.sh
-cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
+if [ -z "$FAKEDLL" ]; then
+  cp $NVLIBS_SRC_DIR/*.sh "$NVLIBS_BUILD_DIR/"
+  rm $NVLIBS_BUILD_DIR/package-release.sh
+  chmod +x $NVLIBS_BUILD_DIR/*.sh
+  cp "$NVLIBS_SRC_DIR/Readme_nvml.txt" "$NVLIBS_BUILD_DIR/Readme_nvml.txt"
+fi
 cp "$NVLIBS_SRC_DIR/README.md" "$NVLIBS_BUILD_DIR/README.md"
 
 # Move test
 mkdir -p "$NVLIBS_BUILD_DIR/bin"
-mv "$NVLIBS_BUILD_DIR/x64/nvapi64-tests.exe" "$NVLIBS_BUILD_DIR/bin/"
-mv "$NVLIBS_BUILD_DIR/x64/nvofapi64-tests.exe" "$NVLIBS_BUILD_DIR/bin/"
+mv "$NVLIBS_BUILD_DIR/$LIBDIR/nvapi64-tests.exe" "$NVLIBS_BUILD_DIR/bin/"
+mv "$NVLIBS_BUILD_DIR/$LIBDIR/nvofapi64-tests.exe" "$NVLIBS_BUILD_DIR/bin/"
 
 # cleanup
 cd $NVLIBS_BUILD_DIR
 find . -name \*.a -type f -delete
-find . -name "*.dll.so" -type f -exec bash -c 'mv "$0" "${0%.so}"' {} \;
+if [ -z "$FAKEDLL" ]; then
+  find . -name "*.dll.so" -type f -exec bash -c 'mv "$0" "${0%.so}"' {} \;
+else
+  # Hack the dxvk-nvapi dll's so that they look like wine builtin libraries
+  winebuild --builtin "$NVLIBS_BUILD_DIR/$LIBDIR/nvapi64.dll"
+  winebuild --builtin "$NVLIBS_BUILD_DIR/$LIBDIR/nvapi.dll"
+  winebuild --builtin "$NVLIBS_BUILD_DIR/$LIBDIR/nvofapi64.dll"
+  mkdir -p "$NVLIBS_BUILD_DIR/$LIBDIR/wine/i386-windows"
+  mv "$NVLIBS_BUILD_DIR/$LIBDIR/nvapi.dll" "$NVLIBS_BUILD_DIR/$LIBDIR/wine/i386-windows"
+  mv "$NVLIBS_BUILD_DIR/$LIBDIR/"*.dll "$NVLIBS_BUILD_DIR/$LIBDIR/wine/x86_64-windows"
+fi
 echo "Done building!"
