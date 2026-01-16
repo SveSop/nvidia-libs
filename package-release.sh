@@ -189,6 +189,12 @@ function prepare {
 function build_arch {
   cd "$NVAPI_SRC_DIR"
 
+  if [ -z "$FAKEDLL" ]; then
+    DIRS="x$1"
+  else
+    DIRS="$LIBDIR"
+  fi
+
   # remove generated files, because otherwise the existing
   # files get into the build instead of the generated ones
   rm -f version.h config.h
@@ -198,8 +204,8 @@ function build_arch {
         --buildtype release                            \
         --prefix "$NVLIBS_BUILD_DIR"                   \
         --strip                                        \
-        --bindir $LIBDIR                               \
-        --libdir $LIBDIR                               \
+        --bindir $DIRS                                 \
+        --libdir $DIRS                                 \
         -Denable_tests=true                            \
         "$NVLIBS_BUILD_DIR/build.$1"
 
