@@ -46,7 +46,7 @@ jobs:
       uses: SveSop/ubuntu-mingw-github-action@v2
       with:
         command: |
-          ./package-release.sh "${{ env.VERSION }}-fakedll" build
+          ./package-release.sh "${{ env.VERSION }}-fakedll" build --fakedll
 
     - name: Upload artifacts (default)
       uses: actions/upload-artifact@v4
@@ -58,6 +58,6 @@ jobs:
     - name: Upload artifacts (fakedll)
       uses: actions/upload-artifact@v4
       with:
-        name: nvidia-libs-${{ env.VERSION }}
+        name: nvidia-libs-${{ env.VERSION }}-fakedll
         path: ${{ env.ARTIFACT }}-fakedll
         if-no-files-found: error
