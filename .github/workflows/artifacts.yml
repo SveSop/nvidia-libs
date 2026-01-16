@@ -22,7 +22,7 @@ jobs:
     - name: Prepare environment (none-tag)
       if: github.ref_type != 'tag'
       run: |
-        export VERSION="${GITHUB_REF##*/}-${GITHUB_SHA##*/}"
+        export VERSION="${GITHUB_REF##*/}-${GITHUB_SHA::7}"
         echo "VERSION=${VERSION}" >> $GITHUB_ENV
         echo "ARTIFACT=build/nvidia-libs-${VERSION}" >> $GITHUB_ENV
 
@@ -36,15 +36,28 @@ jobs:
     - name: Setup problem matcher
       uses: Joshua-Ashton/gcc-problem-matcher@v3
 
-    - name: Build
+    - name: Build (default)
       uses: SveSop/ubuntu-mingw-github-action@v2
       with:
         command: |
           ./package-release.sh "${{ env.VERSION }}" build
 
-    - name: Upload artifacts
+    - name: Build (fakedll)
+      uses: SveSop/ubuntu-mingw-github-action@v2
+      with:
+        command: |
+          ./package-release.sh "${{ env.VERSION }}-fakedll" build
+
+    - name: Upload artifacts (default)
       uses: actions/upload-artifact@v4
       with:
         name: nvidia-libs-${{ env.VERSION }}
         path: ${{ env.ARTIFACT }}
+        if-no-files-found: error
+
+    - name: Upload artifacts (fakedll)
+      uses: actions/upload-artifact@v4
+      with:
+        name: nvidia-libs-${{ env.VERSION }}
+        path: ${{ env.ARTIFACT }}-fakedll
         if-no-files-found: error
