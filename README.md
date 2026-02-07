@@ -1,14 +1,14 @@
 # NVIDIA Libs
 
-Release: 1.0.0  
+Release: 1.0.1  
 Recommended nVidia proprietary driver branch 580+ for best compatibility with OptiX and CUDA.  
 
 ## Important info:
 This provides 32bit library of dxvk-nvapi, but ALL other libraries are now 64bit.  
-If 32bit nvcuda is needed, a separate package can be obtained from this branch:  
-[https://github.com/SveSop/nvcuda/tree/32bit_only](https://github.com/SveSop/nvcuda/tree/32bit_only)  
-There is also a 32bit released package for nvcuda v0.3 with installscripts under releases:
-[https://github.com/SveSop/nvcuda/releases](https://github.com/SveSop/nvcuda/releases)  
+The 32bit archive of nvcuda is attached on this release page.  
+32bit branch of nvcuda is frozen, and will receive bugfixes only. The 32bit nvcuda supports up to  
+and include CUDA SDK 9.0.  
+Source: [https://github.com/SveSop/nvcuda/tree/32bit_only](https://github.com/SveSop/nvcuda/tree/32bit_only)  
 
 ## Support:
 CUDA SDK up to 13.1 should now mostly be supported. There can still be missing functions  
