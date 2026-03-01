@@ -1,9 +1,16 @@
 #!/bin/bash
 
 nvlibs_dir="$(dirname "$(readlink -fm "$0")")"
-bottles_dir="$HOME/.var/app/com.usebottles.bottles/data/bottles/bottles"
+bottles_dir="$HOME/.var/app/com.usebottles.bottles/data/bottles"
 win='drive_c/windows/system32'
 lib='x64'
+
+# Check flatpak and native bottles_dir
+[ -d "$bottles_dir" ] || bottles_dir="$HOME/.local/share/bottles"
+[ -d "$bottles_dir" ] || {
+    echo "Bottles directory not found."
+    exit 1
+}
 
 if [ ! -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
     echo "Files not found in $nvlibs_dir/$lib" >&2
@@ -14,21 +21,21 @@ if [ -z "$1" ]; then
     echo -ne "BOTTLE is not set!\n"
     echo -ne "This is a list of your available bottles:\n"
     echo -ne "\n=========================================\n"
-    ls -1 $bottles_dir
+    ls -1 "$bottles_dir/bottles"
     echo -ne "=========================================\n\n"
     echo -ne "Specify your bottle. Eg: ./bottles-install.sh MyBottle\n"
     exit 1
 fi
 
-if [ ! -f "$bottles_dir/$1/$win/dxgi.dll" ]; then
-    echo -ne "Windows files not found in $bottles_dir\$1! check bottle installation\n" >&2
+if [ ! -f "$bottles_dir/bottles/$1/$win/dxgi.dll" ]; then
+    echo -e "Windows files not found in $bottles_dir/bottles/$1! Check bottle installation." >&2
     exit 1
 else
     BOTTLE="$1"
 fi
 
 function install {
-    cp -f "$nvlibs_dir/$lib/$1" "$bottles_dir/$BOTTLE/$win/"
+    cp -f "$nvlibs_dir/$lib/$1" "$bottles_dir/bottles/$BOTTLE/$win/"
 }
 
 fun=install
@@ -46,7 +53,7 @@ echo
 if [[ "$response" =~ ^[Yy]$ ]]; then
     lib='x64'
     nvapi_ver="dxvk-nvapi-$(cat version | grep DXVK | cut -d' ' -f2- | tr -d '\"')"
-    nvapi_dir="$HOME/.var/app/com.usebottles.bottles/data/bottles/nvapi/$nvapi_ver"
+    nvapi_dir="$bottles_dir/nvapi/$nvapi_ver"
     if [ -f "$nvapi_dir/$lib/nvapi64.dll" ]; then
         echo -ne "Already installed! Skipping\n" >&2
     else
