@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
         fetch-depth: 0
@@ -34,29 +34,29 @@ jobs:
         echo "ARTIFACT=build/nvidia-libs-${VERSION}" >> $GITHUB_ENV
 
     - name: Setup problem matcher
-      uses: Joshua-Ashton/gcc-problem-matcher@v3
+      uses: ammaraskar/gcc-problem-matcher@master
 
     - name: Build (default)
-      uses: SveSop/ubuntu-mingw-github-action@v2
+      uses: SveSop/ubuntu-mingw-github-action@v3
       with:
         command: |
           ./package-release.sh "${{ env.VERSION }}" build
 
     - name: Build (fakedll)
-      uses: SveSop/ubuntu-mingw-github-action@v2
+      uses: SveSop/ubuntu-mingw-github-action@v3
       with:
         command: |
           ./package-release.sh "${{ env.VERSION }}-fakedll" build --fakedll
 
     - name: Upload artifacts (default)
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: nvidia-libs-${{ env.VERSION }}
         path: ${{ env.ARTIFACT }}
         if-no-files-found: error
 
     - name: Upload artifacts (fakedll)
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: nvidia-libs-${{ env.VERSION }}-fakedll
         path: ${{ env.ARTIFACT }}-fakedll
