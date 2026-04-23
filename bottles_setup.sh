@@ -12,6 +12,21 @@ lib='x64'
     exit 1
 }
 
+bottles_path="$bottles_dir/bottles"
+bottles_config="$bottles_dir/data.yml"
+
+# Check for custom bottles path specified in data.yml
+if [[ -e "$bottles_config" ]]; then
+    while read -r line
+    do
+        if [[ $line == custom_bottles_path:* ]]; then
+            echo "$line"
+            bottles_path="${line#"custom_bottles_path: "}"
+            break
+        fi
+    done < "$bottles_config"
+fi
+
 if [ ! -f "$nvlibs_dir/$lib/nvcuda.dll" ]; then
     echo "Files not found in $nvlibs_dir/$lib" >&2
     exit 1
@@ -21,21 +36,21 @@ if [ -z "$1" ]; then
     echo -ne "BOTTLE is not set!\n"
     echo -ne "This is a list of your available bottles:\n"
     echo -ne "\n=========================================\n"
-    ls -1 "$bottles_dir/bottles"
+    ls -1 "$bottles_path"
     echo -ne "=========================================\n\n"
     echo -ne "Specify your bottle. Eg: ./bottles-install.sh MyBottle\n"
     exit 1
 fi
 
-if [ ! -f "$bottles_dir/bottles/$1/$win/dxgi.dll" ]; then
-    echo -e "Windows files not found in $bottles_dir/bottles/$1! Check bottle installation." >&2
+if [ ! -f "$bottles_path/$1/$win/dxgi.dll" ]; then
+    echo -e "Windows files not found in $bottles_path/$1! Check bottle installation." >&2
     exit 1
 else
     BOTTLE="$1"
 fi
 
 function install {
-    cp -f "$nvlibs_dir/$lib/$1" "$bottles_dir/bottles/$BOTTLE/$win/"
+    cp -f "$nvlibs_dir/$lib/$1" "$bottles_path/$BOTTLE/$win/"
 }
 
 fun=install
