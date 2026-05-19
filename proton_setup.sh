@@ -58,6 +58,9 @@ ln -sfr "$PROTON_LIBS/files/$lib/$arch-windows/nvcuvid.dll" "$PROTON_LIBS/files/
 ln -sfr "$PROTON_LIBS/files/$lib/$arch-windows/nvencodeapi64.dll" "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32/nvencodeapi64.dll"
 ln -sfr "$PROTON_LIBS/files/$lib/$arch-windows/nvoptix.dll" "$PROTON_LIBS/files/share/default_pfx/drive_c/windows/system32/nvoptix.dll"
 
+# Remove default Disabled dlloverride
+sed -i '/"nvcuda"/d' "$PROTON_LIBS/files/share/wine/wine.inf"
+
 echo -n "Do you want to install 64-bit NVML files to proton? (This can break games like Portal RTX!) (Y/N): "
 read -n 1 -r response
 echo
