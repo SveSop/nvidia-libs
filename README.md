@@ -130,6 +130,10 @@ Run `./bottles-install.sh` for a list of your available bottles, and use it like
 You will want to run the script ever time you upgrade `nvidia-libs` binaries, and possibly  
 if you change/update your runner. Eg. switching from Caffe-9.7 to Caffe-9.8.  
 
+Bottles should detect `dxvk-nvapi-vX.X.X-XX-XXXXXXXX` in **Settings→Components→DXVK NVAPI**
+
+Make sure to enable discrete graphic in **Settings→Display→Discrete Graphics**.
+
 ## Proton  
 You can drop-in the libraries in Proton10 - Experimental or GE-Proton-10 or newer like this:  
 `PROTON_LIBS='$HOME/.steam/compatibilitytools.d/Proton-10.25-GE' ./proton_setup.sh`  
