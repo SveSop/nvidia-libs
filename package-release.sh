@@ -164,7 +164,7 @@ rm -R "$NVLIBS_BUILD_DIR/build.wine64"
 
 NVAPI_SRC_DIR=$NVLIBS_SRC_DIR"/dxvk-nvapi"
 
-crossfile="build-win"
+crossfile="build-mingw-win"
 
 cd $NVAPI_SRC_DIR
 
