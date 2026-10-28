@@ -1,6 +1,6 @@
 # NVIDIA Libs
 
-Release: 1.0.3  
+Release: 1.0.4  
 Recommended nVidia proprietary driver branch 580+ for best compatibility with OptiX and CUDA.  
 
 ## Important info:
